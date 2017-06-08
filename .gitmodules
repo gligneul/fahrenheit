@@ -1,0 +1,3 @@
+[submodule "ext/stdplus"]
+	path = ext/stdplus
+	url = https://github.com/gligneul/stdplus.git
