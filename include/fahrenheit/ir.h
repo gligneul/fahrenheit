@@ -27,10 +27,21 @@
 #ifndef fahrenheit_ir_h
 #define fahrenheit_ir_h
 
+#include <stdplus/stdplus.h>
+
+/* Declarations ***************************************************************/
+
 /* Basic types */
 enum FType {
-  FInt8
+  FInt8, FInt16, FInt32, FInt64,
+  FFloat32, FFloat64,
+  FPointer,
+  FVoid
 };
+
+/* Functions ******************************************************************/
+
+/* Obtain a type of the host architecture */
 
 #endif
 

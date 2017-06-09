@@ -4,11 +4,8 @@ project(fahrenheit)
 set(FAHRENHEIT_VERSION_MAJOR 0)
 set(FAHRENHEIT_VERSION_MINOR 1)
 configure_file(
-  "${PROJECT_SOURCE_DIR}/fahrenheit/version.h.in"
-  "${PROJECT_BINARY_DIR}/fahrenheit/version.h")
-
-include_directories("${PROJECT_SOURCE_DIR}")
-include_directories("${PROJECT_BINARY_DIR}")
+  "${PROJECT_SOURCE_DIR}/include/fahrenheit/version.h.in"
+  "${PROJECT_BINARY_DIR}/include/fahrenheit/version.h")
 
 add_definitions(
   -std=c89
@@ -23,23 +20,22 @@ add_definitions(
   -pedantic)
 
 add_library(fahrenheit
-  fahrenheit/ir.c)
+  src/ir.c)
 
-SET(HEADERS
-  fahrenheit/ir.h
-  "${PROJECT_BINARY_DIR}/fahrenheit/version.h")
+# dependencies
+add_subdirectory(ext/stdplus)
+target_link_libraries(fahrenheit stdplus)
+
+SET(fahrenheit_headers
+  ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include)
+target_include_directories(stdplus PUBLIC ${stdplus_headers})
+include_directories("${fahrenheit_headers}")
 
 install(TARGETS fahrenheit DESTINATION lib)
-install(FILES ${HEADERS} DESTINATION include/fahrenheit)
+install(DIRECTORY ${fahrenheit_headers} DESTINATION include)
 
-include(CTest)
-enable_testing()
-add_custom_target(build-tests)
-function(addcustomtest testname)
-  add_executable(${testname} EXCLUDE_FROM_ALL tests/${testname}.c)
-  add_dependencies(build-tests ${testname})
-  target_link_libraries(${testname} fahrenheit)
-  add_test(${testname} ${testname})
-endfunction(addcustomtest)
-addcustomtest(basic)
+if(ENABLE_FAHRENHEIT_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif(ENABLE_FAHRENHEIT_TESTS)
 

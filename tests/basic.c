@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <fahrenheit/fahrenheit.h>
+
 int main(void) {
   return 0;
 }
