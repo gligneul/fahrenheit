@@ -25,6 +25,22 @@
 #include <fahrenheit/fahrenheit.h>
 
 int main(void) {
+  {
+    int i, j;
+    FModule m;
+    f_initmodule(&m);
+    for(i = 0; i < 10; ++i) {
+      f_addfunction(&m);
+      for(j = 0; j < 10; ++j) {
+        FBuilder b;
+        f_addbblock(&m, i);
+        b = f_builder(&m, i, j);
+        (void)b;
+      }
+    }
+    f_closemodule(&m);
+  }
+
   return 0;
 }
 
