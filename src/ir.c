@@ -126,7 +126,7 @@ FValue f_consti(FBuilder b, ui64 val, enum FType type) {
   return lastvalue(b);
 }
 
-FValue f_constf(FBuilder b, f64 val, enum FType type) {
+FValue f_constf(FBuilder b, double val, enum FType type) {
   FInstr *i = addinstr(b, type, FKonst);
   i->u.konst.f = val;
   return lastvalue(b);

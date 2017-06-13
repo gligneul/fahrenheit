@@ -34,7 +34,7 @@
 /* Basic types */
 enum FType {
   FBool, FInt8, FInt16, FInt32, FInt64,
-  FFloat32, FFloat64, FPointer, FVoid
+  FFloat, FDouble, FPointer, FVoid
 };
 
 /* Instruction types */
@@ -77,7 +77,7 @@ typedef struct FInstr {
   enum FType type;
   enum FInstrTag tag;
   union {
-    union { f64 f; ui64 i; void *p; } konst;
+    union { double f; ui64 i; void *p; } konst;
     struct { int n; } getarg;
     struct { FValue addr; } load;
     struct { FValue addr; FValue val; } store;
@@ -149,7 +149,7 @@ FInstr* f_instr(FModule *m, int f, FValue v);
  * Create the respective instruction
  */
 FValue f_consti(FBuilder b, ui64 val, enum FType type);
-FValue f_constf(FBuilder b, f64 val, enum FType type);
+FValue f_constf(FBuilder b, double val, enum FType type);
 FValue f_constp(FBuilder b, void *val);
 FValue f_getarg(FBuilder b, int n, enum FType type);
 FValue f_load(FBuilder b, FValue addr, enum FType type);
