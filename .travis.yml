@@ -1,0 +1,8 @@
+dist: trusty
+language: c
+compiler: gcc
+addons:
+  apt:
+    packages:
+      - cmake
+script: cmake -DENABLE_FAHRENHEIT_TESTS=1 . && make && make test
