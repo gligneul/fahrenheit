@@ -22,25 +22,44 @@
  * SOFTWARE.
  */
 
-#include <fahrenheit/fahrenheit.h>
+#ifndef common_h
+#define common_h
 
-#include "common.h"
+#include <assert.h>
 
-static void foo(void) {}
+/*
+ * Track memory used
+ */
 
-int main(void) {
-  int func, bb;
-  FModule m;
-  FBuilder b;
-  mem_alloc = checkmem;
-  f_initmodule(&m);
-  f_addextfunction(&m, f_ftype(FVoid, 1, FVoid), foo);
-  func = f_addfunction(&m, f_ftype(FVoid, 1, FInt32));
-  bb = f_addbblock(&m, func);
-  b = f_builder(&m, func, bb);
-  (void)b;
-  f_closemodule(&m);
-  assert(usedmem == 0);
-  return 0;
+static int usedmem = 0;
+
+static void *checkmem(void *addr, size_t oldsize, size_t newsize) {
+  usedmem = usedmem - oldsize + newsize;
+  return mem_alloc_(addr, oldsize, newsize);
 }
+
+/*
+ * Common parts in the tests
+ */
+
+#define TEST_SETUP(ftype) \
+  { \
+  int f, bb; \
+  FModule m; \
+  FBuilder b; \
+  mem_alloc = checkmem; \
+  f_initmodule(&m); \
+  f = f_addfunction(&m, ftype); \
+  bb = f_addbblock(&m, f); \
+  b = f_builder(&m, f, bb); \
+  (void)b; \
+  { \
+
+#define TEST_TEARDOWN \
+  } \
+  f_closemodule(&m); \
+  assert(usedmem == 0); \
+  } \
+
+#endif
 

@@ -40,7 +40,7 @@ enum FType {
 /* Instruction types */
 enum FInstrTag {
   FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
-  FCmp, FJmpIf, FJmp, FSelect, FRet, /*FCall,*/ FPhi
+  FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FCallExt, FPhi
 };
 
 /* Binary operations */
@@ -89,23 +89,48 @@ typedef struct FInstr {
     struct { int dest; } jmp;
     struct { FValue cond; FValue truev; FValue falsev; } select;
     struct { FValue val; } ret;
-/*    struct { FValue func; Vector(FValue) args; } call;*/
+    struct { int func; Vector(FValue) args; } call;
+    struct { int func; Vector(FValue) args; } callext;
     struct { Vector(FPhiInc) inc; } phi;
   } u;
 } FInstr;
 
-/* A basic block is an array of instructions. A function is an array of
- * basic blocks. A module is an array of functions. */
 VEC_DECLARE(FInstr);
+
+/* A basic block is an array of instructions */
 typedef Vector(FInstr) FBBlock;
 
 VEC_DECLARE(FBBlock);
-typedef Vector(FBBlock) FFunction;
+
+/* Function types */
+typedef struct FFunctionType {
+  enum FInstrTag ret;
+  enum FInstrTag *args;
+  int nargs;
+} FFunctionType;
+
+/* Internal function */
+typedef struct FFunction {
+  FFunctionType type;
+  Vector(FBBlock) bblocks;
+} FFunction;
 
 VEC_DECLARE(FFunction);
 
+/* External function */
+typedef void (*FFunctionPtr)(void);
+
+typedef struct FExtFunction {
+  FFunctionType type;
+  FFunctionPtr ptr;
+} FExtFunction;
+
+VEC_DECLARE(FExtFunction);
+
+/* Module is the root structure */
 typedef struct FModule {
   Vector(FFunction) functions;
+  Vector(FExtFunction) extfunctions;
 } FModule;
 
 /* A builder is used to create new instructions */
@@ -121,8 +146,21 @@ typedef struct FBuilder {
 void f_initmodule(FModule *m);
 void f_closemodule(FModule *m);
 
+/* Create a function type */
+FFunctionType f_ftype(enum FType ret, int nargs, ...);
+
+/* Create a function type
+ * This function creates a copy of the args array. */
+FFunctionType f_ftypev(enum FType ret, int nargs, enum FType *args);
+
+/* Close a function type structure */
+void f_closeftype(FFunctionType *ftype);
+
+/* Add an external function to the module */
+int f_addextfunction(FModule *m, FFunctionType ftype, FFunctionPtr ptr);
+
 /* Add a function to the module */
-int f_addfunction(FModule *m);
+int f_addfunction(FModule *m, FFunctionType ftype);
 
 /* Add a basic block to the function */
 int f_addbblock(FModule *m, int function);
@@ -162,7 +200,7 @@ FValue f_jmpif(FBuilder b, FValue cond, int truebr, int falsebr);
 FValue f_jmp(FBuilder b, int dest);
 FValue f_select(FBuilder b, FValue cond, FValue truev, FValue falsev);
 FValue f_ret(FBuilder b, FValue val);
-/*FValue f_call(FBuilder b, enum FType rettype, FValue func);*/
+FValue f_call(FBuilder b, FFunction *f, FValue func);
 FValue f_phi(FBuilder b, enum FType type);
 
 /* Add an incoming value to a phi */
