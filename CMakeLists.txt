@@ -20,7 +20,8 @@ add_definitions(
   -pedantic)
 
 add_library(fahrenheit
-  src/ir.c)
+  src/ir.c
+  src/verify.c)
 
 # dependencies
 add_subdirectory(ext/stdplus)

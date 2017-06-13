@@ -22,14 +22,35 @@
  * IN THE SOFTWARE.
  */
 
-/* Include all external headers */
+#include <stdio.h>
+#include <stdarg.h>
 
-#ifndef fahrenheit_fahrenheit_h
-#define fahrenheit_fahrenheit_h
-
-#include <fahrenheit/ir.h>
 #include <fahrenheit/verify.h>
-#include <fahrenheit/version.h>
+#include <fahrenheit/ir.h>
 
-#endif
+static int writeerr(char *err, const char *format, ...) {
+  va_list args;
+  if(err != NULL) {
+    va_start(args, format);
+    vsprintf(err, format, args);
+    va_end(args);
+  }
+  return 1;
+}
+
+int f_verifymodule(struct FModule *m, char *err) {
+  vec_for(m->functions, i, {
+    if(f_verifyfunction(m, i, err)) break;
+  });
+  return 0;
+}
+
+int f_verifyfunction(struct FModule *m, int function, char *err) {
+  FFunction *f;
+  if(function < 0 || (size_t)function >= vec_size(m->functions))
+    return writeerr(err, "function not found");
+  f = vec_getref(m->functions, function);
+  (void)f;
+  return 0;
+}
 

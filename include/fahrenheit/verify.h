@@ -22,14 +22,24 @@
  * IN THE SOFTWARE.
  */
 
-/* Include all external headers */
+#ifndef fahrenheit_verify_h
+#define fahrenheit_verify_h
 
-#ifndef fahrenheit_fahrenheit_h
-#define fahrenheit_fahrenheit_h
+#define FVerifyBufferSize 1024
 
-#include <fahrenheit/ir.h>
-#include <fahrenheit/verify.h>
-#include <fahrenheit/version.h>
+struct FModule;
+
+/* Verify if the IR module is well formed.
+ * Return a value diferent from 0 if an error is found.
+ * Return by reference the error message. The err parameter should be
+ * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */
+int f_verifymodule(struct FModule *m, char *err);
+
+/* Verify if the IR function is well formed
+ * Return a value diferent from 0 if an error is found.
+ * Return by reference the error message. The err parameter should be
+ * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */
+int f_verifyfunction(struct FModule *m, int function, char *err);
 
 #endif
 
