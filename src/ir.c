@@ -63,7 +63,7 @@ void f_initmodule(FModule *m) {
 
 void f_closemodule(FModule *m) {
   vec_foreach(m->functions, func, {
-    switch(func->tag) {
+    switch (func->tag) {
       case FExtFunc:
         break;
       case FModFunc:

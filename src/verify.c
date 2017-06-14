@@ -28,29 +28,68 @@
 #include <fahrenheit/verify.h>
 #include <fahrenheit/ir.h>
 
-static int writeerr(char *err, const char *format, ...) {
+/* Verify a condition, if it fails then write the message to 'err' and return */
+#define VERIFY(cond, msg) \
+  if(!(cond)) { \
+    writeerr(err, msg); \
+    return 1; \
+  }
+
+/* Write the error to the string and return 1 */
+static void writeerr(char *err, const char *format, ...) {
   va_list args;
-  if(err != NULL) {
+  if (err != NULL) {
     va_start(args, format);
     vsprintf(err, format, args);
     va_end(args);
   }
-  return 1;
 }
 
-int f_verifymodule(struct FModule *m, char *err) {
+/* Verify an instruction */
+static int verifyinstr(FModule *m, int function, FInstr *i, char *err) {
+  FFunction *f = vec_getref(m->functions, function);
+#if 0
+  FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
+  FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
+#endif
+  switch (i->tag) {
+    case FKonst:
+      break;
+    case FRet: {
+      FInstr *retv = f_instr(m, function, i->u.ret.val);
+      VERIFY(f->type.ret == retv->type, "return type missmatch");
+      break;
+    }
+    default:
+      writeerr(err, "instruction not verified");
+      return 1;
+  }
+  return 0;
+}
+
+int f_verifymodule(FModule *m, char *err) {
   vec_for(m->functions, i, {
-    if(f_verifyfunction(m, i, err)) break;
+    if (f_verifyfunction(m, i, err)) return 1;
   });
   return 0;
 }
 
-int f_verifyfunction(struct FModule *m, int function, char *err) {
+int f_verifyfunction(FModule *m, int function, char *err) {
   FFunction *f;
-  if(function < 0 || (size_t)function >= vec_size(m->functions))
-    return writeerr(err, "function not found");
+  if (function < 0 || (size_t)function >= vec_size(m->functions))
+    return writeerr(err, "function not found"), 1;
   f = vec_getref(m->functions, function);
-  (void)f;
+  switch (f->tag) {
+    case FExtFunc:
+      break;
+    case FModFunc:
+      vec_foreach(f->u.bblocks, bb, {
+        vec_foreach(*bb, i, {
+          if (verifyinstr(m, function, i, err)) return 1;
+        });
+      });
+      break;
+  }
   return 0;
 }
 

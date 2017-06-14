@@ -1,6 +1,10 @@
 include(CTest)
 
-add_executable(basic basic.c)
-target_link_libraries(basic fahrenheit)
-add_test(basic basic)
+function(fahrenheit_test testname)
+  add_executable(${testname} ${testname}.c)
+  target_link_libraries(${testname} fahrenheit)
+  add_test(${testname} ${testname})
+endfunction(fahrenheit_test)
+
+fahrenheit_test(basic)
 

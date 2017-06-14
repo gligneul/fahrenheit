@@ -26,21 +26,22 @@
 
 #include "common.h"
 
-static void foo(void) {}
-
 int main(void) {
-  int func, bb;
-  FModule m;
-  FBuilder b;
-  mem_alloc = checkmem;
-  f_initmodule(&m);
-  f_addextfunction(&m, f_ftype(FVoid, 1, FVoid), foo);
-  func = f_addfunction(&m, f_ftype(FVoid, 1, FInt32));
-  bb = f_addbblock(&m, func);
-  b = f_builder(&m, func, bb);
-  (void)b;
-  f_closemodule(&m);
-  assert(usedmem == 0);
+  TEST_SETUP;
+
+  TEST_CASE_START(f_ftype(FInt32, 0));
+  FValue v = f_consti(b, 123, FInt32);
+  f_ret(b, v);
+  TEST_EXPECT_SUCCESS;
+  TEST_CASE_END;
+    
+  TEST_CASE_START(f_ftype(FInt32, 0));
+  FValue v = f_consti(b, 123, FInt64);
+  f_ret(b, v);
+  TEST_EXPECT_FAIL;
+  TEST_CASE_END;
+
+  TEST_TEARDOWN;
   return 0;
 }
 

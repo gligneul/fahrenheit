@@ -26,6 +26,7 @@
 #define common_h
 
 #include <assert.h>
+#include <stdio.h>
 
 /*
  * Track memory used
@@ -42,23 +43,35 @@ static void *checkmem(void *addr, size_t oldsize, size_t newsize) {
  * Common parts in the tests
  */
 
-#define TEST_SETUP(ftype) \
-  { \
-  int f, bb; \
+#define TEST_SETUP \
+  char err[FVerifyBufferSize]; \
   FModule m; \
-  FBuilder b; \
   mem_alloc = checkmem; \
-  f_initmodule(&m); \
-  f = f_addfunction(&m, ftype); \
-  bb = f_addbblock(&m, f); \
-  b = f_builder(&m, f, bb); \
-  (void)b; \
-  { \
+  f_initmodule(&m) \
 
 #define TEST_TEARDOWN \
-  } \
   f_closemodule(&m); \
-  assert(usedmem == 0); \
+  assert(usedmem == 0) \
+
+#define TEST_CASE_START(ftype) \
+  { \
+  int f = f_addfunction(&m, ftype); \
+  int bb = f_addbblock(&m, f); \
+  FBuilder b = f_builder(&m, f, bb) \
+
+#define TEST_CASE_END \
+  } \
+
+#define TEST_EXPECT_SUCCESS \
+  if(f_verifyfunction(&m, f, err)) { \
+    fprintf(stderr, "error: %s\n", err); \
+    exit(1); \
+  } \
+
+#define TEST_EXPECT_FAIL \
+  if(!f_verifyfunction(&m, f, err)) { \
+    fprintf(stderr, "expected an error"); \
+    exit(1); \
   } \
 
 #endif
