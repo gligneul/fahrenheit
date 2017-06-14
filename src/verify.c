@@ -47,7 +47,6 @@ static void writeerr(char *err, const char *format, ...) {
 
 /* Verify an instruction */
 static int verifyinstr(FModule *m, int function, FInstr *i, char *err) {
-  FFunction *f = vec_getref(m->functions, function);
 #if 0
   FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
   FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
@@ -57,7 +56,8 @@ static int verifyinstr(FModule *m, int function, FInstr *i, char *err) {
       break;
     case FRet: {
       FInstr *retv = f_instr(m, function, i->u.ret.val);
-      VERIFY(f->type.ret == retv->type, "return type missmatch");
+      FFunctionType *ftype = f_get_ftype_by_function(m, function);
+      VERIFY(ftype->ret == retv->type, "return type missmatch");
       break;
     }
     default:
@@ -78,7 +78,7 @@ int f_verifyfunction(FModule *m, int function, char *err) {
   FFunction *f;
   if (function < 0 || (size_t)function >= vec_size(m->functions))
     return writeerr(err, "function not found"), 1;
-  f = vec_getref(m->functions, function);
+  f = f_get_function(m, function);
   switch (f->tag) {
     case FExtFunc:
       break;

@@ -29,21 +29,9 @@
 
 const FValue FNullValue = {-1, -1};
 
-/* Obtain the reference to a basic block */
-static FBBlock *getbblock(FModule* m, int function, int bb) {
-  FFunction *f = vec_getref(m->functions, function);
-  assert(f->tag == FModFunc);
-  return vec_getref(f->u.bblocks, bb);
-}
-
-/* Obtain the basic block given the builder */
-static FBBlock *getbuilderbblock(FBuilder b) {
-  return getbblock(b.module, b.function, b.bblock);
-}
-
 /* Add a instruction to the current block */
 static FInstr *addinstr(FBuilder b, enum FType type, enum FInstrTag tag) {
-  FBBlock *bb = getbuilderbblock(b);
+  FBBlock *bb = f_get_bblock_by_builder(b);
   FInstr i;
   i.type = type;
   i.tag = tag;
@@ -53,12 +41,13 @@ static FInstr *addinstr(FBuilder b, enum FType type, enum FInstrTag tag) {
 
 /* Obtain the last value add by the builder */
 static FValue lastvalue(FBuilder b) {
-  FBBlock *bb = getbuilderbblock(b);
+  FBBlock *bb = f_get_bblock_by_builder(b);
   return f_value(b.bblock, vec_size(*bb) - 1);
 }
 
 void f_initmodule(FModule *m) {
   vec_init(m->functions);
+  vec_init(m->ftypes);
 }
 
 void f_closemodule(FModule *m) {
@@ -85,12 +74,15 @@ void f_closemodule(FModule *m) {
         vec_close(func->u.bblocks);
         break;
     }
-    f_closeftype(&func->type);
   });
   vec_close(m->functions);
+  vec_foreach(m->ftypes, ftype, {
+    mem_deletearray(ftype->args, ftype->nargs);
+  });
+  vec_close(m->ftypes);
 }
 
-FFunctionType f_ftype(enum FType ret, int nargs, ...) {
+int f_ftype(FModule *m, enum FType ret, int nargs, ...) {
   int i;
   va_list args;
   FFunctionType type;
@@ -101,10 +93,11 @@ FFunctionType f_ftype(enum FType ret, int nargs, ...) {
   for (i = 0; i < nargs; ++i)
     type.args[i] = va_arg(args, enum FType);
   va_end(args);
-  return type;
+  vec_push(m->ftypes, type);
+  return vec_size(m->ftypes) - 1;
 }
 
-FFunctionType f_ftypev(enum FType ret, int nargs, enum FType *args) {
+int f_ftypev(FModule *m, enum FType ret, int nargs, enum FType *args) {
   int i;
   FFunctionType type;
   type.ret = ret;
@@ -112,16 +105,28 @@ FFunctionType f_ftypev(enum FType ret, int nargs, enum FType *args) {
   type.nargs = nargs;
   for (i = 0; i < nargs; ++i)
     type.args[i] = args[i];
-  return type;
+  vec_push(m->ftypes, type);
+  return vec_size(m->ftypes) - 1;
 }
 
-void f_closeftype(FFunctionType *ftype) {
-  mem_deletearray(ftype->args, ftype->nargs);
-  ftype->args = NULL;
-  ftype->nargs = 0;
+FFunctionType* f_get_ftype(FModule *m, int ftype) {
+  return vec_getref(m->ftypes, ftype);
 }
 
-int f_addextfunction(FModule *m, FFunctionType ftype, FFunctionPtr ptr) {
+FFunctionType* f_get_ftype_by_function(FModule* m, int function) {
+  return f_get_ftype(m, f_get_function(m, function)->type);
+}
+
+int f_addfunction(FModule *m, int ftype) {
+  FFunction f;
+  f.tag = FModFunc;
+  f.type = ftype;
+  vec_init(f.u.bblocks);
+  vec_push(m->functions, f);
+  return vec_size(m->functions) - 1;
+}
+
+int f_addextfunction(FModule *m, int ftype, FFunctionPtr ptr) {
   FFunction f;
   f.tag = FExtFunc;
   f.type = ftype;
@@ -130,13 +135,8 @@ int f_addextfunction(FModule *m, FFunctionType ftype, FFunctionPtr ptr) {
   return vec_size(m->functions) - 1;
 }
 
-int f_addfunction(FModule *m, FFunctionType ftype) {
-  FFunction f;
-  f.tag = FModFunc;
-  f.type = ftype;
-  vec_init(f.u.bblocks);
-  vec_push(m->functions, f);
-  return vec_size(m->functions) - 1;
+FFunction *f_get_function(FModule *m, int function) {
+  return vec_getref(m->functions, function);
 }
 
 int f_addbblock(FModule *m, int function) {
@@ -146,6 +146,16 @@ int f_addbblock(FModule *m, int function) {
   vec_init(bb);
   vec_push(f->u.bblocks, bb);
   return vec_size(f->u.bblocks) - 1;
+}
+
+FBBlock *f_get_bblock(FModule *m, int function, int bblock) {
+  FFunction *f = f_get_function(m, function);
+  assert(f->tag == FModFunc);
+  return vec_getref(f->u.bblocks, bblock);
+}
+
+FBBlock *f_get_bblock_by_builder(FBuilder b) {
+  return f_get_bblock(b.module, b.function, b.bblock);
 }
 
 FBuilder f_builder(FModule *m, int function, int bblock) {
@@ -175,8 +185,8 @@ int f_null(FValue v) {
   return f_same(v, FNullValue);
 }
 
-FInstr* f_instr(FModule *m, int f, FValue v) {
-  FBBlock *bb = getbblock(m, f, v.bblock);
+FInstr* f_instr(FModule *m, int function, FValue v) {
+  FBBlock *bb = f_get_bblock(m, function, v.bblock);
   return vec_getref(*bb, v.instr);
 }
 
@@ -279,13 +289,14 @@ FValue f_ret(FBuilder b, FValue val) {
 FValue f_call(FBuilder b, int function, ...) {
   int a;
   va_list args;
-  FFunction *f = vec_getref(b.module->functions, function);
-  FInstr *i = addinstr(b, f->type.ret, FCall);
+  FFunction *f = f_get_function(b.module, function);
+  FFunctionType *ftype = f_get_ftype(b.module, f->type);
+  FInstr *i = addinstr(b, ftype->ret, FCall);
   i->u.call.function = function;
-  i->u.call.args = mem_newarray(FValue, f->type.nargs);
-  i->u.call.nargs = f->type.nargs;
+  i->u.call.args = mem_newarray(FValue, ftype->nargs);
+  i->u.call.nargs = ftype->nargs;
   va_start(args, function);
-  for (a = 0; a < f->type.nargs; ++a)
+  for (a = 0; a < ftype->nargs; ++a)
     i->u.call.args[a] = va_arg(args, FValue);
   va_end(args);
   return lastvalue(b);
@@ -293,12 +304,13 @@ FValue f_call(FBuilder b, int function, ...) {
 
 FValue f_callv(FBuilder b, int function, FValue *args) {
   int a;
-  FFunction *f = vec_getref(b.module->functions, function);
-  FInstr *i = addinstr(b, f->type.ret, FCall);
+  FFunction *f = f_get_function(b.module, function);
+  FFunctionType *ftype = f_get_ftype(b.module, f->type);
+  FInstr *i = addinstr(b, ftype->ret, FCall);
   i->u.call.function = function;
-  i->u.call.args = mem_newarray(FValue, f->type.nargs);
-  i->u.call.nargs = f->type.nargs;
-  for (a = 0; a < f->type.nargs; ++a)
+  i->u.call.args = mem_newarray(FValue, ftype->nargs);
+  i->u.call.nargs = ftype->nargs;
+  for (a = 0; a < ftype->nargs; ++a)
     i->u.call.args[a] = args[a];
   return lastvalue(b);
 }

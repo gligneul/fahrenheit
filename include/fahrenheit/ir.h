@@ -108,6 +108,8 @@ typedef struct FFunctionType {
   int nargs;
 } FFunctionType;
 
+VEC_DECLARE(FFunctionType);
+
 /* Function tags */
 enum FFunctionTag {
   FExtFunc, FModFunc
@@ -119,7 +121,7 @@ typedef void (*FFunctionPtr)(void);
 /* Function definition */
 typedef struct FFunction {
   enum FFunctionTag tag;
-  FFunctionType type;
+  int type;
   union {
     FFunctionPtr ptr;           /* FExtFunc */
     Vector(FBBlock) bblocks;    /* FModFunc */
@@ -131,6 +133,7 @@ VEC_DECLARE(FFunction);
 /* Module is the root structure */
 typedef struct FModule {
   Vector(FFunction) functions;
+  Vector(FFunctionType) ftypes;
 } FModule;
 
 /* A builder is used to create new instructions */
@@ -142,28 +145,43 @@ typedef struct FBuilder {
 
 /* Functions ******************************************************************/
 
-/* init/close a module */
+/* Initialize the module structure */
 void f_initmodule(FModule *m);
+
+/* Free all module data */
 void f_closemodule(FModule *m);
 
 /* Create a function type */
-FFunctionType f_ftype(enum FType ret, int nargs, ...);
+int f_ftype(FModule *m, enum FType ret, int nargs, ...);
 
-/* Create a function type
+/* Create a function type given an array
  * This function creates a copy of the args array. */
-FFunctionType f_ftypev(enum FType ret, int nargs, enum FType *args);
+int f_ftypev(FModule *m, enum FType ret, int nargs, enum FType *args);
 
-/* Close a function type structure */
-void f_closeftype(FFunctionType *ftype);
+/* Obtain the function type given the index */
+FFunctionType *f_get_ftype(FModule *m, int ftype);
 
-/* Add an external function to the module */
-int f_addextfunction(FModule *m, FFunctionType ftype, FFunctionPtr ptr);
+/* Obtain the function type given the function index */
+FFunctionType *f_get_ftype_by_function(FModule *m, int function);
 
 /* Add a function to the module */
-int f_addfunction(FModule *m, FFunctionType ftype);
+int f_addfunction(FModule *m, int ftype);
+
+/* Add an external function to the module */
+int f_addextfunction(FModule *m, int ftype, FFunctionPtr ptr);
+
+/* Obtain a reference to a function given the index */
+FFunction *f_get_function(FModule *m, int function);
 
 /* Add a basic block to the function */
 int f_addbblock(FModule *m, int function);
+
+/* Obtain a basic block given the function and the bblock indices
+ * Calling this with an external function leads to undefined behavior. */
+FBBlock *f_get_bblock(FModule *m, int function, int bblock);
+
+/* Obtain a basic block given the builder */
+FBBlock *f_get_bblock_by_builder(FBuilder b);
 
 /* Create a builder */
 FBuilder f_builder(FModule *m, int function, int bblock);
@@ -181,7 +199,7 @@ int f_same(FValue a, FValue b);
 int f_null(FValue v);
 
 /* Obtain the instruction given the value */
-FInstr* f_instr(FModule *m, int f, FValue v);
+FInstr* f_instr(FModule *m, int function, FValue v);
 
 /*
  * Create the respective instruction
