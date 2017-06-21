@@ -22,8 +22,12 @@
  * IN THE SOFTWARE.
  */
 
+extern "C" {
 #include <fahrenheit/backend.h>
 #include <fahrenheit/ir.h>
+}
+
+#include <llvm/ExecutionEngine/MCJIT.h>
 
 int f_compile(FEngine *e, struct FModule *m) {
   (void)e;

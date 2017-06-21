@@ -27,7 +27,7 @@
 
 struct FModule;
 
-/* Compile function prototype */
+/* Compiled function prototype */
 typedef void (*FJitFunc)(void);
 
 /* Backend internal data */
