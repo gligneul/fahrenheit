@@ -20,6 +20,7 @@ add_definitions(
   -pedantic)
 
 add_library(fahrenheit
+  src/backend_llvm.c
   src/ir.c
   src/verify.c)
 
@@ -29,7 +30,6 @@ target_link_libraries(fahrenheit stdplus)
 
 SET(fahrenheit_headers
   ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include)
-target_include_directories(stdplus PUBLIC ${stdplus_headers})
 include_directories("${fahrenheit_headers}")
 
 install(TARGETS fahrenheit DESTINATION lib)

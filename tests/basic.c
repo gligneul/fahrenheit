@@ -32,13 +32,13 @@ int main(void) {
   TEST_CASE_START(f_ftype(&m, FInt32, 0));
   FValue v = f_consti(b, 123, FInt32);
   f_ret(b, v);
-  TEST_EXPECT_SUCCESS;
+  TEST_VERIFY_SUCCESS;
   TEST_CASE_END;
     
   TEST_CASE_START(f_ftype(&m, FInt32, 0));
   FValue v = f_consti(b, 123, FInt64);
   f_ret(b, v);
-  TEST_EXPECT_FAIL;
+  TEST_VERIFY_FAIL;
   TEST_CASE_END;
 
   TEST_TEARDOWN;

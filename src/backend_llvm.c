@@ -22,15 +22,16 @@
  * IN THE SOFTWARE.
  */
 
-/* Include all external headers */
-
-#ifndef fahrenheit_fahrenheit_h
-#define fahrenheit_fahrenheit_h
-
 #include <fahrenheit/backend.h>
 #include <fahrenheit/ir.h>
-#include <fahrenheit/verify.h>
-#include <fahrenheit/version.h>
 
-#endif
+int f_compile(FEngine *e, struct FModule *m) {
+  (void)e;
+  (void)m;
+  return 0;
+}
+
+void f_closeengine(FEngine *e) {
+  (void)e;
+}
 

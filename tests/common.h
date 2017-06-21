@@ -62,13 +62,13 @@ static void *checkmem(void *addr, size_t oldsize, size_t newsize) {
 #define TEST_CASE_END \
   } \
 
-#define TEST_EXPECT_SUCCESS \
+#define TEST_VERIFY_SUCCESS \
   if(f_verifyfunction(&m, f, err)) { \
     fprintf(stderr, "error: %s\n", err); \
     exit(1); \
   } \
 
-#define TEST_EXPECT_FAIL \
+#define TEST_VERIFY_FAIL \
   if(!f_verifyfunction(&m, f, err)) { \
     fprintf(stderr, "expected an error"); \
     exit(1); \
