@@ -5,4 +5,8 @@ addons:
   apt:
     packages:
       - cmake
-script: cmake -DENABLE_FAHRENHEIT_TESTS=1 . && make && make test
+      - llvm-3.9
+script:
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 .
+  - make 
+  - make test
