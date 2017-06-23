@@ -27,27 +27,33 @@
 
 struct FModule;
 
-/* Compiled function prototype */
+/** Compiled function prototype */
 typedef void (*FJitFunc)(void);
 
-/* Backend internal data */
-typedef struct FEngineInt FEngineInt;
-
-/* Store the functions from the module */
+/** Store the functions from the module */
 typedef struct FEngine {
   FJitFunc *funcs;
   int nfuncs;
-  FEngineInt *data;
+  void *data;
 } FEngine;
 
-/* Compile a module and store the compiled functions into the engine
+/** Initialize the engine */
+void f_init_engine(FEngine *e);
+
+/** Free the engine memory */
+void f_close_engine(FEngine *e);
+
+/** Compile a module and store the compiled functions into the engine
  *
  * The engine will not keep any references to the module.
  * Return a value different from 0 if there is an unexpected error. */
 int f_compile(FEngine *e, struct FModule *m);
 
-/* Free the engine memory */
-void f_closeengine(FEngine *e);
+/** Obtain the function pointer given the type
+ *
+ * The parameter args should be inside a parenteses (eg. (void), (int, int)). */
+#define f_get_fpointer(e, function, ret, args) \
+  (ret(*)args)(e.funcs[function])
 
 #endif
 

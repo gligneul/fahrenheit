@@ -36,7 +36,7 @@ find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 include_directories(${LLVM_INCLUDE_DIRS})
-llvm_map_components_to_libnames(llvm_libs core analysis mcjit)
+llvm_map_components_to_libnames(llvm_libs analysis core mcjit native)
 target_link_libraries(fahrenheit ${llvm_libs})
 
 # submodules

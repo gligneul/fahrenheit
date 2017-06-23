@@ -22,20 +22,217 @@
  * IN THE SOFTWARE.
  */
 
+#include <memory>
+#include <vector>
+
+#include <llvm/ExecutionEngine/MCJIT.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/TargetSelect.h>
+
 extern "C" {
 #include <fahrenheit/backend.h>
 #include <fahrenheit/ir.h>
 }
 
-#include <llvm/ExecutionEngine/MCJIT.h>
+namespace {
 
-int f_compile(FEngine *e, struct FModule *m) {
-  (void)e;
-  (void)m;
-  return 0;
+static llvm::LLVMContext TheContext;
+
+/* Engine exported */
+struct FEngineData {
+  std::unique_ptr<llvm::ExecutionEngine> ee;
+  std::vector<FJitFunc> functions;
+};
+
+/* Compile state for a module */
+struct ModuleState {
+  FEngineData &engine;
+  FModule *irmodule;
+  std::unique_ptr<llvm::Module> module;
+  std::vector<llvm::Function *> functions;
+
+  ModuleState(FEngineData &engine, FModule *irmodule)
+    : engine(engine)
+    , irmodule(irmodule)
+    , module(new llvm::Module("m", TheContext)) {}
+};
+
+/* Compile state for a function */
+struct FunctionState {
+  int function;
+  std::vector<llvm::BasicBlock *> bblocks;
+  std::vector<std::vector<llvm::Value *>> values;
+};
+
+/* Convert an fahrenheit type to a llvm type */
+llvm::Type *convert_type(ModuleState &ms, enum FType type) {
+  switch(type) {
+    case FBool:
+      return llvm::IntegerType::get(TheContext, 1);
+    case FInt8:
+      return llvm::IntegerType::get(TheContext, 8);
+    case FInt16:
+      return llvm::IntegerType::get(TheContext, 16);
+    case FInt32:
+      return llvm::IntegerType::get(TheContext, 32);
+    case FInt64:
+      return llvm::IntegerType::get(TheContext, 64);
+    case FFloat:
+      return llvm::Type::getFloatTy(TheContext);
+    case FDouble:
+      return llvm::Type::getDoubleTy(TheContext);
+    case FPointer:
+      return llvm::PointerType::get(
+        llvm::IntegerType::get(TheContext, 8), 0);
+    case FVoid:
+      return llvm::Type::getFloatTy(TheContext);
+  }
+  return nullptr;
 }
 
-void f_closeengine(FEngine *e) {
-  (void)e;
+/* Declare a function */
+void declare_function(ModuleState &ms, int function) {
+  auto ftype = f_get_ftype_by_function(ms.irmodule, function);
+  auto ret = convert_type(ms, ftype->ret);
+  std::vector<llvm::Type*> args;
+  for (int i = 0; i < ftype->nargs; ++i)
+    args.push_back(convert_type(ms, ftype->args[i]));
+  auto type = llvm::FunctionType::get(ret, args, false);
+  auto f = llvm::Function::Create(type, llvm::Function::ExternalLinkage,
+    "f" + std::to_string(function), ms.module.get());
+  ms.functions.push_back(f);
+}
+
+/* Obtain a llvm value given the ir value */
+llvm::Value *get_value(FunctionState &fs, FValue irvalue) {
+  return fs.values[irvalue.bblock][irvalue.instr];
+}
+
+/* Compile a single instruction */
+void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
+  llvm::IRBuilder<> b(TheContext);
+  b.SetInsertPoint(fs.bblocks[irvalue.bblock]);
+  auto instr = f_instr(ms.irmodule, fs.function, irvalue);
+  llvm::Value *v = nullptr;
+  switch (instr->tag) {
+    case FKonst: {
+      auto ktype = convert_type(ms, instr->type);
+      if(instr->type >= FBool && instr->type <= FInt64) {
+        v = llvm::ConstantInt::get(ktype, instr->u.konst.i);
+      }
+      else if(instr->type == FFloat || instr->type == FDouble) {
+        v = llvm::ConstantFP::get(ktype, instr->u.konst.f);
+      }
+      else
+        ; // TODO
+      break;
+    }
+    case FRet: {
+      auto val = instr->u.ret.val;
+      auto valinstr = f_instr(ms.irmodule, fs.function, val);
+      if(valinstr->type == FVoid) {
+        v = b.CreateRetVoid();
+      }
+      else {
+        v = b.CreateRet(get_value(fs, val));
+      }
+      break;
+    }
+    default:
+      break;
+    #if 0
+    FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
+    FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
+    #endif
+  }
+  fs.values[irvalue.bblock].push_back(v);
+}
+
+/* Compile a function */
+void compile_function(ModuleState &ms, int function) {
+  FunctionState fs{function};
+  auto f = f_get_function(ms.irmodule, function);
+  /* TODO check if func is external */
+  /* Create basic the blocks */
+  fs.bblocks.reserve(vec_size(f->u.bblocks));
+  vec_for(f->u.bblocks, bb, {
+    fs.bblocks.push_back(
+      llvm::BasicBlock::Create(TheContext, "", ms.functions[function]));
+  });
+  /* Compile the instructions */
+  fs.values.resize(fs.bblocks.size());
+  vec_for(f->u.bblocks, b, {
+    auto bblock = f_get_bblock(ms.irmodule, function, b);
+    vec_for(*bblock, i, {
+      compile_instruction(ms, fs, f_value(b, i));
+    });
+  });
+}
+
+}
+
+void f_init_engine(FEngine *e) {
+  e->data = nullptr;
+  e->nfuncs = 0;
+  e->funcs = nullptr;
+}
+
+void f_close_engine(FEngine *e) {
+  auto data = reinterpret_cast<FEngineData *>(e->data);
+  //delete data;
+  data->ee.reset(nullptr);
+  f_init_engine(e);
+}
+
+int f_compile(FEngine *e, FModule *m) {
+  /* llvm initialization */
+  static bool init = true;
+  if (init) {
+    llvm::InitializeNativeTarget();
+    llvm::InitializeNativeTargetAsmPrinter();
+    llvm::InitializeNativeTargetAsmParser();
+    init = false;
+  }
+  /* Generate IR */
+  std::unique_ptr<FEngineData> data(new FEngineData());
+  ModuleState ms(*data, m);
+  vec_for(m->functions, i, declare_function(ms, i));
+  vec_for(m->functions, i, compile_function(ms, i));
+  /* Verify */
+  std::string error;
+  llvm::raw_string_ostream error_os(error);
+  if (llvm::verifyModule(*ms.module, &error_os)) {
+    fprintf(stderr, "%s\n", error.c_str());
+    ms.module->dump();
+    return 1;
+  }
+  /* Compile */
+  data->ee.reset(llvm::EngineBuilder(std::move(ms.module))
+    .setErrorStr(&error)
+    .setOptLevel(llvm::CodeGenOpt::Aggressive)
+    .setEngineKind(llvm::EngineKind::JIT)
+    .create());
+  if (!data->ee) {
+    fprintf(stderr, "%s\n", error.c_str());
+    return 1;
+  }
+  data->ee->finalizeObject();
+  /* Get functions */
+  data->functions.resize(ms.functions.size());
+  vec_for(m->functions, i, {
+    auto f = data->ee->getPointerToFunction(ms.functions[i]);
+    data->functions[i] = reinterpret_cast<FJitFunc>(f);
+  });
+  /* Return */
+  e->funcs = data->functions.data();
+  e->nfuncs = data->functions.size();
+  e->data = data.release();
+  return 0;
 }
 
