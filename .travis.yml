@@ -11,10 +11,11 @@ before_install:
   - wget http://releases.llvm.org/3.9.1/clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
   - unxz clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
   - tar xfv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar
+  - mv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04 llvm
 
 script:
   - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 \
-    -DLLVM_DIR=clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04/lib/cmake/llvm .
+    -DLLVM_DIR=`pwd`/llvm/lib/cmake/llvm .
   - make 
   - make test
 
