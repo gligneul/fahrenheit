@@ -14,8 +14,7 @@ before_install:
   - mv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04 llvm
 
 script:
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 \
-    -DLLVM_DIR=`pwd`/llvm/lib/cmake/llvm .
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 -DLLVM_DIR="`pwd`/llvm/lib/cmake/llvm" .
   - make 
   - make test
 
