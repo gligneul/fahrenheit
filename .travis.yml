@@ -6,11 +6,16 @@ addons:
   apt:
     packages:
       - cmake
-      - llvm-3.8-dev
+
+before_install:
+  - cd ~
+  - wget http://releases.llvm.org/3.9.1/clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+  - unxz clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
+  - tar xfv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar
 
 script:
   - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 \
-    -DLLVM_DIR=/usr/lib/llvm-3.8/cmake .
+    -DLLVM_DIR=~/clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04/lib/cmake/llvm .
   - make 
   - make test
 
