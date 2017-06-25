@@ -10,7 +10,7 @@ addons:
 
 script:
   - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 \
-    -DLLVM_DIR=/usr/share/llvm-3.8/cmake .
+    -DLLVM_DIR=/usr/lib/llvm-3.8/cmake .
   - make 
   - make test
 
