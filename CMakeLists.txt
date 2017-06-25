@@ -31,7 +31,7 @@ add_library(fahrenheit
   src/verify.c)
 
 # dependencies
-find_package(LLVM 3.9 REQUIRED CONFIG)
+find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 include_directories(${LLVM_INCLUDE_DIRS})
