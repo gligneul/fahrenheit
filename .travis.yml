@@ -1,3 +1,4 @@
+dist: trusty
 language: c
 compiler: gcc
 
@@ -5,7 +6,7 @@ addons:
   apt:
     packages:
       - cmake
-      - llvm-3.9-dev
+      - llvm-4.0-dev
 
 script:
   - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_FAHRENHEIT_TESTS=1 .
