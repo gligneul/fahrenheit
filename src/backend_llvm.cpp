@@ -91,7 +91,7 @@ llvm::Type *convert_type(ModuleState &ms, enum FType type) {
       return llvm::PointerType::get(
         llvm::IntegerType::get(TheContext, 8), 0);
     case FVoid:
-      return llvm::Type::getFloatTy(TheContext);
+      return llvm::Type::getVoidTy(TheContext);
   }
   return nullptr;
 }
@@ -129,18 +129,21 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       else if(instr->type == FFloat || instr->type == FDouble) {
         v = llvm::ConstantFP::get(ktype, instr->u.konst.f);
       }
-      else
-        ; // TODO
+      else {
+        auto intptrt = llvm::IntegerType::get(TheContext, 8 * sizeof(void *));
+        auto intptr = llvm::ConstantInt::get(intptrt,
+          (uintptr_t)instr->u.konst.p);
+        v = b.CreateIntToPtr(intptr, convert_type(ms, FPointer), "");
+      }
       break;
     }
     case FRet: {
-      auto val = instr->u.ret.val;
-      auto valinstr = f_instr(ms.irmodule, fs.function, val);
-      if(valinstr->type == FVoid) {
+      auto retv = instr->u.ret.val;
+      if(f_null(retv)) {
         v = b.CreateRetVoid();
       }
       else {
-        v = b.CreateRet(get_value(fs, val));
+        v = b.CreateRet(get_value(fs, retv));
       }
       break;
     }

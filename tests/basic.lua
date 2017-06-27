@@ -22,6 +22,11 @@
 
 -- Generate the basic test file
 
+-- TODO tests
+-- bblock without return
+-- instruction after return
+-- unreacheable bblock
+
 local test = require 'test'
 
 test.preamble()
@@ -33,46 +38,75 @@ test.teardown()
 
 -- empty function
 test.setup()
-test.add_function(0, 'FVoid')
+test.add_function(0, test.make_ftype('FVoid'))
 test.verify_fail()
 test.teardown()
 
---print([[
---  FValue v = f_consti(b, 123, FInt64);
---  f_ret(b, v);
---]])
+-- return non void in void function
+test.setup()
+test.add_function(0, test.make_ftype('FVoid'))
+test.start_function(0, 0)
+print([[
+    v[0] = f_consti(b, 123, FInt64);
+    f_ret(b, v[0]);
+]])
+test.verify_fail()
+test.teardown()
+
+-- return void in non void function
+test.setup()
+test.add_function(0, test.make_ftype('FInt64'))
+test.start_function(0, 0)
+print([[
+    f_ret(b, FNullValue);
+]])
+test.verify_fail()
+test.teardown()
+
+-- return void
+test.setup()
+local ftype = test.make_ftype('FVoid')
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    f_ret(b, FNullValue);
+]])
+test.verify_sucess()
+test.compile()
+test.run_function(0, ftype, '')
+test.teardown()
+
+-- return a constant
+for i = 1, #test.types - 1 do
+    for j = 1, #test.types - 1 do
+        test.setup()
+        local ftype = test.make_ftype(test.types[i])
+        test.add_function(0, ftype)
+        test.start_function(0, 0)
+        local ktype = test.types[j]
+        local v = ''
+        if test.is_int(ktype) then
+            v = 1
+            print(('    v[0] = f_consti(b, %s, %s);'):format(v, ktype))
+        elseif test.is_float(ktype) then
+            v = '12.34'
+            print(('    v[0] = f_constf(b, %s, %s);'):format(v, ktype))
+        else
+            v = '&module'
+            print(('    v[0] = f_constp(b, %s);'):format(v))
+        end
+        print('    f_ret(b, v[0]);')
+        if i == j then
+            local ret = '(' .. test.convert_type(ktype) .. ')' .. v
+            test.verify_sucess()
+            test.compile()
+            test.run_function(0, ftype, '', ret)
+        else
+            test.verify_fail()
+        end
+        test.teardown()
+    end
+end
 
 test.epilog()
-
---[[
-#include "test.h"
-
-int main(void) {
-  TEST_SETUP;
-
-  TEST_CASE_START(f_ftype(&m, FInt64, 0));
-  FValue v = f_consti(b, 123, FInt64);
-  f_ret(b, v);
-  TEST_VERIFY_SUCCESS;
-  {
-    FEngine e;
-    i32 (*fptr)(void);
-    f_init_engine(&e);
-    assert(f_compile(&e, &m) == 0);
-    fptr = f_get_fpointer(e, 0, i32, (void));
-    assert(fptr() == 123);
-    f_close_engine(&e);
-  }
-  TEST_CASE_END;
-
-  TEST_CASE_START(f_ftype(&m, FInt32, 0));
-  FValue v = f_consti(b, 123, FInt64);
-  f_ret(b, v);
-  TEST_VERIFY_FAIL;
-  TEST_CASE_END;
-
-  TEST_TEARDOWN;
-  return 0;
-}
---]]
 

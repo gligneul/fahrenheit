@@ -22,72 +22,96 @@
  * IN THE SOFTWARE.
  */
 
-#include <stdio.h>
+#include <setjmp.h>
 #include <stdarg.h>
+#include <stdio.h>
 
-#include <fahrenheit/verify.h>
 #include <fahrenheit/ir.h>
+#include <fahrenheit/verify.h>
 
-/* Verify a condition, if it fails then write the message to 'err' and return */
-#define VERIFY(cond, msg) \
-  if(!(cond)) { \
-    writeerr(err, msg); \
-    return 1; \
-  }
+typedef struct VerifyState {
+  char *err;
+  FModule *m;
+  int f;
+  int bb;
+  int i;
+  jmp_buf jmp;
+} VerifyState;
 
-/* Write the error to the string and return 1 */
-static void writeerr(char *err, const char *format, ...) {
-  va_list args;
-  if (err != NULL) {
-    va_start(args, format);
-    vsprintf(err, format, args);
-    va_end(args);
+/* Verify the condition and write the error message if it fails */
+static void verify(VerifyState *vs, int cond, const char *format, ...) {
+  if (!(cond)) {
+    if (vs->err != NULL) {
+      va_list args;
+      va_start(args, format);
+      vsprintf(vs->err, format, args);
+      va_end(args);
+    }
+    longjmp(vs->jmp, 1);
   }
 }
 
 /* Verify an instruction */
-static int verifyinstr(FModule *m, int function, FInstr *i, char *err) {
+static void verify_instr(VerifyState *vs) {
 #if 0
   FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
   FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
 #endif
+  FInstr *i = f_instr(vs->m, vs->f, f_value(vs->bb, vs->i));
   switch (i->tag) {
     case FKonst:
       break;
     case FRet: {
-      FInstr *retv = f_instr(m, function, i->u.ret.val);
-      FFunctionType *ftype = f_get_ftype_by_function(m, function);
-      VERIFY(ftype->ret == retv->type, "return type missmatch");
+      const char *err = "return type missmatch";
+      FFunctionType *ftype = f_get_ftype_by_function(vs->m, vs->f);
+      FValue retv = i->u.ret.val;
+      if(ftype->ret == FVoid) {
+        verify(vs, f_null(retv), err);
+      }
+      else {
+        FInstr *reti;
+        verify(vs, !f_null(retv), err);
+        reti = f_instr(vs->m, vs->f, retv);
+        verify(vs, ftype->ret == reti->type, err);
+      }
       break;
     }
     default:
-      writeerr(err, "instruction not verified");
-      return 1;
+      verify(vs, 0, "instruction not verified");
+      break;
   }
-  return 0;
 }
 
-int f_verifymodule(FModule *m, char *err) {
+int f_verify_module(FModule *m, char *err) {
   vec_for(m->functions, i, {
-    if (f_verifyfunction(m, i, err)) return 1;
+    if (f_verify_function(m, i, err)) return 1;
   });
   return 0;
 }
 
-int f_verifyfunction(FModule *m, int function, char *err) {
+int f_verify_function(FModule *m, int function, char *err) {
+  VerifyState vs;
   FFunction *f;
-  if (function < 0 || (size_t)function >= vec_size(m->functions))
-    return writeerr(err, "function not found"), 1;
+  vs.err = err;
+  vs.m = m;
+  vs.f = function;
+  vs.bb = -1;
+  vs.i = -1;
+  if(setjmp(vs.jmp)) return 1;
+  verify(&vs, function >= 0 && (size_t)function < vec_size(m->functions),
+    "function not found");
   f = f_get_function(m, function);
   switch (f->tag) {
     case FExtFunc:
       break;
     case FModFunc:
-      if (vec_size(f->u.bblocks) == 0)
-        return writeerr(err, "function without basic blocks"), 1;
-      vec_foreach(f->u.bblocks, bb, {
-        vec_foreach(*bb, i, {
-          if (verifyinstr(m, function, i, err)) return 1;
+      verify(&vs, vec_size(f->u.bblocks) > 0, "function without basic blocks");
+      vec_for(f->u.bblocks, bb, {
+        FBBlock *bblock = f_get_bblock(m, function, bb);
+        vs.bb = bb;
+        vec_for(*bblock, i, {
+          vs.i = i;
+          verify_instr(&vs);
         });
       });
       break;

@@ -20,6 +20,15 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
+-- functional
+function map(f, x)
+    local y = {}
+    for i = 1, #x do
+        y[i] = f(x[i])
+    end
+    return y
+end
+
 local test = {}
 
 -- All fahrenheit basic types
@@ -34,6 +43,17 @@ test.types = {
     'FPointer',
     'FVoid',
 }
+
+-- Verify if a type is integral
+function test.is_int(type)
+    return type == 'FBool' or type == 'FInt8' or type == 'FInt16' or
+           type == 'FInt32' or type == 'FInt64'
+end
+
+-- Verify if a type is float point
+function test.is_float(type)
+    return type == 'FFloat' or type == 'FDouble'
+end
 
 -- Convert a fahrenheit type to a C type
 function test.convert_type(type)
@@ -101,13 +121,13 @@ function test.setup()
     FEngine engine;
     int functions[100] = {0};
     int bblocks[100] = {0};
-    FValue values[100] = {0};
+    FValue v[100] = {{0}};
     FBuilder b;
     f_initmodule(&module);
     f_init_engine(&engine);
     (void)functions;
     (void)bblocks;
-    (void)values;
+    (void)v;
     (void)b;
 ]])
 end
@@ -122,26 +142,31 @@ function test.teardown()
 ]])
 end
 
--- Add a function with the given type
-function test.add_function(n, ...)
-    local args = {...}
-    assert(#args >= 1)
-    print(([[
-    functions[%d] = f_addfunction(&module, f_ftype(&module, %s, %d, %s));
-]]):format(n, args[1], #args - 1, table.concat(args, ', ')))
+-- Create a function type
+function test.make_ftype(ret, ...)
+    return { ret = ret, args = {...}  }
 end
 
---[==[
-function 
-    function = f_addfunction(&module, ]] .. ftype .. [[);
-    bblock = f_addbblock(&module, function);
-    b = f_builder(&module, function, bblock);
---]==]
+-- Add a function with the given type
+function test.add_function(f, ftype)
+    local args_str = table.concat(ftype.args, ', ')
+    if args_str == '' then args_str = '0' end
+    print(([[
+    functions[%d] = f_addfunction(&module, f_ftype(&module, %s, %d, %s));
+]]):format(f, ftype.ret, #ftype.args, args_str))
+end
+
+function test.start_function(f, bb)
+    print(([[
+    bblocks[%d] = f_addbblock(&module, functions[%d]);
+    b = f_builder(&module, functions[%d], bblocks[%d]);
+]]):format(bb, f, f, bb))
+end
 
 -- Call the verify function and expect success
 function test.verify_sucess()
     print([[
-    if(f_verifymodule(&module, err)) {
+    if(f_verify_module(&module, err)) {
       fprintf(stderr, "error: %s\n", err);
       exit(1);
     }
@@ -151,22 +176,36 @@ end
 -- Call the verify function and expect an error
 function test.verify_fail()
     print([[
-    if(!f_verifymodule(&module, err)) {
+    if(!f_verify_module(&module, err)) {
       fprintf(stderr, "expected an error");
       exit(1);
     }
 ]])
 end
 
+-- Compile the module
+function test.compile()
+    print([[
+    test(f_compile(&engine, &module) == 0);
+]])
+end
+
+-- Run a function
+function test.run_function(f, ftype, args, ret)
+    local fret = test.convert_type(ftype.ret)
+    local fargs = map(test.convert_type, ftype.args)
+    local fargs_str = table.concat(ftype.args, ', ')
+    if fargs_str == '' then fargs_str = 'void' end
+    if ret then
+        print(([[
+    test(f_get_fpointer(engine, %d, %s, (%s))(%s) == %s);
+]]):format(f, fret, fargs_str, args, ret))
+    else
+        print(([[
+    f_get_fpointer(engine, %d, %s, (%s))(%s);
+]]):format(f, fret, fargs_str, args))
+    end
+end
+
 return test
-
---[[
-
-Compilation
-    assert(f_compile(&e, &m) == 0);
-    fptr = f_get_fpointer(e, 0, i32, (void));
-    assert(fptr() == 123);
-    f_close_engine(&e);
-
---]]
 
