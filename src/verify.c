@@ -83,6 +83,8 @@ int f_verifyfunction(FModule *m, int function, char *err) {
     case FExtFunc:
       break;
     case FModFunc:
+      if (vec_size(f->u.bblocks) == 0)
+        return writeerr(err, "function without basic blocks"), 1;
       vec_foreach(f->u.bblocks, bb, {
         vec_foreach(*bb, i, {
           if (verifyinstr(m, function, i, err)) return 1;

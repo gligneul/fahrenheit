@@ -185,8 +185,7 @@ void f_init_engine(FEngine *e) {
 
 void f_close_engine(FEngine *e) {
   auto data = reinterpret_cast<FEngineData *>(e->data);
-  //delete data;
-  data->ee.reset(nullptr);
+  if (data) data->ee.reset(nullptr);
   f_init_engine(e);
 }
 

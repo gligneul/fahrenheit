@@ -40,10 +40,10 @@ typedef struct FEngine {
 /** Initialize the engine */
 void f_init_engine(FEngine *e);
 
-/** Free the engine memory */
+/** Close the engine */
 void f_close_engine(FEngine *e);
 
-/** Compile a module and store the compiled functions into the engine
+/** Compile the module and store the compiled functions into the engine
  *
  * The engine will not keep any references to the module.
  * Return a value different from 0 if there is an unexpected error. */

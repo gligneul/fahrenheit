@@ -22,12 +22,48 @@
 
 local test = {}
 
+-- All fahrenheit basic types
+test.types = {
+    'FBool',
+    'FInt8',
+    'FInt16',
+    'FInt32',
+    'FInt64',
+    'FFloat',
+    'FDouble',
+    'FPointer',
+    'FVoid',
+}
+
+-- Convert a fahrenheit type to a C type
+function test.convert_type(type)
+    if type == 'FBool' then
+        return 'unsigned char'
+    elseif type == 'FInt8' then
+        return 'i8'
+    elseif type == 'FInt16' then
+        return 'i16'
+    elseif type == 'FInt32' then
+        return 'i32'
+    elseif type == 'FInt64' then
+        return 'i64'
+    elseif type == 'FFloat' then
+        return 'float'
+    elseif type == 'FDouble' then
+        return 'double'
+    elseif type == 'FPointer' then
+        return 'void *'
+    elseif type == 'FVoid' then
+        return 'void'
+    end
+end
+
 -- Should be the first function called in a test generator
 function test.preamble()
     print([[
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdplus/mem.h>
+#include <stdplus/stdplus.h>
 #include <fahrenheit/fahrenheit.h>
 
 static int usedmem = 0;
@@ -52,59 +88,73 @@ end
 
 -- Should be the last function called in a test generator
 function test.epilog()
-    print('\n    return 0;\n}')
+    print('  return 0;\n}')
 end
 
 -- Common setup for fahrenheit tests
--- Create the variables module, function, bblock, engine, fptr and b (builder)
-function test.setup(ftype)
+-- Declare the variables module, engine, functions[n], bblocks[n], 
+-- v[n] (values) and b (builder)
+function test.setup()
     print([[
   {
     FModule module;
     FEngine engine;
-    i32 (*fptr)(void) = 0;
-    int function;
-    int bblock;
+    int functions[100] = {0};
+    int bblocks[100] = {0};
+    FValue values[100] = {0};
     FBuilder b;
     f_initmodule(&module);
-    function = f_addfunction(&module, ]] .. ftype .. [[);
-    bblock = f_addbblock(&module, function);
-    b = f_builder(&module, function, bblock);
     f_init_engine(&engine);
+    (void)functions;
+    (void)bblocks;
+    (void)values;
     (void)b;
-    (void)fptr;
-    {
 ]])
 end
 
 -- End a test case (must be called after setup)
 function test.teardown()
     print([[
-    }
     f_closemodule(&module);
-    if (engine.data != NULL) f_close_engine(&engine);
+    f_close_engine(&engine);
     test(usedmem == 0);
   }
 ]])
 end
 
+-- Add a function with the given type
+function test.add_function(n, ...)
+    local args = {...}
+    assert(#args >= 1)
+    print(([[
+    functions[%d] = f_addfunction(&module, f_ftype(&module, %s, %d, %s));
+]]):format(n, args[1], #args - 1, table.concat(args, ', ')))
+end
+
+--[==[
+function 
+    function = f_addfunction(&module, ]] .. ftype .. [[);
+    bblock = f_addbblock(&module, function);
+    b = f_builder(&module, function, bblock);
+--]==]
+
 -- Call the verify function and expect success
 function test.verify_sucess()
     print([[
-      if(f_verifyfunction(&module, function, err)) {
-        fprintf(stderr, "error: %s\n", err);
-        exit(1);
-      }
+    if(f_verifymodule(&module, err)) {
+      fprintf(stderr, "error: %s\n", err);
+      exit(1);
+    }
 ]])
 end
 
 -- Call the verify function and expect an error
 function test.verify_fail()
     print([[
-      if(!f_verifyfunction(&module, function, err)) {
-        fprintf(stderr, "expected an error");
-        exit(1);
-      }
+    if(!f_verifymodule(&module, err)) {
+      fprintf(stderr, "expected an error");
+      exit(1);
+    }
 ]])
 end
 

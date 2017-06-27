@@ -26,14 +26,21 @@ local test = require 'test'
 
 test.preamble()
 
--- basic test
-test.setup('f_ftype(&module, FInt64, 0)')
-print([[
-  FValue v = f_consti(b, 123, FInt64);
-  f_ret(b, v);
-]])
+-- basic test, does nothing
+test.setup()
 test.verify_sucess()
 test.teardown()
+
+-- empty function
+test.setup()
+test.add_function(0, 'FVoid')
+test.verify_fail()
+test.teardown()
+
+--print([[
+--  FValue v = f_consti(b, 123, FInt64);
+--  f_ret(b, v);
+--]])
 
 test.epilog()
 
