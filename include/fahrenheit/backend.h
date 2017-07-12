@@ -28,7 +28,9 @@
 /** \file backend.h
  *
  * This module is responsible for providing a way to compile the IR functions
- * into machine code.  */
+ * into machine code.
+ * The IR module can be disposed after it is compiled.
+ */
 
 struct FModule;
 

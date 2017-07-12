@@ -27,6 +27,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
 
 add_library(fahrenheit
   src/backend_llvm.cpp
+  src/instructions.c
   src/ir.c
   src/verify.c)
 

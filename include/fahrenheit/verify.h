@@ -25,12 +25,13 @@
 #ifndef fahrenheit_verify_h
 #define fahrenheit_verify_h
 
-/** \file backend.h
+/** \file verify.h
  *
  * This module is responsible for verifying if the intermediate representation
- * is well formed. */
+ * is well formed.
+ */
 
-/
+/** The required size for error messages */
 #define FVerifyBufferSize 1024
 
 struct FModule;

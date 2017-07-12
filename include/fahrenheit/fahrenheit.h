@@ -25,12 +25,18 @@
 #ifndef fahrenheit_fahrenheit_h
 #define fahrenheit_fahrenheit_h
 
+/** \file fahrenheit.h
+ *
+ * Header that includes all other library headers.
+ */
+
 /** \mainpage Fahrenheit
  *
  * Introduction here.
  */
 
 #include <fahrenheit/backend.h>
+#include <fahrenheit/instructions.h>
 #include <fahrenheit/ir.h>
 #include <fahrenheit/verify.h>
 #include <fahrenheit/version.h>
