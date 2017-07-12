@@ -45,12 +45,12 @@ static FValue lastvalue(FBuilder b) {
   return f_value(b.bblock, vec_size(*bb) - 1);
 }
 
-void f_initmodule(FModule *m) {
+void f_init_module(FModule *m) {
   vec_init(m->functions);
   vec_init(m->ftypes);
 }
 
-void f_closemodule(FModule *m) {
+void f_close_module(FModule *m) {
   vec_foreach(m->functions, func, {
     switch (func->tag) {
       case FExtFunc:
@@ -117,7 +117,7 @@ FFunctionType* f_get_ftype_by_function(FModule* m, int function) {
   return f_get_ftype(m, f_get_function(m, function)->type);
 }
 
-int f_addfunction(FModule *m, int ftype) {
+int f_add_function(FModule *m, int ftype) {
   FFunction f;
   f.tag = FModFunc;
   f.type = ftype;
@@ -126,7 +126,7 @@ int f_addfunction(FModule *m, int ftype) {
   return vec_size(m->functions) - 1;
 }
 
-int f_addextfunction(FModule *m, int ftype, FFunctionPtr ptr) {
+int f_add_extfunction(FModule *m, int ftype, FFunctionPtr ptr) {
   FFunction f;
   f.tag = FExtFunc;
   f.type = ftype;
@@ -139,7 +139,7 @@ FFunction *f_get_function(FModule *m, int function) {
   return vec_getref(m->functions, function);
 }
 
-int f_addbblock(FModule *m, int function) {
+int f_add_bblock(FModule *m, int function) {
   FFunction *f = vec_getref(m->functions, function);
   FBBlock bb;
   assert(f->tag == FModFunc);
@@ -166,7 +166,7 @@ FBuilder f_builder(FModule *m, int function, int bblock) {
   return b;
 }
 
-void f_setbblock(FBuilder *b, int bblock) {
+void f_set_bblock(FBuilder *b, int bblock) {
   b->bblock = bblock;
 }
 
@@ -208,7 +208,9 @@ FValue f_constp(FBuilder b, void *val) {
   return lastvalue(b);
 }
 
-FValue f_getarg(FBuilder b, int n, enum FType type) {
+FValue f_getarg(FBuilder b, int n) {
+  FFunctionType *ftype = f_get_ftype_by_function(b.module, b.function);
+  enum FType type = ftype->args[n];
   FInstr *i = addinstr(b, type, FGetarg);
   i->u.getarg.n = n;
   return lastvalue(b);
@@ -321,7 +323,7 @@ FValue f_phi(FBuilder b, enum FType type) {
   return lastvalue(b);
 }
 
-void f_addincoming(FBuilder b, FValue phi, int bb, FValue value) {
+void f_add_incoming(FBuilder b, FValue phi, int bb, FValue value) {
   FInstr *i = f_instr(b.module,  b.function, phi);
   FPhiInc inc;
   inc.bb = bb;

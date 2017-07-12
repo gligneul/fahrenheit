@@ -123,7 +123,7 @@ function test.setup()
     int bblocks[100] = {0};
     FValue v[100] = {{0}};
     FBuilder b;
-    f_initmodule(&module);
+    f_init_module(&module);
     f_init_engine(&engine);
     (void)functions;
     (void)bblocks;
@@ -135,7 +135,7 @@ end
 -- End a test case (must be called after setup)
 function test.teardown()
     print([[
-    f_closemodule(&module);
+    f_close_module(&module);
     f_close_engine(&engine);
     test(usedmem == 0);
   }
@@ -152,13 +152,13 @@ function test.add_function(f, ftype)
     local args_str = table.concat(ftype.args, ', ')
     if args_str == '' then args_str = '0' end
     print(([[
-    functions[%d] = f_addfunction(&module, f_ftype(&module, %s, %d, %s));
+    functions[%d] = f_add_function(&module, f_ftype(&module, %s, %d, %s));
 ]]):format(f, ftype.ret, #ftype.args, args_str))
 end
 
 function test.start_function(f, bb)
     print(([[
-    bblocks[%d] = f_addbblock(&module, functions[%d]);
+    bblocks[%d] = f_add_bblock(&module, functions[%d]);
     b = f_builder(&module, functions[%d], bblocks[%d]);
 ]]):format(bb, f, f, bb))
 end

@@ -22,7 +22,7 @@
  * IN THE SOFTWARE.
  */
 
-/* This is the intermediate representation for fahrenheit */
+/** This is the intermediate representation for fahrenheit */
 
 #ifndef fahrenheit_ir_h
 #define fahrenheit_ir_h
@@ -31,29 +31,29 @@
 
 /* Declarations ***************************************************************/
 
-/* Basic types */
+/** Basic types */
 enum FType {
   FBool, FInt8, FInt16, FInt32, FInt64,
   FFloat, FDouble, FPointer, FVoid
 };
 
-/* Instruction types */
+/** Instruction types */
 enum FInstrTag {
   FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
   FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
 };
 
-/* Binary operations */
+/** Binary operations */
 enum FBinopTag {
   FAdd, FSub, FMul, FDiv, FRem, FShl, FShr, FAnd, FOr, FXor
 };
 
-/* Comparison operations */
+/** Comparison operations */
 enum FCmpTag {
   FEq, FNe, FLe, FLt, FGe, FGt
 };
 
-/* A value is a reference to an instruction inside a basic block */
+/** A value is a reference to an instruction inside a basic block */
 typedef struct FValue {
   int bblock;
   int instr;
@@ -61,10 +61,10 @@ typedef struct FValue {
 
 VEC_DECLARE(FValue);
 
-/* Null value */
+/** Null value */
 extern const FValue FNullValue;
 
-/* Phi incoming values */
+/** Phi incoming values */
 typedef struct FPhiInc {
   int bb;
   FValue value;
@@ -72,7 +72,7 @@ typedef struct FPhiInc {
 
 VEC_DECLARE(FPhiInc);
 
-/* SSA instructions */
+/** SSA instructions */
 typedef struct FInstr {
   enum FType type;
   enum FInstrTag tag;
@@ -96,12 +96,12 @@ typedef struct FInstr {
 
 VEC_DECLARE(FInstr);
 
-/* A basic block is an array of instructions */
+/** A basic block is an array of instructions */
 typedef Vector(FInstr) FBBlock;
 
 VEC_DECLARE(FBBlock);
 
-/* Function types */
+/** Function types */
 typedef struct FFunctionType {
   enum FType ret;
   enum FType *args;
@@ -110,15 +110,15 @@ typedef struct FFunctionType {
 
 VEC_DECLARE(FFunctionType);
 
-/* Function tags */
+/** Function tags */
 enum FFunctionTag {
   FExtFunc, FModFunc
 };
 
-/* Pointer to an external function */
+/** Pointer to an external function */
 typedef void (*FFunctionPtr)(void);
 
-/* Function definition */
+/** Function definition */
 typedef struct FFunction {
   enum FFunctionTag tag;
   int type;
@@ -130,13 +130,13 @@ typedef struct FFunction {
 
 VEC_DECLARE(FFunction);
 
-/* Module is the root structure */
+/** Module is the root structure */
 typedef struct FModule {
   Vector(FFunction) functions;
   Vector(FFunctionType) ftypes;
 } FModule;
 
-/* A builder is used to create new instructions */
+/** A builder is used to create new instructions */
 typedef struct FBuilder {
   FModule *module;
   int function;
@@ -145,85 +145,133 @@ typedef struct FBuilder {
 
 /* Functions ******************************************************************/
 
-/* Initialize the module structure */
-void f_initmodule(FModule *m);
+/** Initialize the module structure */
+void f_init_module(FModule *m);
 
-/* Free all module data */
-void f_closemodule(FModule *m);
+/** Free all module data */
+void f_close_module(FModule *m);
 
-/* Create a function type */
+/** Create a function type */
 int f_ftype(FModule *m, enum FType ret, int nargs, ...);
 
-/* Create a function type given an array
+/** Create a function type given an array
  * This function creates a copy of the args array. */
 int f_ftypev(FModule *m, enum FType ret, int nargs, enum FType *args);
 
-/* Obtain the function type given the index */
+/** Obtain the function type given the index */
 FFunctionType *f_get_ftype(FModule *m, int ftype);
 
-/* Obtain the function type given the function index */
+/** Obtain the function type given the function index */
 FFunctionType *f_get_ftype_by_function(FModule *m, int function);
 
-/* Add a function to the module */
-int f_addfunction(FModule *m, int ftype);
+/** Add a function to the module */
+int f_add_function(FModule *m, int ftype);
 
-/* Add an external function to the module */
-int f_addextfunction(FModule *m, int ftype, FFunctionPtr ptr);
+/** Add an external function to the module */
+int f_add_extfunction(FModule *m, int ftype, FFunctionPtr ptr);
 
-/* Obtain a reference to a function given the index */
+/** Obtain a reference to a function given the index */
 FFunction *f_get_function(FModule *m, int function);
 
-/* Add a basic block to the function */
-int f_addbblock(FModule *m, int function);
+/** Add a basic block to the function */
+int f_add_bblock(FModule *m, int function);
 
-/* Obtain a basic block given the function and the bblock indices
+/** Obtain a basic block given the function and the bblock indices
  * Calling this with an external function leads to undefined behavior. */
 FBBlock *f_get_bblock(FModule *m, int function, int bblock);
 
-/* Obtain a basic block given the builder */
+/** Obtain a basic block given the builder */
 FBBlock *f_get_bblock_by_builder(FBuilder b);
 
-/* Create a builder */
+/** Create a builder */
 FBuilder f_builder(FModule *m, int function, int bblock);
 
-/* Change the block of the builder */
-void f_setbblock(FBuilder *b, int bblock);
+/** Change the block of the builder */
+void f_set_bblock(FBuilder *b, int bblock);
 
-/* Create a value */
+/** Create a value */
 FValue f_value(int bblock, int instr);
 
-/* Compare two values */
+/** Compare two values */
 int f_same(FValue a, FValue b);
 
-/* Verify is a value is null */
+/** Verify is a value is null */
 int f_null(FValue v);
 
-/* Obtain the instruction given the value */
+/** Obtain the instruction given the value */
 FInstr* f_instr(FModule *m, int function, FValue v);
 
-/*
- * Create the respective instruction
- */
+/** Create a integer constant of given type
+ * The type must be an integer. */
 FValue f_consti(FBuilder b, ui64 val, enum FType type);
+
+/** Create a float point constant of given type
+ * The type must be a float point. */
 FValue f_constf(FBuilder b, double val, enum FType type);
+
+/** Create a constant pointer */
 FValue f_constp(FBuilder b, void *val);
-FValue f_getarg(FBuilder b, int n, enum FType type);
+
+/** Obtain the nth function argument */
+FValue f_getarg(FBuilder b, int n);
+
+/** Load a value of given type at the given address
+ * The address must be a pointer. */
 FValue f_load(FBuilder b, FValue addr, enum FType type);
+
+/** Store the value at the address
+ * The address must be a pointer. */
 FValue f_store(FBuilder b, FValue addr, FValue val);
+
+/** Add an offset in bytes to the address, resulting in another address
+ * The address must be a pointer and the offset an integer. */
 FValue f_offset(FBuilder b, FValue addr, FValue offset);
+
+/** Cast the value to the given type
+ * The casts follow the C convetions. */
 FValue f_cast(FBuilder b, FValue val, enum FType type);
+
+/** Perform a binary operation over two operands
+ * The operands must have exactaly the same type. */
 FValue f_binop(FBuilder b, enum FBinopTag op, FValue lhs, FValue rhs);
+
+/** Compare two values and return a boolean
+ * The operands must have exactaly the same type. */
 FValue f_cmp(FBuilder b, enum FCmpTag op, FValue lhs, FValue rhs);
+
+/** Jump to the true branch if the condition holds, else jump to the false one
+ * The condition must be an integer. */
 FValue f_jmpif(FBuilder b, FValue cond, int truebr, int falsebr);
+
+/** Jump to the given branch */
 FValue f_jmp(FBuilder b, int dest);
+
+/** Return the true value if the condition holds, else return the false one
+ * The values must have exactaly the same type and the condition must have be a
+ * bolean. */
 FValue f_select(FBuilder b, FValue cond, FValue truev, FValue falsev);
+
+/** Return the given value
+ * The value must match the function's return type. */
 FValue f_ret(FBuilder b, FValue val);
+
+/** Call the given function with the given arguments
+ * The arguments must match the function type. */
 FValue f_call(FBuilder b, int function, ...);
+
+/** Call the given function with the given arguments
+ * The arguments must match the function type.
+ * Don't take the ownership of the array of arguments. */
 FValue f_callv(FBuilder b, int function, FValue *args);
+
+/** Create a phi instruction of the given type
+ * This instruction must be at the begining of the basic block. */
 FValue f_phi(FBuilder b, enum FType type);
 
-/* Add an incoming value to a phi */
-void f_addincoming(FBuilder b, FValue phi, int bb, FValue value);
+/* Add an incoming value to a phi
+ * The passed basic block must be an ancestral block and the value must have
+ * the same type of the phi. */
+void f_add_incoming(FBuilder b, FValue phi, int bb, FValue value);
 
 #endif
 
