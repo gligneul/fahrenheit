@@ -50,6 +50,12 @@ include_directories("${fahrenheit_headers}")
 install(TARGETS fahrenheit DESTINATION lib)
 install(DIRECTORY ${fahrenheit_headers} DESTINATION include)
 
+add_custom_target(doc
+    doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile; cd latex; make
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating API documentation with Doxygen" VERBATIM
+)
+
 if(ENABLE_FAHRENHEIT_TESTS)
   enable_testing()
   add_subdirectory(tests)

@@ -25,17 +25,23 @@
 #ifndef fahrenheit_verify_h
 #define fahrenheit_verify_h
 
+/** \file backend.h
+ *
+ * This module is responsible for verifying if the intermediate representation
+ * is well formed. */
+
+/
 #define FVerifyBufferSize 1024
 
 struct FModule;
 
-/* Verify if the IR module is well formed.
+/** Verify if the IR module is well formed.
  * Return a value diferent from 0 if an error is found.
  * Return by reference the error message. The err parameter should be
  * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */
 int f_verify_module(struct FModule *m, char *err);
 
-/* Verify if the IR function is well formed
+/** Verify if the IR function is well formed
  * Return a value diferent from 0 if an error is found.
  * Return by reference the error message. The err parameter should be
  * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */

@@ -22,10 +22,12 @@
  * IN THE SOFTWARE.
  */
 
-/** This is the intermediate representation for fahrenheit */
-
 #ifndef fahrenheit_ir_h
 #define fahrenheit_ir_h
+
+/** \file ir.h
+ *
+ * This is the intermediate representation for fahrenheit. */
 
 #include <stdplus/stdplus.h>
 

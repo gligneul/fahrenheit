@@ -25,6 +25,11 @@
 #ifndef fahrenheit_backend_h
 #define fahrenheit_backend_h
 
+/** \file backend.h
+ *
+ * This module is responsible for providing a way to compile the IR functions
+ * into machine code.  */
+
 struct FModule;
 
 /** Compiled function prototype */

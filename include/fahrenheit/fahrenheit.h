@@ -22,10 +22,13 @@
  * IN THE SOFTWARE.
  */
 
-/* Include all external headers */
-
 #ifndef fahrenheit_fahrenheit_h
 #define fahrenheit_fahrenheit_h
+
+/** \mainpage Fahrenheit
+ *
+ * Introduction here.
+ */
 
 #include <fahrenheit/backend.h>
 #include <fahrenheit/ir.h>
