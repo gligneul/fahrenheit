@@ -194,12 +194,12 @@ end
 function test.run_function(f, ftype, args, ret)
     local fret = test.convert_type(ftype.ret)
     local fargs = map(test.convert_type, ftype.args)
-    local fargs_str = table.concat(ftype.args, ', ')
+    local fargs_str = table.concat(fargs, ', ')
     if fargs_str == '' then fargs_str = 'void' end
     if ret then
         print(([[
-    test(f_get_fpointer(engine, %d, %s, (%s))(%s) == %s);
-]]):format(f, fret, fargs_str, args, ret))
+    test(f_get_fpointer(engine, %d, %s, (%s))(%s) == (%s)(%s));
+]]):format(f, fret, fargs_str, args, fret, ret))
     else
         print(([[
     f_get_fpointer(engine, %d, %s, (%s))(%s);

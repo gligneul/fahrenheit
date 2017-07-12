@@ -116,29 +116,63 @@ llvm::Value *get_value(FunctionState &fs, FValue irvalue) {
 
 /* Compile a single instruction */
 void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
+  auto function = ms.functions[fs.function];
   llvm::IRBuilder<> b(TheContext);
   b.SetInsertPoint(fs.bblocks[irvalue.bblock]);
-  auto instr = f_instr(ms.irmodule, fs.function, irvalue);
+  auto i = f_instr(ms.irmodule, fs.function, irvalue);
   llvm::Value *v = nullptr;
-  switch (instr->tag) {
+  switch (i->tag) {
     case FKonst: {
-      auto ktype = convert_type(ms, instr->type);
-      if(instr->type >= FBool && instr->type <= FInt64) {
-        v = llvm::ConstantInt::get(ktype, instr->u.konst.i);
+      auto ktype = convert_type(ms, i->type);
+      if(i->type >= FBool && i->type <= FInt64) {
+        v = llvm::ConstantInt::get(ktype, i->u.konst.i);
       }
-      else if(instr->type == FFloat || instr->type == FDouble) {
-        v = llvm::ConstantFP::get(ktype, instr->u.konst.f);
+      else if(i->type == FFloat || i->type == FDouble) {
+        v = llvm::ConstantFP::get(ktype, i->u.konst.f);
       }
       else {
         auto intptrt = llvm::IntegerType::get(TheContext, 8 * sizeof(void *));
         auto intptr = llvm::ConstantInt::get(intptrt,
-          (uintptr_t)instr->u.konst.p);
+          (uintptr_t)i->u.konst.p);
         v = b.CreateIntToPtr(intptr, convert_type(ms, FPointer), "");
       }
       break;
     }
+    case FGetarg: {
+      int n = i->u.getarg.n;
+      auto& args = function->getArgumentList();
+      v = &*std::next(args.begin(), n);
+      break;
+    }
+    case FLoad: {
+      break;
+    }
+    case FStore: {
+      break;
+    }
+    case FOffset: {
+      break;
+    }
+    case FCast: {
+      break;
+    }
+    case FBinop: {
+      break;
+    }
+    case FCmp: {
+      break;
+    }
+    case FJmpIf: {
+      break;
+    }
+    case FJmp: {
+      break;
+    }
+    case FSelect: {
+      break;
+    }
     case FRet: {
-      auto retv = instr->u.ret.val;
+      auto retv = i->u.ret.val;
       if(f_null(retv)) {
         v = b.CreateRetVoid();
       }
@@ -147,12 +181,12 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       }
       break;
     }
-    default:
+    case FCall: {
       break;
-    #if 0
-    FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
-    FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
-    #endif
+    }
+    case FPhi: {
+      break;
+    }
   }
   fs.values[irvalue.bblock].push_back(v);
 }

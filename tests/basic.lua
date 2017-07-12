@@ -20,7 +20,7 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- Generate the basic test file
+-- Test basic stuff, constants and return
 
 -- TODO tests
 -- bblock without return

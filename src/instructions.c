@@ -62,7 +62,7 @@ FValue f_constp(FBuilder b, void *val) {
 
 FValue f_getarg(FBuilder b, int n) {
   FFunctionType *ftype = f_get_ftype_by_function(b.module, b.function);
-  enum FType type = ftype->args[n];
+  enum FType type = n < ftype->nargs ? ftype->args[n] : FVoid;
   FInstr *i = addinstr(b, type, FGetarg);
   i->u.getarg.n = n;
   return lastvalue(b);

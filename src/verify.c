@@ -51,32 +51,69 @@ static void verify(VerifyState *vs, int cond, const char *format, ...) {
   }
 }
 
+/* Obtain the instruction */
+static FInstr *get_instr(VerifyState *vs, FValue v) {
+  /* TODO: verify if the value is reachable */
+  verify(vs, !f_null(v), "null value");
+  return f_instr(vs->m, vs->f, v);
+}
+
 /* Verify an instruction */
 static void verify_instr(VerifyState *vs) {
-#if 0
-  FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
-  FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
-#endif
+  FFunctionType *ftype = f_get_ftype_by_function(vs->m, vs->f);
   FInstr *i = f_instr(vs->m, vs->f, f_value(vs->bb, vs->i));
   switch (i->tag) {
     case FKonst:
+      /* Don't need to verify constants */
+      break;
+    case FGetarg: {
+      int n = i->u.getarg.n;
+      verify(vs, n < ftype->nargs, "invalid argument");
+      break;
+    }
+    case FLoad:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FStore:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FOffset:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FCast:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FBinop:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FCmp:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FJmpIf:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FJmp:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FSelect:
+      verify(vs, 0, "instruction not verified");
       break;
     case FRet: {
       const char *err = "return type missmatch";
-      FFunctionType *ftype = f_get_ftype_by_function(vs->m, vs->f);
       FValue retv = i->u.ret.val;
       if(ftype->ret == FVoid) {
         verify(vs, f_null(retv), err);
       }
       else {
-        FInstr *reti;
-        verify(vs, !f_null(retv), err);
-        reti = f_instr(vs->m, vs->f, retv);
+        FInstr *reti = get_instr(vs, retv);
         verify(vs, ftype->ret == reti->type, err);
       }
       break;
     }
-    default:
+    case FCall:
+      verify(vs, 0, "instruction not verified");
+      break;
+    case FPhi:
       verify(vs, 0, "instruction not verified");
       break;
   }
