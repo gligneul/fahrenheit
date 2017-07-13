@@ -68,8 +68,42 @@ for i = 1, #test.types - 1 do
 end
 
 -- return the second arg
+local ftype = test.make_ftype('FInt32', 'FFloat', 'FInt32')
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 1);
+    f_ret(b, v[0]);
+]])
+test.verify_sucess()
+test.compile()
+test.run_function(0, ftype, '0, 123', '123')
+test.teardown()
 
 -- return the 10th arg
+local n = 10
+local args_types = {}
+local args = {}
+for i = 1, n - 1 do
+    table.insert(args_types, 'FFloat')
+    table.insert(args, '0')
+end
+table.insert(args_types, 'FInt32')
+table.insert(args, '123')
+local args_str = table.concat(args, ',')
+local ftype = test.make_ftype('FInt32', table.unpack(args_types))
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 9);
+    f_ret(b, v[0]);
+]])
+test.verify_sucess()
+test.compile()
+test.run_function(0, ftype, args_str, '123')
+test.teardown()
 
 test.epilog()
 
