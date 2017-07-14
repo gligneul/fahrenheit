@@ -22,25 +22,20 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef fahrenheit_fahrenheit_h
-#define fahrenheit_fahrenheit_h
+#ifndef fahrenheit_printer_h
+#define fahrenheit_printer_h
 
-/** \file fahrenheit.h
+/** \file printer.h
  *
- * Header that includes all other library headers.
+ * This module provide a way to print the module which is useful for debugging.
  */
 
-/** \mainpage Fahrenheit
- *
- * Introduction here.
- */
+#include <stdio.h>
 
-#include <fahrenheit/backend.h>
-#include <fahrenheit/instructions.h>
-#include <fahrenheit/ir.h>
-#include <fahrenheit/printer.h>
-#include <fahrenheit/verify.h>
-#include <fahrenheit/version.h>
+struct FModule;
+
+/** Print the module in the given output (eg. stdout, stderr) */
+void f_printer(struct FModule *m, FILE *f);
 
 #endif
 

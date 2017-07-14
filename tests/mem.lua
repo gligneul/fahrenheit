@@ -20,89 +20,46 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- Test the getarg instruction
+-- Test for memory related instructions: load, store, offset
 
 local test = require 'test'
 
 test.preamble()
 
--- return arg in void function
+-- Test load from a non ptr
+local ftype = test.make_ftype('FInt32', 'FInt32')
 test.setup()
-test.add_function(0, test.make_ftype('FVoid', 'FInt32'))
+test.add_function(0, ftype)
 test.start_function(0, 0)
 print([[
     v[0] = f_getarg(b, 0);
-    f_ret(b, v[0]);
+    v[1] = f_load(b, v[0], FInt32);
+    f_ret(b, v[1]);
 ]])
 test.verify_fail()
 test.teardown()
 
--- get arg from function without args
-test.setup()
-test.add_function(0, test.make_ftype('FVoid'))
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 0);
-    f_ret(b, v[0]);
-]])
-test.verify_fail()
-test.teardown()
-
--- return the arg (test for each type)
+-- Test load from a ptr
 for i = 1, #test.types - 1 do
-    local t = test.types[i]
-    local ftype = test.make_ftype(t, t)
+    local t = test.types[i];
+    local ctype = test.convert_type(t)
+    local ftype = test.make_ftype(t, 'FPointer')
     local v = test.default_value(t)
-    test.setup()
+    local decls = ctype .. ' cell = ' .. v .. ';\n'
+    test.setup(decls)
     test.add_function(0, ftype)
     test.start_function(0, 0)
     print([[
         v[0] = f_getarg(b, 0);
-        f_ret(b, v[0]);
+        v[1] = f_load(b, v[0], ]].. t ..[[);
+        f_ret(b, v[1]);
     ]])
+    test.print()
     test.verify_sucess()
     test.compile()
-    test.run_function(0, ftype, v, v)
+    test.run_function(0, ftype, '&cell', v)
     test.teardown()
 end
-
--- return the second arg
-local ftype = test.make_ftype('FInt32', 'FFloat', 'FInt32')
-test.setup()
-test.add_function(0, ftype)
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 1);
-    f_ret(b, v[0]);
-]])
-test.verify_sucess()
-test.compile()
-test.run_function(0, ftype, '0, 123', '123')
-test.teardown()
-
--- return the 10th arg
-local n = 10
-local args_types = {}
-local args = {}
-for i = 1, n - 1 do
-    table.insert(args_types, 'FFloat')
-    table.insert(args, '0')
-end
-table.insert(args_types, 'FInt32')
-table.insert(args, '123')
-local args_str = table.concat(args, ',')
-local ftype = test.make_ftype('FInt32', table.unpack(args_types))
-test.setup()
-test.add_function(0, ftype)
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 9);
-    f_ret(b, v[0]);
-]])
-test.verify_sucess()
-test.compile()
-test.run_function(0, ftype, args_str, '123')
-test.teardown()
 
 test.epilog()
 

@@ -18,4 +18,5 @@ endmacro(fahrenheit_test)
 # Test cases
 fahrenheit_test(basic)
 fahrenheit_test(getarg)
+fahrenheit_test(mem)
 

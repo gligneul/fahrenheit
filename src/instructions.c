@@ -81,10 +81,11 @@ FValue f_store(FBuilder b, FValue addr, FValue val) {
   return lastvalue(b);
 }
 
-FValue f_offset(FBuilder b, FValue addr, FValue offset) {
+FValue f_offset(FBuilder b, FValue addr, FValue offset, int negative) {
   FInstr *i = addinstr(b, FPointer, FOffset);
   i->u.offset.addr = addr;
   i->u.offset.offset = offset;
+  i->u.offset.negative = negative;
   return lastvalue(b);
 }
 

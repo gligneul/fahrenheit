@@ -71,9 +71,11 @@ static void verify_instr(VerifyState *vs) {
       verify(vs, n < ftype->nargs, "invalid argument");
       break;
     }
-    case FLoad:
-      verify(vs, 0, "instruction not verified");
+    case FLoad: {
+      FInstr *addr = get_instr(vs, i->u.load.addr);
+      verify(vs, addr->type == FPointer, "load from non pointer");
       break;
+    }
     case FStore:
       verify(vs, 0, "instruction not verified");
       break;

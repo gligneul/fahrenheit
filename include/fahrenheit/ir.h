@@ -84,7 +84,7 @@ typedef struct FInstr {
     struct { int n; } getarg;
     struct { FValue addr; } load;
     struct { FValue addr; FValue val; } store;
-    struct { FValue addr; FValue offset; } offset;
+    struct { FValue addr; FValue offset; int negative; } offset;
     struct { FValue val; } cast;
     struct { enum FBinopTag op; FValue lhs; FValue rhs; } binop;
     struct { enum FCmpTag op; FValue lhs; FValue rhs; } cmp;

@@ -59,7 +59,7 @@ FValue f_store(FBuilder b, FValue addr, FValue val);
 
 /** Add an offset in bytes to the address, resulting in another address
  * The address must be a pointer and the offset an integer. */
-FValue f_offset(FBuilder b, FValue addr, FValue offset);
+FValue f_offset(FBuilder b, FValue addr, FValue offset, int negative);
 
 /** Cast the value to the given type
  * The casts follow the C convetions. */

@@ -58,15 +58,15 @@ end
 -- Convert a fahrenheit type to a C type
 function test.convert_type(type)
     if type == 'FBool' then
-        return 'unsigned char'
+        return 'ui8'
     elseif type == 'FInt8' then
-        return 'i8'
+        return 'ui8'
     elseif type == 'FInt16' then
-        return 'i16'
+        return 'ui16'
     elseif type == 'FInt32' then
-        return 'i32'
+        return 'ui32'
     elseif type == 'FInt64' then
-        return 'i64'
+        return 'ui64'
     elseif type == 'FFloat' then
         return 'float'
     elseif type == 'FDouble' then
@@ -75,9 +75,37 @@ function test.convert_type(type)
         return 'void *'
     elseif type == 'FVoid' then
         return 'void'
+    else
+        error('invalid type: ' .. tostring(type))
     end
 end
 
+-- Obtain a default value to test given the type
+function test.default_value(type)
+    if type == 'FBool' then
+        return '1'
+    elseif type == 'FInt8' then
+        return '255'
+    elseif type == 'FInt16' then
+        return '1234'
+    elseif type == 'FInt32' then
+        return '12345'
+    elseif type == 'FInt64' then
+        return '123456'
+    elseif type == 'FFloat' then
+        return '123.45'
+    elseif type == 'FDouble' then
+        return '12345.56789'
+    elseif type == 'FPointer' then
+        return '&module'
+    elseif type == 'FVoid' then
+        return ''
+    else
+        error('invalid type: ' .. tostring(type))
+    end
+end
+
+-- Initialize the C source file
 -- Should be the first function called in a test generator
 function test.preamble()
     print([[
@@ -114,7 +142,9 @@ end
 -- Common setup for fahrenheit tests
 -- Declare the variables module, engine, functions[n], bblocks[n], 
 -- v[n] (values) and b (builder)
-function test.setup()
+-- Receive a string with any other necessary declarations
+function test.setup(decls)
+    decls = decls or ''
     print([[
   {
     FModule module;
@@ -123,6 +153,7 @@ function test.setup()
     int bblocks[100] = {0};
     FValue v[100] = {{0}};
     FBuilder b;
+    ]].. decls ..[[
     f_init_module(&module);
     f_init_engine(&engine);
     (void)functions;
@@ -135,6 +166,7 @@ end
 -- End a test case (must be called after setup)
 function test.teardown()
     print([[
+    f_printer(&module, stdout);
     f_close_module(&module);
     f_close_engine(&engine);
     test(usedmem == 0);
@@ -205,6 +237,13 @@ function test.run_function(f, ftype, args, ret)
     f_get_fpointer(engine, %d, %s, (%s))(%s);
 ]]):format(f, fret, fargs_str, args))
     end
+end
+
+-- Print the module in stdout
+function test.print()
+    print([[
+    f_printer(&module, stdout);
+]])
 end
 
 return test

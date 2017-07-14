@@ -25,6 +25,8 @@
 #include <memory>
 #include <vector>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
 #include <llvm/ExecutionEngine/MCJIT.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
@@ -34,6 +36,7 @@
 #include <llvm/IR/Verifier.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Support/TargetSelect.h>
+#pragma GCC diagnostic pop
 
 extern "C" {
 #include <fahrenheit/backend.h>
@@ -57,9 +60,9 @@ struct ModuleState {
   std::unique_ptr<llvm::Module> module;
   std::vector<llvm::Function *> functions;
 
-  ModuleState(FEngineData &engine, FModule *irmodule)
-    : engine(engine)
-    , irmodule(irmodule)
+  ModuleState(FEngineData &engine_, FModule *irmodule_)
+    : engine(engine_)
+    , irmodule(irmodule_)
     , module(new llvm::Module("m", TheContext)) {}
 };
 
@@ -72,7 +75,7 @@ struct FunctionState {
 
 /* Convert an fahrenheit type to a llvm type */
 llvm::Type *convert_type(ModuleState &ms, enum FType type) {
-  switch(type) {
+  switch (type) {
     case FBool:
       return llvm::IntegerType::get(TheContext, 1);
     case FInt8:
@@ -120,7 +123,7 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
   llvm::IRBuilder<> b(TheContext);
   b.SetInsertPoint(fs.bblocks[irvalue.bblock]);
   auto i = f_instr(ms.irmodule, fs.function, irvalue);
-  llvm::Value *v = nullptr;
+  auto &v = fs.values[irvalue.bblock][irvalue.instr];
   switch (i->tag) {
     case FKonst: {
       auto ktype = convert_type(ms, i->type);
@@ -145,6 +148,11 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
     case FLoad: {
+      auto addr = get_value(fs, i->u.load.addr);
+      auto addrtype = convert_type(ms, i->type);
+      addrtype = llvm::PointerType::get(addrtype, 0);
+      addr = b.CreateBitCast(addr, addrtype, "");
+      v = b.CreateLoad(addr, "");
       break;
     }
     case FStore: {
@@ -188,7 +196,6 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
   }
-  fs.values[irvalue.bblock].push_back(v);
 }
 
 /* Compile a function */
@@ -206,6 +213,7 @@ void compile_function(ModuleState &ms, int function) {
   fs.values.resize(fs.bblocks.size());
   vec_for(f->u.bblocks, b, {
     auto bblock = f_get_bblock(ms.irmodule, function, b);
+    fs.values[b].resize(vec_size(*bblock), nullptr);
     vec_for(*bblock, i, {
       compile_instruction(ms, fs, f_value(b, i));
     });
