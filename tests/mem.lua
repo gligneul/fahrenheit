@@ -26,7 +26,7 @@ local test = require 'test'
 
 test.preamble()
 
--- Test load from a non ptr
+-- Load from a non ptr
 local ftype = test.make_ftype('FInt32', 'FInt32')
 test.setup()
 test.add_function(0, ftype)
@@ -39,7 +39,7 @@ print([[
 test.verify_fail()
 test.teardown()
 
--- Test load from a ptr
+-- Load from a ptr
 for i = 1, #test.types - 1 do
     local t = test.types[i];
     local ctype = test.convert_type(t)
@@ -58,6 +58,62 @@ for i = 1, #test.types - 1 do
     test.verify_sucess()
     test.compile()
     test.run_function(0, ftype, '&cell', v)
+    test.teardown()
+end
+
+-- Store in non ptr
+local ftype = test.make_ftype('FVoid', 'FInt32', 'FInt32')
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_getarg(b, 1);
+           f_store(b, v[0], v[1]);
+           f_ret_void(b);
+]])
+test.verify_fail()
+test.teardown()
+
+-- Store void value
+local ftype = test.make_ftype('FVoid', 'FPointer', 'FInt32')
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_getarg(b, 1);
+    v[2] = f_store(b, v[0], v[1]);
+           f_store(b, v[0], v[2]);
+           f_ret_void(b);
+]])
+test.verify_fail()
+test.teardown()
+
+-- Store a value
+for i = 1, #test.types - 1 do
+    local t = 'FInt32';
+    local ctype = test.convert_type(t)
+    local ftype = test.make_ftype(t, 'FPointer')
+    local v = test.default_value(t)
+    local decls = ctype .. ' cell = ' .. v .. ';\n'
+    local ftype = test.make_ftype('FVoid', 'FPointer', 'FInt32')
+    test.setup(decls)
+    test.add_function(0, ftype)
+    test.start_function(0, 0)
+    print([[
+        v[0] = f_getarg(b, 0);
+        v[1] = f_getarg(b, 1);
+               f_store(b, v[0], v[1]);
+               f_ret_void(b);
+    ]])
+    test.print()
+    test.verify_sucess()
+    test.compile()
+    test.run_function(0, ftype, '&cell, ' .. v)
+    print([[
+        test(cell == (]].. ctype ..[[)]].. v ..[[);
+    ]])
     test.teardown()
 end
 

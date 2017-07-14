@@ -154,6 +154,12 @@ void f_init_module(FModule *m);
 /** Free all module data */
 void f_close_module(FModule *m);
 
+/** Check if the type is an integer */
+#define f_is_int()
+
+/** Check if the type is float */
+#define f_is_float()
+
 /** Create a function type */
 int f_ftype(FModule *m, enum FType ret, int nargs, ...);
 

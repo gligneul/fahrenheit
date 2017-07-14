@@ -76,9 +76,13 @@ static void verify_instr(VerifyState *vs) {
       verify(vs, addr->type == FPointer, "load from non pointer");
       break;
     }
-    case FStore:
-      verify(vs, 0, "instruction not verified");
+    case FStore: {
+      FInstr *addr = get_instr(vs, i->u.store.addr);
+      FInstr *val = get_instr(vs, i->u.store.val);
+      verify(vs, addr->type == FPointer, "store in non pointer");
+      verify(vs, val->type != FVoid, "store void value");
       break;
+    }
     case FOffset:
       verify(vs, 0, "instruction not verified");
       break;

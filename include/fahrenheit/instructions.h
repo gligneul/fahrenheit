@@ -89,6 +89,9 @@ FValue f_select(FBuilder b, FValue cond, FValue truev, FValue falsev);
  * The value must match the function's return type. */
 FValue f_ret(FBuilder b, FValue val);
 
+/** Return void */
+#define f_ret_void(b) f_ret(b, FNullValue)
+
 /** Call the given function with the given arguments
  * The arguments must match the function type. */
 FValue f_call(FBuilder b, int function, ...);

@@ -50,8 +50,10 @@ static void printer_init(PrinterState *ps, FILE *f, FModule *m,
     ps->valueid[i] = mem_newarray(int, vec_size(*bb));
     vec_for(*bb, j, {
       FInstr *instr = f_instr(m, function, f_value(i, j));
-      if (instr->tag != FKonst || instr->type != FVoid)
+      if (instr->tag != FKonst && instr->type != FVoid)
         ps->valueid[i][j] = id++;
+      else
+        ps->valueid[i][j] = -1;
     });
   });
 }
@@ -73,8 +75,8 @@ static void print_type(PrinterState *ps, enum FType type) {
     case FInt16:   str = "i16"; break;
     case FInt32:   str = "i32"; break;
     case FInt64:   str = "i64"; break;
-    case FFloat:   str = "float"; break;
-    case FDouble:  str = "double"; break;
+    case FFloat:   str = "flt"; break;
+    case FDouble:  str = "dbl"; break;
     case FPointer: str = "ptr"; break;
     case FVoid:    str = "void"; break;
   }
@@ -105,28 +107,46 @@ static void print_bblock(PrinterState *ps, int bb) {
   fprintf(ps->f, "bb%d", bb + 1);
 }
 
+static void print_value_id(PrinterState *ps, FValue v) {
+  fprintf(ps->f, "$%03d", ps->valueid[v.bblock][v.instr]);
+}
+
+static void print_konst(PrinterState *ps, FInstr *i) {
+  fprintf(ps->f, "const ");
+  print_type(ps, i->type);
+  fprintf(ps->f, " ");
+  switch (i->type) {
+    case FBool:
+        fprintf(ps->f, "%s", i->u.konst.i ? "true" : "false"); break;
+    case FInt8:    fprintf(ps->f, "%lu", i->u.konst.i); break;
+    case FInt16:   fprintf(ps->f, "%lu", i->u.konst.i); break;
+    case FInt32:   fprintf(ps->f, "%lu", i->u.konst.i); break;
+    case FInt64:   fprintf(ps->f, "%lu", i->u.konst.i); break;
+    case FFloat:   fprintf(ps->f, "%f", i->u.konst.f); break;
+    case FDouble:  fprintf(ps->f, "%f", i->u.konst.f); break;
+    case FPointer: fprintf(ps->f, "%p", i->u.konst.p); break;
+    default: break;
+  }
+}
+
 static void print_value(PrinterState *ps, FValue v) {
-  FInstr *i = f_instr(ps->m, ps->function, v);
-  if (i->tag == FKonst) {
-    fprintf(ps->f, "(const ");
-    print_type(ps, i->type);
-    fprintf(ps->f, " ");
-    switch (i->type) {
-      case FBool:
-          fprintf(ps->f, "%s", i->u.konst.i ? "true" : "false"); break;
-      case FInt8:    fprintf(ps->f, "%lu", i->u.konst.i); break;
-      case FInt16:   fprintf(ps->f, "%lu", i->u.konst.i); break;
-      case FInt32:   fprintf(ps->f, "%lu", i->u.konst.i); break;
-      case FInt64:   fprintf(ps->f, "%lu", i->u.konst.i); break;
-      case FFloat:   fprintf(ps->f, "%f", i->u.konst.f); break;
-      case FDouble:  fprintf(ps->f, "%f", i->u.konst.f); break;
-      case FPointer: fprintf(ps->f, "%p", i->u.konst.p); break;
-      default: break;
+  if (f_null(v))
+    fprintf(ps->f, "null");
+  else {
+    FInstr *i = f_instr(ps->m, ps->function, v);
+    fprintf(ps->f, "(");
+    if (i->tag == FKonst)
+      print_konst(ps, i);
+    else {
+      print_type(ps, i->type);
+      fprintf(ps->f, " ");
+      if (i->type == FVoid)
+        fprintf(ps->f, "$xxx");
+      else
+        print_value_id(ps, v);
     }
     fprintf(ps->f, ")");
   }
-  else
-    fprintf(ps->f, "$%03d", ps->valueid[v.bblock][v.instr]);
 }
 
 static void print_instruction(PrinterState *ps, int bblock, int instr) {
@@ -137,7 +157,7 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
     fprintf(ps->f, "         ");
   else {
     fprintf(ps->f, "  ");
-    print_value(ps, v);
+    print_value_id(ps, v);
     fprintf(ps->f, " = ");
   }
   switch (i->tag) {
@@ -189,11 +209,11 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
     }
     case FRet: {
       FValue val = i->u.ret.val;
-      fprintf(ps->f, "ret");
-      if (!f_null(val)) {
-        fprintf(ps->f, " ");
+      fprintf(ps->f, "ret ");
+      if (f_null(val))
+        fprintf(ps->f, "void");
+      else
         print_value(ps, val);
-      }
       break;
     }
     case FCall: {
