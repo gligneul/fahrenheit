@@ -78,7 +78,7 @@ static void print_type(PrinterState *ps, enum FType type) {
     case FPointer: str = "ptr"; break;
     case FVoid:    str = "void"; break;
   }
-  fprintf(ps->f, str);
+  fprintf(ps->f, "%s", str);
 }
 
 static void print_ftype(PrinterState *ps, FFunctionType *ftype) {
