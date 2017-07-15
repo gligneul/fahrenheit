@@ -83,9 +83,13 @@ static void verify_instr(VerifyState *vs) {
       verify(vs, val->type != FVoid, "store void value");
       break;
     }
-    case FOffset:
-      verify(vs, 0, "instruction not verified");
+    case FOffset: {
+      FInstr *addr = get_instr(vs, i->u.offset.addr);
+      FInstr *offset = get_instr(vs, i->u.offset.offset);
+      verify(vs, addr->type == FPointer, "store in non pointer");
+      verify(vs, f_is_int(offset->type), "offset must be an integer");
       break;
+    }
     case FCast:
       verify(vs, 0, "instruction not verified");
       break;

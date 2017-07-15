@@ -92,12 +92,12 @@ test.teardown()
 
 -- Store a value
 for i = 1, #test.types - 1 do
-    local t = 'FInt32';
+    local t = test.types[i]
     local ctype = test.convert_type(t)
     local ftype = test.make_ftype(t, 'FPointer')
     local v = test.default_value(t)
-    local decls = ctype .. ' cell = ' .. v .. ';\n'
-    local ftype = test.make_ftype('FVoid', 'FPointer', 'FInt32')
+    local decls = ctype .. ' cell = 0;\n'
+    local ftype = test.make_ftype('FVoid', 'FPointer', t)
     test.setup(decls)
     test.add_function(0, ftype)
     test.start_function(0, 0)
@@ -116,6 +116,120 @@ for i = 1, #test.types - 1 do
     ]])
     test.teardown()
 end
+
+-- Offset null address
+local t = 'FInt32'
+local ftype = test.make_ftype(t, 'FPointer')
+local ctype = test.convert_type(t)
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_consti(b, sizeof(]].. ctype ..[[), FInt32);
+    v[2] = f_offset(b, FNullValue, v[1], 0);
+    v[3] = f_load(b, v[2], ]].. t ..[[);
+    f_ret(b, v[3]);
+]])
+test.verify_fail()
+test.teardown()
+
+-- Offset non ptr address
+local t = 'FInt32'
+local ftype = test.make_ftype(t, 'FInt32')
+local ctype = test.convert_type(t)
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_consti(b, sizeof(]].. ctype ..[[), FInt32);
+    v[2] = f_offset(b, v[0], v[1], 0);
+    v[3] = f_load(b, v[2], ]].. t ..[[);
+    f_ret(b, v[3]);
+]])
+test.verify_fail()
+test.teardown()
+
+-- Offset nil value
+local t = 'FInt32'
+local ftype = test.make_ftype(t, 'FPointer')
+local ctype = test.convert_type(t)
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_consti(b, sizeof(]].. ctype ..[[), FInt32);
+    v[2] = f_offset(b, v[0], FNullValue, 0);
+    v[3] = f_load(b, v[2], ]].. t ..[[);
+    f_ret(b, v[3]);
+]])
+test.verify_fail()
+test.teardown()
+
+-- Offset non integer value
+local t = 'FInt32'
+local ftype = test.make_ftype(t, 'FPointer')
+local ctype = test.convert_type(t)
+test.setup()
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_consti(b, 0, FFloat);
+    v[2] = f_offset(b, v[0], v[1], 0);
+    v[3] = f_load(b, v[2], ]].. t ..[[);
+    f_ret(b, v[3]);
+]])
+test.verify_fail()
+test.teardown()
+
+-- Correct offset
+for i = 1, #test.types - 1 do
+    local t = test.types[i]
+    local ftype = test.make_ftype(t, 'FPointer')
+    local ctype = test.convert_type(t)
+    local v = test.default_value(t)
+    local decls = ctype .. ' cell[2] = {0};\n'
+    test.setup(decls)
+    test.add_function(0, ftype)
+    test.start_function(0, 0)
+    print([[
+        cell[1] = ]].. v ..[[;
+        v[0] = f_getarg(b, 0);
+        v[1] = f_consti(b, sizeof(]].. ctype ..[[), FInt32);
+        v[2] = f_offset(b, v[0], v[1], 0);
+        v[3] = f_load(b, v[2], ]].. t ..[[);
+        f_ret(b, v[3]);
+    ]])
+    test.verify_sucess()
+    test.compile()
+    test.run_function(0, ftype, 'cell', v)
+    test.teardown()
+end
+
+-- Negative offset
+local t = 'FInt32'
+local ftype = test.make_ftype(t, 'FPointer')
+local ctype = test.convert_type(t)
+local v = test.default_value(t)
+local decls = ctype .. ' cell = ' .. v .. ';\n'
+test.setup(decls)
+test.add_function(0, ftype)
+test.start_function(0, 0)
+print([[
+    v[0] = f_getarg(b, 0);
+    v[1] = f_consti(b, sizeof(]].. ctype ..[[), FInt32);
+    v[2] = f_offset(b, v[0], v[1], 0);
+    v[3] = f_offset(b, v[2], v[1], 1);
+    v[4] = f_load(b, v[3], ]].. t ..[[);
+    f_ret(b, v[4]);
+]])
+test.verify_sucess()
+test.compile()
+test.run_function(0, ftype, '&cell', v)
+test.teardown()
 
 test.epilog()
 

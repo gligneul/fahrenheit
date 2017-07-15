@@ -127,10 +127,10 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
   switch (i->tag) {
     case FKonst: {
       auto ktype = convert_type(ms, i->type);
-      if(i->type >= FBool && i->type <= FInt64) {
+      if(f_is_int(i->type)) {
         v = llvm::ConstantInt::get(ktype, i->u.konst.i);
       }
-      else if(i->type == FFloat || i->type == FDouble) {
+      else if(f_is_float(i->type)) {
         v = llvm::ConstantFP::get(ktype, i->u.konst.f);
       }
       else {
@@ -152,13 +152,23 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       auto addrtype = convert_type(ms, i->type);
       addrtype = llvm::PointerType::get(addrtype, 0);
       addr = b.CreateBitCast(addr, addrtype, "");
-      v = b.CreateLoad(addr, "");
+      v = b.CreateLoad(addr);
       break;
     }
     case FStore: {
+      auto raw_addr = get_value(fs, i->u.store.addr);
+      auto val = get_value(fs, i->u.store.val);
+      auto addrtype = llvm::PointerType::get(val->getType(), 0);
+      auto addr = b.CreateBitCast(raw_addr, addrtype, "");
+      v = b.CreateStore(val, addr);
       break;
     }
     case FOffset: {
+      auto addr = get_value(fs, i->u.offset.addr);
+      auto offset = get_value(fs, i->u.offset.offset);
+      if (i->u.offset.negative)
+        offset = b.CreateNeg(offset);
+      v = b.CreateGEP(addr, offset);
       break;
     }
     case FCast: {
