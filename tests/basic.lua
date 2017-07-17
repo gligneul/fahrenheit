@@ -84,15 +84,14 @@ for i = 1, #test.types - 1 do
         test.add_function(0, ftype)
         test.start_function(0, 0)
         local ktype = test.types[j]
-        local v = ''
-        if test.is_int(ktype) then
-            v = 1
+        local v = test.default_value(ktype)
+        if ktype == 'FBool' then
+            print(('    v[0] = f_constb(b, %s);'):format(v))
+        elseif test.is_int(ktype) then
             print(('    v[0] = f_consti(b, %s, %s);'):format(v, ktype))
         elseif test.is_float(ktype) then
-            v = '12.34'
             print(('    v[0] = f_constf(b, %s, %s);'):format(v, ktype))
         else
-            v = '&module'
             print(('    v[0] = f_constp(b, %s);'):format(v))
         end
         print('    f_ret(b, v[0]);')

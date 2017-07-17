@@ -35,6 +35,9 @@
 
 #include <fahrenheit/ir.h>
 
+/** Create a constant boolean */
+FValue f_constb(FBuilder b, int val);
+
 /** Create a integer constant of given type
  * The type must be an integer. */
 FValue f_consti(FBuilder b, ui64 val, enum FType type);
@@ -63,7 +66,7 @@ FValue f_offset(FBuilder b, FValue addr, FValue offset, int negative);
 
 /** Cast the value to the given type
  * The casts follow the C convetions. */
-FValue f_cast(FBuilder b, FValue val, enum FType type);
+FValue f_cast(FBuilder b, enum FCastTag op, FValue val, enum FType type);
 
 /** Perform a binary operation over two operands
  * The operands must have exactaly the same type. */

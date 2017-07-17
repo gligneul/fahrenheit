@@ -190,6 +190,10 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
       break;
     }
     case FCast: {
+      fprintf(ps->f, "cast ");
+      print_value(ps, i->u.cast.val);
+      fprintf(ps->f, " to ");
+      print_type(ps, i->type);
       break;
     }
     case FBinop: {

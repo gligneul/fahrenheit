@@ -74,7 +74,7 @@ struct FunctionState {
 };
 
 /* Convert an fahrenheit type to a llvm type */
-llvm::Type *convert_type(ModuleState &ms, enum FType type) {
+llvm::Type *convert_type(enum FType type) {
   switch (type) {
     case FBool:
       return llvm::IntegerType::get(TheContext, 1);
@@ -102,10 +102,10 @@ llvm::Type *convert_type(ModuleState &ms, enum FType type) {
 /* Declare a function */
 void declare_function(ModuleState &ms, int function) {
   auto ftype = f_get_ftype_by_function(ms.irmodule, function);
-  auto ret = convert_type(ms, ftype->ret);
+  auto ret = convert_type(ftype->ret);
   std::vector<llvm::Type*> args;
   for (int i = 0; i < ftype->nargs; ++i)
-    args.push_back(convert_type(ms, ftype->args[i]));
+    args.push_back(convert_type(ftype->args[i]));
   auto type = llvm::FunctionType::get(ret, args, false);
   auto f = llvm::Function::Create(type, llvm::Function::ExternalLinkage,
     "f" + std::to_string(function), ms.module.get());
@@ -126,18 +126,16 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
   auto &v = fs.values[irvalue.bblock][irvalue.instr];
   switch (i->tag) {
     case FKonst: {
-      auto ktype = convert_type(ms, i->type);
-      if(f_is_int(i->type)) {
+      auto ktype = convert_type(i->type);
+      if (i->type == FBool || f_is_int(i->type))
         v = llvm::ConstantInt::get(ktype, i->u.konst.i);
-      }
-      else if(f_is_float(i->type)) {
+      else if (f_is_float(i->type))
         v = llvm::ConstantFP::get(ktype, i->u.konst.f);
-      }
       else {
         auto intptrt = llvm::IntegerType::get(TheContext, 8 * sizeof(void *));
         auto intptr = llvm::ConstantInt::get(intptrt,
           (uintptr_t)i->u.konst.p);
-        v = b.CreateIntToPtr(intptr, convert_type(ms, FPointer), "");
+        v = b.CreateIntToPtr(intptr, convert_type(FPointer), "");
       }
       break;
     }
@@ -148,10 +146,10 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
     case FLoad: {
-      auto addr = get_value(fs, i->u.load.addr);
-      auto addrtype = convert_type(ms, i->type);
-      addrtype = llvm::PointerType::get(addrtype, 0);
-      addr = b.CreateBitCast(addr, addrtype, "");
+      auto raw_addr = get_value(fs, i->u.load.addr);
+      auto raw_addrtype = convert_type(i->type);
+      auto addrtype = llvm::PointerType::get(raw_addrtype, 0);
+      auto addr = b.CreateBitCast(raw_addr, addrtype, "");
       v = b.CreateLoad(addr);
       break;
     }
@@ -172,6 +170,30 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
     case FCast: {
+      auto val = get_value(fs, i->u.cast.val);
+      auto t = convert_type(i->type);
+      auto op = i->u.cast.op;
+      switch (op) {
+        case FUIntCast:
+        case FSIntCast:
+          v = b.CreateIntCast(val, t, op == FSIntCast);
+          break;
+        case FFloatCast:
+          v = b.CreateFPCast(val, t);
+          break;
+        case FFloatToUInt:
+          v = b.CreateFPToUI(val, t);
+          break;
+        case FFloatToSInt:
+          v = b.CreateFPToSI(val, t);
+          break;
+        case FUIntToFloat:
+          v = b.CreateUIToFP(val, t);
+          break;
+        case FSIntToFloat:
+          v = b.CreateSIToFP(val, t);
+          break;
+      }
       break;
     }
     case FBinop: {

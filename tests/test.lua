@@ -31,7 +31,7 @@ end
 
 local test = {}
 
--- All fahrenheit basic types
+-- Fahrenheit types
 test.types = {
     'FBool',
     'FInt8',
@@ -44,9 +44,23 @@ test.types = {
     'FVoid',
 }
 
+-- Integral types
+test.int_types = {
+    'FInt8',
+    'FInt16',
+    'FInt32',
+    'FInt64',
+}
+
+-- Float types
+test.float_types = {
+    'FFloat',
+    'FDouble',
+}
+
 -- Verify if a type is integral
 function test.is_int(type)
-    return type == 'FBool' or type == 'FInt8' or type == 'FInt16' or
+    return type == 'FInt8' or type == 'FInt16' or
            type == 'FInt32' or type == 'FInt64'
 end
 
@@ -129,6 +143,7 @@ static void *checkmem(void *addr, size_t oldsize, size_t newsize) {
   }
 
 int main(void) {
+  int test_cases = 0;
   mem_alloc = checkmem;
   (void)err;
 ]])
@@ -136,7 +151,10 @@ end
 
 -- Should be the last function called in a test generator
 function test.epilog()
-    print('  return 0;\n}')
+    print([[
+  printf("Number of tests cases: %d\n", test_cases);
+  return 0;
+}]])
 end
 
 -- Common setup for fahrenheit tests
@@ -170,6 +188,7 @@ function test.teardown()
     f_close_module(&module);
     f_close_engine(&engine);
     test(usedmem == 0);
+    test_cases++;
   }
 ]])
 end
@@ -209,7 +228,7 @@ end
 function test.verify_fail()
     print([[
     if(!f_verify_module(&module, err)) {
-      fprintf(stderr, "expected an error");
+      fprintf(stderr, "expected an error\n");
       exit(1);
     }
 ]])
@@ -244,6 +263,30 @@ function test.print()
     print([[
     f_printer(&module, stdout);
 ]])
+end
+
+-- Test case that should fail
+function test.case_fail(ret, args, code)
+    test.setup()
+    local ftype = test.make_ftype(ret, table.unpack(args))
+    test.add_function(0, ftype)
+    test.start_function(0, 0)
+    print(code)
+    test.verify_fail()
+    test.teardown()
+end
+
+-- Test case that should succeed
+function test.case_success(ret_type, args_type, code, args, expect_ret)
+    test.setup()
+    local ftype = test.make_ftype(ret_type, table.unpack(args_type))
+    test.add_function(0, ftype)
+    test.start_function(0, 0)
+    print(code)
+    test.verify_sucess()
+    test.compile()
+    test.run_function(0, ftype, args, expect_ret)
+    test.teardown()
 end
 
 return test

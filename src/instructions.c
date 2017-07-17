@@ -42,6 +42,12 @@ static FValue lastvalue(FBuilder b) {
   return f_value(b.bblock, vec_size(*bb) - 1);
 }
 
+FValue f_constb(FBuilder b, int val) {
+  FInstr *i = addinstr(b, FBool, FKonst);
+  i->u.konst.i = !!val;
+  return lastvalue(b);
+}
+
 FValue f_consti(FBuilder b, ui64 val, enum FType type) {
   FInstr *i = addinstr(b, type, FKonst);
   i->u.konst.i = val;
@@ -89,8 +95,9 @@ FValue f_offset(FBuilder b, FValue addr, FValue offset, int negative) {
   return lastvalue(b);
 }
 
-FValue f_cast(FBuilder b, FValue val, enum FType type) {
+FValue f_cast(FBuilder b, enum FCastTag op, FValue val, enum FType type) {
   FInstr *i = addinstr(b, type, FCast);
+  i->u.cast.op = op;
   i->u.cast.val = val;
   return lastvalue(b);
 }

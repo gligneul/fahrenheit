@@ -90,9 +90,28 @@ static void verify_instr(VerifyState *vs) {
       verify(vs, f_is_int(offset->type), "offset must be an integer");
       break;
     }
-    case FCast:
-      verify(vs, 0, "instruction not verified");
+    case FCast: {
+      const char *err = "invalid cast";
+      FInstr *v = get_instr(vs, i->u.cast.val);
+      switch (i->u.cast.op) {
+        case FUIntCast:
+        case FSIntCast:
+          verify(vs, f_is_int(i->type) && f_is_int(v->type), err);
+          break;
+        case FFloatCast:
+          verify(vs, f_is_float(i->type) && f_is_float(v->type), err);
+          break;
+        case FFloatToUInt:
+        case FFloatToSInt:
+          verify(vs, f_is_int(i->type) && f_is_float(v->type), err);
+          break;
+        case FUIntToFloat:
+        case FSIntToFloat:
+          verify(vs, f_is_float(i->type) && f_is_int(v->type), err);
+          break;
+      }
       break;
+    }
     case FBinop:
       verify(vs, 0, "instruction not verified");
       break;

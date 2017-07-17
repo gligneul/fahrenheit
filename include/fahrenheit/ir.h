@@ -46,6 +46,14 @@ enum FInstrTag {
   FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
 };
 
+/** Cast operations */
+enum FCastTag {
+  FUIntCast, FSIntCast,
+  FFloatCast,
+  FFloatToUInt, FFloatToSInt,
+  FUIntToFloat, FSIntToFloat
+};
+
 /** Binary operations */
 enum FBinopTag {
   FAdd, FSub, FMul, FDiv, FRem, FShl, FShr, FAnd, FOr, FXor
@@ -85,7 +93,7 @@ typedef struct FInstr {
     struct { FValue addr; } load;
     struct { FValue addr; FValue val; } store;
     struct { FValue addr; FValue offset; int negative; } offset;
-    struct { FValue val; } cast;
+    struct { enum FCastTag op; FValue val; } cast;
     struct { enum FBinopTag op; FValue lhs; FValue rhs; } binop;
     struct { enum FCmpTag op; FValue lhs; FValue rhs; } cmp;
     struct { FValue cond; int truebr; int falsebr; } jmpif;
@@ -155,7 +163,7 @@ void f_init_module(FModule *m);
 void f_close_module(FModule *m);
 
 /** Check if the type is an integer */
-#define f_is_int(t) ((t) >= FBool && (t) <= FInt64)
+#define f_is_int(t) ((t) >= FInt8 && (t) <= FInt64)
 
 /** Check if the type is float */
 #define f_is_float(t) ((t) == FFloat || (t) == FDouble)
