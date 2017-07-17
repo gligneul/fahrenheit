@@ -99,6 +99,38 @@ llvm::Type *convert_type(enum FType type) {
   return nullptr;
 }
 
+llvm::Instruction::BinaryOps convert_binop(enum FBinopTag op, enum FType type) {
+  switch (op) {
+    case FAdd:
+      if (f_is_int(type))
+        return llvm::Instruction::Add;
+      else
+        return llvm::Instruction::FAdd;
+    case FSub:
+      if (f_is_int(type))
+        return llvm::Instruction::Sub;
+      else
+        return llvm::Instruction::FSub;
+    case FMul:
+      if (f_is_int(type))
+        return llvm::Instruction::Mul;
+      else
+        return llvm::Instruction::FMul;
+    case FDiv:
+      if (f_is_int(type))
+        return llvm::Instruction::SDiv;
+      else
+        return llvm::Instruction::FDiv;
+    case FRem: return llvm::Instruction::URem;
+    case FShl: return llvm::Instruction::Shl;
+    case FShr: return llvm::Instruction::LShr;
+    case FAnd: return llvm::Instruction::And;
+    case FOr:  return llvm::Instruction::Or;
+    case FXor: return llvm::Instruction::Xor;
+  }
+  return llvm::Instruction::Add;
+}
+
 /* Declare a function */
 void declare_function(ModuleState &ms, int function) {
   auto ftype = f_get_ftype_by_function(ms.irmodule, function);
@@ -197,6 +229,10 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
     case FBinop: {
+      auto lhs = get_value(fs, i->u.binop.lhs);
+      auto rhs = get_value(fs, i->u.binop.rhs);
+      auto op = convert_binop(i->u.binop.op, i->type);
+      v = b.CreateBinOp(op, lhs, rhs);
       break;
     }
     case FCmp: {

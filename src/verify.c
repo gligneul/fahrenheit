@@ -112,9 +112,19 @@ static void verify_instr(VerifyState *vs) {
       }
       break;
     }
-    case FBinop:
-      verify(vs, 0, "instruction not verified");
+    case FBinop: {
+      enum FBinopTag op = i->u.binop.op; 
+      enum FType lhs_type = get_instr(vs, i->u.binop.lhs)->type;
+      enum FType rhs_type = get_instr(vs, i->u.binop.rhs)->type;
+      verify(vs, lhs_type == rhs_type, "type mismatch in binop");
+      if (op >= FAdd && op <= FDiv)
+        verify(vs, f_is_num(lhs_type) && f_is_num(rhs_type),
+          "invalid binop type");
+      else
+        verify(vs, f_is_int(lhs_type) && f_is_int(rhs_type),
+          "invalid binop type");
       break;
+    }
     case FCmp:
       verify(vs, 0, "instruction not verified");
       break;

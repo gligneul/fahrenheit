@@ -149,6 +149,21 @@ static void print_value(PrinterState *ps, FValue v) {
   }
 }
 
+static void print_binop(PrinterState *ps, enum FBinopTag op) {
+  switch (op) {
+    case FAdd: fprintf(ps->f, " + "); break;
+    case FSub: fprintf(ps->f, " - "); break;
+    case FMul: fprintf(ps->f, " * "); break;
+    case FDiv: fprintf(ps->f, " / "); break;
+    case FRem: fprintf(ps->f, " %% "); break;
+    case FShl: fprintf(ps->f, " << "); break;
+    case FShr: fprintf(ps->f, " >> "); break;
+    case FAnd: fprintf(ps->f, " & "); break;
+    case FOr:  fprintf(ps->f, " | "); break;
+    case FXor: fprintf(ps->f, " ^ "); break;
+  }
+}
+
 static void print_instruction(PrinterState *ps, int bblock, int instr) {
   FValue v = f_value(bblock, instr);
   FInstr *i = f_instr(ps->m, ps->function, v);
@@ -197,6 +212,10 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
       break;
     }
     case FBinop: {
+      fprintf(ps->f, "binop ");
+      print_value(ps, i->u.binop.lhs);
+      print_binop(ps, i->u.binop.op);
+      print_value(ps, i->u.binop.rhs);
       break;
     }
     case FCmp: {

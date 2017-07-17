@@ -168,6 +168,9 @@ void f_close_module(FModule *m);
 /** Check if the type is float */
 #define f_is_float(t) ((t) == FFloat || (t) == FDouble)
 
+/** Check if the type is numeric (int or float) */
+#define f_is_num(t) (f_is_int(t) || f_is_float(t))
+
 /** Create a function type */
 int f_ftype(FModule *m, enum FType ret, int nargs, ...);
 

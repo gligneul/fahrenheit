@@ -103,8 +103,13 @@ FValue f_cast(FBuilder b, enum FCastTag op, FValue val, enum FType type) {
 }
 
 FValue f_binop(FBuilder b, enum FBinopTag op, FValue lhs, FValue rhs) {
-  FInstr *lhsi = f_instr(b.module, b.function, lhs);
-  FInstr *i = addinstr(b, lhsi->type, FBinop);
+  FInstr *i = NULL;
+  enum FType type = FVoid;
+  if (!f_null(lhs)) {
+    FInstr *lhsi = f_instr(b.module, b.function, lhs);
+    type = lhsi->type;
+  }
+  i = addinstr(b, type, FBinop);
   i->u.binop.op = op;
   i->u.binop.lhs = lhs;
   i->u.binop.rhs = rhs;

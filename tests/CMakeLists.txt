@@ -20,4 +20,5 @@ fahrenheit_test(basic)
 fahrenheit_test(getarg)
 fahrenheit_test(mem)
 fahrenheit_test(cast)
+fahrenheit_test(binop)
 
