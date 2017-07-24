@@ -158,7 +158,7 @@ function test.epilog()
 end
 
 -- Common setup for fahrenheit tests
--- Declare the variables module, engine, functions[n], bblocks[n], 
+-- Declare the variables module, engine, f[n], bb[n], 
 -- v[n] (values) and b (builder)
 -- Receive a string with any other necessary declarations
 function test.setup(decls)
@@ -167,15 +167,15 @@ function test.setup(decls)
   {
     FModule module;
     FEngine engine;
-    int functions[100] = {0};
-    int bblocks[100] = {0};
+    int f[100] = {0};
+    int bb[100] = {0};
     FValue v[100] = {{0}};
     FBuilder b;
     ]].. decls ..[[
     f_init_module(&module);
     f_init_engine(&engine);
-    (void)functions;
-    (void)bblocks;
+    (void)f;
+    (void)bb;
     (void)v;
     (void)b;
 ]])
@@ -203,14 +203,14 @@ function test.add_function(f, ftype)
     local args_str = table.concat(ftype.args, ', ')
     if args_str == '' then args_str = '0' end
     print(([[
-    functions[%d] = f_add_function(&module, f_ftype(&module, %s, %d, %s));
+    f[%d] = f_add_function(&module, f_ftype(&module, %s, %d, %s));
 ]]):format(f, ftype.ret, #ftype.args, args_str))
 end
 
 function test.start_function(f, bb)
     print(([[
-    bblocks[%d] = f_add_bblock(&module, functions[%d]);
-    b = f_builder(&module, functions[%d], bblocks[%d]);
+    bb[%d] = f_add_bblock(&module, f[%d]);
+    b = f_builder(&module, f[%d], bb[%d]);
 ]]):format(bb, f, f, bb))
 end
 

@@ -43,7 +43,7 @@ enum FType {
 /** Instruction types */
 enum FInstrTag {
   FKonst, FGetarg, FLoad, FStore, FOffset, FCast, FBinop,
-  FCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
+  FIntCmp, FFpCmp, FJmpIf, FJmp, FSelect, FRet, FCall, FPhi
 };
 
 /** Cast operations */
@@ -59,9 +59,17 @@ enum FBinopTag {
   FAdd, FSub, FMul, FDiv, FRem, FShl, FShr, FAnd, FOr, FXor
 };
 
-/** Comparison operations */
-enum FCmpTag {
-  FEq, FNe, FLe, FLt, FGe, FGt
+/** Integer comparison operations */
+enum FIntCmpTag {
+  FIntEq, FIntNe,
+  FIntSLe, FIntSLt, FIntSGe, FIntSGt,   /* signed */
+  FIntULe, FIntULt, FIntUGe, FIntUGt    /* unsigned */
+};
+
+/** Float point comparison operations */
+enum FFpCmpTag {
+  FFpOEq, FFpONe, FFpOLe, FFpOLt, FFpOGe, FFpOGt,   /* ordered */
+  FFpUEq, FFpUNe, FFpULe, FFpULt, FFpUGe, FFpUGt    /* unordered */
 };
 
 /** A value is a reference to an instruction inside a basic block */
@@ -95,7 +103,8 @@ typedef struct FInstr {
     struct { FValue addr; FValue offset; int negative; } offset;
     struct { enum FCastTag op; FValue val; } cast;
     struct { enum FBinopTag op; FValue lhs; FValue rhs; } binop;
-    struct { enum FCmpTag op; FValue lhs; FValue rhs; } cmp;
+    struct { enum FIntCmpTag op; FValue lhs; FValue rhs; } intcmp;
+    struct { enum FFpCmpTag op; FValue lhs; FValue rhs; } fpcmp;
     struct { FValue cond; int truebr; int falsebr; } jmpif;
     struct { int dest; } jmp;
     struct { FValue cond; FValue truev; FValue falsev; } select;

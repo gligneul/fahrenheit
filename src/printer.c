@@ -164,6 +164,38 @@ static void print_binop(PrinterState *ps, enum FBinopTag op) {
   }
 }
 
+static void print_intcmp(PrinterState *ps, enum FIntCmpTag op) {
+  switch (op) {
+    case FIntEq: fprintf(ps->f, " == "); break;
+    case FIntNe: fprintf(ps->f, " ~= "); break;
+    case FIntULe: fprintf(ps->f, " U <= "); break;
+    case FIntULt: fprintf(ps->f, " U < "); break;
+    case FIntUGe: fprintf(ps->f, " U >= "); break;
+    case FIntUGt: fprintf(ps->f, " U > "); break;
+    case FIntSLe: fprintf(ps->f, " S <= "); break;
+    case FIntSLt: fprintf(ps->f, " S < "); break;
+    case FIntSGe: fprintf(ps->f, " S >= "); break;
+    case FIntSGt: fprintf(ps->f, " S > "); break;
+  }
+}
+
+static void print_fpcmp(PrinterState *ps, enum FFpCmpTag op) {
+  switch (op) {
+    case FFpOEq: fprintf(ps->f, " O == "); break;
+    case FFpONe: fprintf(ps->f, " O ~= "); break;
+    case FFpOLe: fprintf(ps->f, " O <= "); break;
+    case FFpOLt: fprintf(ps->f, " O < "); break;
+    case FFpOGe: fprintf(ps->f, " O >= "); break;
+    case FFpOGt: fprintf(ps->f, " O > "); break;
+    case FFpUEq: fprintf(ps->f, " U == "); break;
+    case FFpUNe: fprintf(ps->f, " U ~= "); break;
+    case FFpULe: fprintf(ps->f, " U <= "); break;
+    case FFpULt: fprintf(ps->f, " U < "); break;
+    case FFpUGe: fprintf(ps->f, " U >= "); break;
+    case FFpUGt: fprintf(ps->f, " U > "); break;
+  }
+}
+
 static void print_instruction(PrinterState *ps, int bblock, int instr) {
   FValue v = f_value(bblock, instr);
   FInstr *i = f_instr(ps->m, ps->function, v);
@@ -218,16 +250,41 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
       print_value(ps, i->u.binop.rhs);
       break;
     }
-    case FCmp: {
+    case FIntCmp: {
+      fprintf(ps->f, "intcmp ");
+      print_value(ps, i->u.intcmp.lhs);
+      print_intcmp(ps, i->u.intcmp.op);
+      print_value(ps, i->u.intcmp.rhs);
+      break;
+    }
+    case FFpCmp: {
+      fprintf(ps->f, "fpcmp ");
+      print_value(ps, i->u.fpcmp.lhs);
+      print_fpcmp(ps, i->u.fpcmp.op);
+      print_value(ps, i->u.fpcmp.rhs);
       break;
     }
     case FJmpIf: {
+      fprintf(ps->f, "jmpif ");
+      print_value(ps, i->u.jmpif.cond);
+      fprintf(ps->f, " then ");
+      print_bblock(ps, i->u.jmpif.truebr);
+      fprintf(ps->f, " else ");
+      print_bblock(ps, i->u.jmpif.falsebr);
       break;
     }
     case FJmp: {
+      fprintf(ps->f, "jmp ");
+      print_bblock(ps, i->u.jmp.dest);
       break;
     }
     case FSelect: {
+      fprintf(ps->f, "select ");
+      print_value(ps, i->u.select.cond);
+      fprintf(ps->f, " then ");
+      print_value(ps, i->u.select.truev);
+      fprintf(ps->f, " else ");
+      print_value(ps, i->u.select.falsev);
       break;
     }
     case FRet: {
@@ -240,9 +297,11 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
       break;
     }
     case FCall: {
+      fprintf(ps->f, "call ");
       break;
     }
     case FPhi: {
+      fprintf(ps->f, "phi ");
       break;
     }
   }

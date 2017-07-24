@@ -22,6 +22,7 @@ message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 include_directories(${LLVM_INCLUDE_DIRS})
 llvm_map_components_to_libnames(llvm_libs analysis core mcjit native)
 target_link_libraries(fahrenheit ${llvm_libs})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
 
 # submodules
 add_subdirectory(ext/stdplus)

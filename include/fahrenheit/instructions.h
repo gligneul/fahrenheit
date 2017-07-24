@@ -49,6 +49,9 @@ FValue f_constf(FBuilder b, double val, enum FType type);
 /** Create a constant pointer */
 FValue f_constp(FBuilder b, void *val);
 
+/** Create a null pointer */
+#define f_nullp(b) f_constp(b, NULL)
+
 /** Obtain the nth function argument */
 FValue f_getarg(FBuilder b, int n);
 
@@ -72,9 +75,14 @@ FValue f_cast(FBuilder b, enum FCastTag op, FValue val, enum FType type);
  * The operands must have exactaly the same type. */
 FValue f_binop(FBuilder b, enum FBinopTag op, FValue lhs, FValue rhs);
 
-/** Compare two values and return a boolean
+/** Compare two integer values and return a boolean
+ * The operands must have exactaly the same type.
+ * The Eq and Nq operations also can be used to compare pointers. */
+FValue f_intcmp(FBuilder b, enum FIntCmpTag op, FValue lhs, FValue rhs);
+
+/** Compare two float pointe values and return a boolean
  * The operands must have exactaly the same type. */
-FValue f_cmp(FBuilder b, enum FCmpTag op, FValue lhs, FValue rhs);
+FValue f_fpcmp(FBuilder b, enum FFpCmpTag op, FValue lhs, FValue rhs);
 
 /** Jump to the true branch if the condition holds, else jump to the false one
  * The condition must be an integer. */

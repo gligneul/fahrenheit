@@ -149,6 +149,42 @@ llvm::Value *get_value(FunctionState &fs, FValue irvalue) {
   return fs.values[irvalue.bblock][irvalue.instr];
 }
 
+/* Convert an integer comparison */
+llvm::CmpInst::Predicate convert_intcmp(enum FIntCmpTag op) {
+  switch (op) {
+    case FIntEq:  return llvm::CmpInst::ICMP_EQ;
+    case FIntNe:  return llvm::CmpInst::ICMP_NE;
+    case FIntSLe: return llvm::CmpInst::ICMP_SLE;
+    case FIntSLt: return llvm::CmpInst::ICMP_SLT;
+    case FIntSGe: return llvm::CmpInst::ICMP_SGE;
+    case FIntSGt: return llvm::CmpInst::ICMP_SGT;
+    case FIntULe: return llvm::CmpInst::ICMP_ULE;
+    case FIntULt: return llvm::CmpInst::ICMP_ULT;
+    case FIntUGe: return llvm::CmpInst::ICMP_UGE;
+    case FIntUGt: return llvm::CmpInst::ICMP_UGT;
+  }
+  return llvm::CmpInst::ICMP_EQ;
+}
+
+/* Convert an float point comparison */
+llvm::CmpInst::Predicate convert_fpcmp(enum FFpCmpTag op) {
+  switch (op) {
+    case FFpOEq: return llvm::CmpInst::FCMP_OEQ;
+    case FFpONe: return llvm::CmpInst::FCMP_ONE;
+    case FFpOLe: return llvm::CmpInst::FCMP_OLE;
+    case FFpOLt: return llvm::CmpInst::FCMP_OLT;
+    case FFpOGe: return llvm::CmpInst::FCMP_OGE;
+    case FFpOGt: return llvm::CmpInst::FCMP_OGT;
+    case FFpUEq: return llvm::CmpInst::FCMP_UEQ;
+    case FFpUNe: return llvm::CmpInst::FCMP_UNE;
+    case FFpULe: return llvm::CmpInst::FCMP_ULE;
+    case FFpULt: return llvm::CmpInst::FCMP_ULT;
+    case FFpUGe: return llvm::CmpInst::FCMP_UGE;
+    case FFpUGt: return llvm::CmpInst::FCMP_UGT;
+  }
+  return llvm::CmpInst::FCMP_OEQ;
+}
+
 /* Compile a single instruction */
 void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
   auto function = ms.functions[fs.function];
@@ -235,16 +271,37 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       v = b.CreateBinOp(op, lhs, rhs);
       break;
     }
-    case FCmp: {
+    case FIntCmp: {
+      auto lhs = get_value(fs, i->u.intcmp.lhs);
+      auto rhs = get_value(fs, i->u.intcmp.rhs);
+      auto op = convert_intcmp(i->u.intcmp.op);
+      v = b.CreateICmp(op, lhs, rhs);
+      break;
+    }
+    case FFpCmp: {
+      auto lhs = get_value(fs, i->u.fpcmp.lhs);
+      auto rhs = get_value(fs, i->u.fpcmp.rhs);
+      auto op = convert_fpcmp(i->u.fpcmp.op);
+      v = b.CreateFCmp(op, lhs, rhs);
       break;
     }
     case FJmpIf: {
+      auto cond = get_value(fs, i->u.jmpif.cond);
+      auto truebr = fs.bblocks[i->u.jmpif.truebr];
+      auto falsebr = fs.bblocks[i->u.jmpif.falsebr];
+      v = b.CreateCondBr(cond, truebr, falsebr);
       break;
     }
     case FJmp: {
+      auto dest = fs.bblocks[i->u.jmp.dest];
+      v = b.CreateBr(dest);
       break;
     }
     case FSelect: {
+      auto cond = get_value(fs, i->u.select.cond);
+      auto truev = get_value(fs, i->u.select.truev);
+      auto falsev = get_value(fs, i->u.select.falsev);
+      v = b.CreateSelect(cond, truev, falsev);
       break;
     }
     case FRet: {

@@ -116,11 +116,19 @@ FValue f_binop(FBuilder b, enum FBinopTag op, FValue lhs, FValue rhs) {
   return lastvalue(b);
 }
 
-FValue f_cmp(FBuilder b, enum FCmpTag op, FValue lhs, FValue rhs) {
-  FInstr *i = addinstr(b, FBool, FCmp);
-  i->u.cmp.op = op;
-  i->u.cmp.lhs = lhs;
-  i->u.cmp.rhs = rhs;
+FValue f_intcmp(FBuilder b, enum FIntCmpTag op, FValue lhs, FValue rhs) {
+  FInstr *i = addinstr(b, FBool, FIntCmp);
+  i->u.intcmp.op = op;
+  i->u.intcmp.lhs = lhs;
+  i->u.intcmp.rhs = rhs;
+  return lastvalue(b);
+}
+
+FValue f_fpcmp(FBuilder b, enum FFpCmpTag op, FValue lhs, FValue rhs) {
+  FInstr *i = addinstr(b, FBool, FFpCmp);
+  i->u.fpcmp.op = op;
+  i->u.fpcmp.lhs = lhs;
+  i->u.fpcmp.rhs = rhs;
   return lastvalue(b);
 }
 

@@ -58,6 +58,13 @@ static FInstr *get_instr(VerifyState *vs, FValue v) {
   return f_instr(vs->m, vs->f, v);
 }
 
+/* Verify if the basic block is valid */
+static void verify_bb(VerifyState *vs, int bb) {
+  FFunction *f = f_get_function(vs->m, vs->f);
+  int nbbs = vec_size(f->u.bblocks);
+  verify(vs, bb >= 1 && bb < nbbs, "invalid basic block %d", bb);
+}
+
 /* Verify an instruction */
 static void verify_instr(VerifyState *vs) {
   FFunctionType *ftype = f_get_ftype_by_function(vs->m, vs->f);
@@ -118,25 +125,49 @@ static void verify_instr(VerifyState *vs) {
       enum FType rhs_type = get_instr(vs, i->u.binop.rhs)->type;
       verify(vs, lhs_type == rhs_type, "type mismatch in binop");
       if (op >= FAdd && op <= FDiv)
-        verify(vs, f_is_num(lhs_type) && f_is_num(rhs_type),
-          "invalid binop type");
+        verify(vs, f_is_num(lhs_type), "invalid binop type");
       else
-        verify(vs, f_is_int(lhs_type) && f_is_int(rhs_type),
-          "invalid binop type");
+        verify(vs, f_is_int(lhs_type), "invalid binop type");
       break;
     }
-    case FCmp:
-      verify(vs, 0, "instruction not verified");
+    case FIntCmp: {
+      enum FIntCmpTag op = i->u.intcmp.op;
+      enum FType lhs_type = get_instr(vs, i->u.intcmp.lhs)->type;
+      enum FType rhs_type = get_instr(vs, i->u.intcmp.rhs)->type;
+      verify(vs, lhs_type == rhs_type, "type mismatch");
+      if (op == FIntEq || op == FIntNe)
+        verify(vs, lhs_type == FPointer || f_is_int(lhs_type),
+            "invalid integer comparison");
+      else
+        verify(vs, f_is_int(lhs_type), "invalid integer comparison");
       break;
-    case FJmpIf:
-      verify(vs, 0, "instruction not verified");
+    }
+    case FFpCmp: {
+      enum FType lhs_type = get_instr(vs, i->u.fpcmp.lhs)->type;
+      enum FType rhs_type = get_instr(vs, i->u.fpcmp.rhs)->type;
+      verify(vs, lhs_type == rhs_type, "type mismatch in cmp");
+      verify(vs, f_is_float(lhs_type), "invalid float comparison");
       break;
-    case FJmp:
-      verify(vs, 0, "instruction not verified");
+    }
+    case FJmpIf: {
+      FInstr *cond = get_instr(vs, i->u.jmpif.cond);
+      verify(vs, cond->type == FBool, "condition must be boolean");
+      verify_bb(vs, i->u.jmpif.truebr);
+      verify_bb(vs, i->u.jmpif.falsebr);
       break;
-    case FSelect:
-      verify(vs, 0, "instruction not verified");
+    }
+    case FJmp: {
+      verify_bb(vs, i->u.jmpif.truebr);
       break;
+    }
+    case FSelect: {
+      FInstr *cond = get_instr(vs, i->u.jmpif.cond);
+      enum FType lhs_type = get_instr(vs, i->u.select.truev)->type;
+      enum FType rhs_type = get_instr(vs, i->u.select.falsev)->type;
+      verify(vs, cond->type == FBool, "select condition must be boolean");
+      verify(vs, lhs_type == rhs_type, "type mismatch in select");
+      break;
+    }
     case FRet: {
       const char *err = "return type missmatch";
       FValue retv = i->u.ret.val;
