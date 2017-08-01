@@ -39,6 +39,7 @@
 #include <fahrenheit/instructions.h>
 #include <fahrenheit/ir.h>
 #include <fahrenheit/printer.h>
+#include <fahrenheit/util.h>
 #include <fahrenheit/verify.h>
 #include <fahrenheit/version.h>
 

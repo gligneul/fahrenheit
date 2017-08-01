@@ -23,3 +23,5 @@ fahrenheit_test(cast)
 fahrenheit_test(binop)
 fahrenheit_test(cmpjmp)
 
+fahrenheit_test(util)
+

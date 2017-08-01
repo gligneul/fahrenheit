@@ -121,12 +121,15 @@ end
 
 -- Initialize the C source file
 -- Should be the first function called in a test generator
-function test.preamble()
+function test.preamble(decls)
+    decls = decls or ''
     print([[
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdplus/stdplus.h>
 #include <fahrenheit/fahrenheit.h>
+
+]].. decls ..[[
 
 static int usedmem = 0;
 static char err[FVerifyBufferSize];

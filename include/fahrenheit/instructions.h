@@ -64,7 +64,8 @@ FValue f_load(FBuilder b, FValue addr, enum FType type);
 FValue f_store(FBuilder b, FValue addr, FValue val);
 
 /** Add an offset in bytes to the address, resulting in another address
- * The address must be a pointer and the offset an integer. */
+ * The address must be a pointer and the offset an integer.
+ * The negative parameter indicates if the offset is negative or positive. */
 FValue f_offset(FBuilder b, FValue addr, FValue offset, int negative);
 
 /** Cast the value to the given type
