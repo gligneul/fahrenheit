@@ -4,5 +4,5 @@
 
 Intermediate representation and backend for JIT compilers
 
-Check out how to install, usage, examples, documentation and more at: https://fahrenheit.github.io/
+Check out how to install, usage, examples, documentation and more at: https://gligneul.github.io/fahrenheit/index.html
 
