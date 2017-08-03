@@ -25,10 +25,12 @@
 #ifndef fahrenheit_instructions_h
 #define fahrenheit_instructions_h
 
-/** \file instructions.h
+/** @file instructions.h
  *
- * This module provides the functions to create the intermediate representation
- * instructions. 
+ * @defgroup Instructions
+ * @brief Create the intermediate representation instructions
+ *
+ * @{
  * Before creating the instructions, you must create a builder (which is
  * available at the IR module).
  */
@@ -117,10 +119,12 @@ FValue f_callv(FBuilder b, int function, FValue *args);
  * This instruction must be at the begining of the basic block. */
 FValue f_phi(FBuilder b, enum FType type);
 
-/* Add an incoming value to a phi
+/** Add an incoming value to a phi
  * The passed basic block must be an ancestral block and the value must have
  * the same type of the phi. */
 void f_add_incoming(FBuilder b, FValue phi, int bb, FValue value);
+
+/**@}*/
 
 #endif
 

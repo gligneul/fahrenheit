@@ -25,10 +25,12 @@
 #ifndef fahrenheit_verify_h
 #define fahrenheit_verify_h
 
-/** \file verify.h
+/** @file verify.h
  *
- * This module is responsible for verifying if the intermediate representation
- * is well formed.
+ * @defgroup verify
+ * @brief Verify if the IR is well formed
+ *
+ * @{
  */
 
 /** The required size for error messages */
@@ -47,6 +49,8 @@ int f_verify_module(struct FModule *m, char *err);
  * Return by reference the error message. The err parameter should be
  * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */
 int f_verify_function(struct FModule *m, int function, char *err);
+
+/**@}*/
 
 #endif
 

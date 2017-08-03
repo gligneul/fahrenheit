@@ -25,9 +25,8 @@
 #ifndef fahrenheit_version_h
 #define fahrenheit_version_h
 
-/** \file version.h
- *
- * This module provide the fahrenheit version.
+/** @file version.h
+ *  @brief Provide the current Fahrenheit version.
  */
 
 #define FAHRENHEIT_VERSION_MAJOR @FAHRENHEIT_VERSION_MAJOR@

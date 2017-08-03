@@ -25,10 +25,12 @@
 #ifndef fahrenheit_util_h
 #define fahrenheit_util_h
 
-/** \file util.h
+/** @file util.h
  *
- * This module provides utility functions that ease the creation of a chain of
- * instruction.
+ * @defgroup Util
+ * @brief Ease the creation of a chain of instruction
+ *
+ * @{
  */
 
 /** Obtain an offset of an array's element
@@ -57,6 +59,8 @@
 /** Store a value in a struct's field */
 #define f_field_set(b, strukt, addr, field, val) \
     f_store(b, f_offsetof(b, strukt, addr, field), val)
+
+/**@}*/
 
 #endif
 

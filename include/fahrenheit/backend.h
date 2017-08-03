@@ -25,11 +25,14 @@
 #ifndef fahrenheit_backend_h
 #define fahrenheit_backend_h
 
-/** \file backend.h
+/** @file backend.h
  *
- * This module is responsible for providing a way to compile the IR functions
- * into machine code.
- * The IR module can be disposed after it is compiled.
+ * @defgroup Backend
+ * @brief Compile the IR into machine code
+ *
+ * @{
+ * Use the LLVM toolchain under the hood.
+ * Notice that the IR module can be disposed after it is compiled.
  */
 
 struct FModule;
@@ -59,6 +62,8 @@ int f_compile(FEngine *e, struct FModule *m);
  * The parameter args should be inside a parenteses (eg. (void), (int, int)). */
 #define f_get_fpointer(e, function, ret, args) \
   ((ret(*)args)(e.funcs[function]))
+
+/**@}*/
 
 #endif
 

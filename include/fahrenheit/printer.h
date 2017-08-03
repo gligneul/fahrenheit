@@ -25,9 +25,12 @@
 #ifndef fahrenheit_printer_h
 #define fahrenheit_printer_h
 
-/** \file printer.h
+/** @file printer.h
  *
- * This module provide a way to print the module which is useful for debugging.
+ * @defgroup Printer
+ * @brief Print the IR (useful for debugging)
+ *
+ * @{
  */
 
 #include <stdio.h>
@@ -36,6 +39,8 @@ struct FModule;
 
 /** Print the module in the given output (eg. stdout, stderr) */
 void f_printer(struct FModule *m, FILE *f);
+
+/**@}*/
 
 #endif
 

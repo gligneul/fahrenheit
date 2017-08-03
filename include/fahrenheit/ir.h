@@ -25,9 +25,15 @@
 #ifndef fahrenheit_ir_h
 #define fahrenheit_ir_h
 
-/** \file ir.h
+/** @file ir.h
  *
- * This is the intermediate representation for fahrenheit.
+ * @defgroup IR
+ * @brief Definition of the intermediate representation.
+ *
+ * @{
+ * The module is the root structure of this representation.
+ * A module can have several functions (including external ones).
+ * A module function is formed by basic blocks and SSA instructions.
  */
 
 #include <stdplus/stdplus.h>
@@ -229,6 +235,8 @@ int f_null(FValue v);
 
 /** Obtain the instruction given the value */
 FInstr* f_instr(FModule *m, int function, FValue v);
+
+/**@}*/
 
 #endif
 
