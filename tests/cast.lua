@@ -27,35 +27,60 @@ local test = require 'test'
 test.preamble()
 
 -- Cast null value
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_cast(b, FUIntCast, FNullValue, FInt32);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_cast(b, FUIntCast, FNullValue, FInt32);]]
+    }}
+}
 
 -- Cast from void
-test.case_fail('FVoid', {'FPointer'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_store(b, v[0], v[0]);
-    v[2] = f_cast(b, FUIntCast, v[1], FInt32);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FPointer'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_store(b, v[0], v[0]);
+            v[2] = f_cast(b, FUIntCast, v[1], FInt32);]]
+    }}
+}
 
 -- Cast from pointer
-test.case_fail('FVoid', {'FPointer'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_cast(b, FUIntCast, v[0], FInt32);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FPointer'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_cast(b, FUIntCast, v[0], FInt32);]]
+    }}
+}
 
 -- Cast to void
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_cast(b, FUIntCast, v[0], FVoid);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_cast(b, FUIntCast, v[0], FVoid);]]
+    }}
+}
 
 -- Cast to pointer
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_cast(b, FUIntCast, v[0], FPointer);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_cast(b, FUIntCast, v[0], FPointer);]]
+    }}
+}
 
 -- Test successful a cast
 local function test_cast(cast_type, from_type, to_type, force_int_signed)
@@ -68,12 +93,18 @@ local function test_cast(cast_type, from_type, to_type, force_int_signed)
     if test.is_float(from_type) and test.is_int(to_type) then
         to_value = '(ui64)' .. to_value
     end
-    local code = [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_cast(b, ]].. cast_type ..[[, v[0], ]].. to_type ..[[);
-           f_ret(b, v[1]);
-    ]]
-    test.case_success(to_type, {from_type}, code, from_value, to_value)
+    test.case {
+        success = true,
+        args = {from_value},
+        ret = to_value,
+        functions = {{
+            type = {to_type, from_type},
+            code = [[
+                v[0] = f_getarg(b, 0);
+                v[1] = f_cast(b, ]].. cast_type ..[[, v[0], ]].. to_type ..[[);
+                       f_ret(b, v[1]);]]
+        }}
+    }
 end
 
 -- Integer casts

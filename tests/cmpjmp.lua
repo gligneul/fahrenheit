@@ -27,52 +27,89 @@ local test = require 'test'
 test.preamble()
 
 -- compare null left value
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_intcmp(b, FIntEq, FNullValue, v[0]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_intcmp(b, FIntEq, FNullValue, v[0]);]]
+    }}
+}
 
 -- compare null right value
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_intcmp(b, FIntEq, v[0], FNullValue);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_intcmp(b, FIntEq, v[0], FNullValue);]]
+    }}
+}
 
 -- compare values of different types
-test.case_fail('FVoid', {'FInt32', 'FInt64'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_intcmp(b, FIntEq, v[0], v[1]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32', 'FInt64'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_getarg(b, 1);
+            v[2] = f_intcmp(b, FIntEq, v[0], v[1]);]]
+    }}
+}
 
 -- float compare null left value
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_intcmp(b, FFpOEq, FNullValue, v[0]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_intcmp(b, FFpOEq, FNullValue, v[0]);]]
+    }}
+}
 
 -- float compare null right value
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_intcmp(b, FFpOEq, v[0], FNullValue);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_intcmp(b, FFpOEq, v[0], FNullValue);]]
+    }}
+}
 
 -- float compare values of different types
-test.case_fail('FVoid', {'FInt32', 'FInt64'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_intcmp(b, FFpOEq, v[0], v[1]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32', 'FInt64'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_getarg(b, 1);
+            v[2] = f_intcmp(b, FFpOEq, v[0], v[1]);]]
+    }}
+}
 
 -- invalid pointer comparison
-local invalid_ptr_cmp = {'FIntSLe', 'FIntSLt', 'FIntSGe', 'FIntSGt',
-    'FIntULe', 'FIntULt', 'FIntUGe', 'FIntUGt'}
+local invalid_ptr_cmp = {
+    'FIntSLe', 'FIntSLt', 'FIntSGe', 'FIntSGt',
+    'FIntULe', 'FIntULt', 'FIntUGe', 'FIntUGt'
+}
 for _, op in ipairs(invalid_ptr_cmp) do
-    test.case_fail('FVoid', {'FPointer', 'FPointer'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_intcmp(b, ]].. op ..[[, v[0], v[1]);
-]])
+    test.case {
+        success = false,
+        functions = {{
+            type = {'FVoid', 'FPointer', 'FPointer'},
+            code = [[
+                v[0] = f_getarg(b, 0);
+                v[1] = f_getarg(b, 1);
+                v[2] = f_intcmp(b, ]].. op ..[[, v[0], v[1]);]]
+        }}
+    }
 end
 
 -- compare non int in intcmp
@@ -80,19 +117,29 @@ end
 -- compare non float in fpcmp
 
 -- jmpif with null value
-test.case_fail('FVoid', {}, [[
-    bb[1] = f_add_bblock(&module, f[0]);
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid'},
+        code = [[
+            bb[1] = f_add_bblock(&module, f[0]);
 
-           f_jmpif(b, FNullValue, bb[1], bb[1]);
-]])
+                   f_jmpif(b, FNullValue, bb[1], bb[1]);]]
+    }}
+}
 
 -- jmpif with non boolean
-test.case_fail('FVoid', {'FInt32'}, [[
-    bb[1] = f_add_bblock(&module, f[0]);
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            bb[1] = f_add_bblock(&module, f[0]);
 
-    v[0] = f_getarg(b, 0);
-           f_jmpif(b, v[0], bb[1], bb[1]);
-]])
+            v[0] = f_getarg(b, 0);
+                   f_jmpif(b, v[0], bb[1], bb[1]);]]
+    }}
+}
 
 -- jmpif to invalid bb
 

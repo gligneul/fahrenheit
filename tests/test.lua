@@ -187,34 +187,31 @@ end
 -- End a test case (must be called after setup)
 function test.teardown()
     print([[
-    f_printer(&module, stdout);
     f_close_module(&module);
     f_close_engine(&engine);
     test(usedmem == 0);
     test_cases++;
+    puts("----------------------------------------");
   }
 ]])
 end
 
--- Create a function type
-function test.make_ftype(ret, ...)
-    return { ret = ret, args = {...}  }
-end
-
 -- Add a function with the given type
 function test.add_function(f, ftype)
-    local args_str = table.concat(ftype.args, ', ')
+    local ret = ftype[1]
+    local args = table.pack(table.unpack(ftype, 2))
+    local args_str = table.concat(args, ', ')
     if args_str == '' then args_str = '0' end
     print(([[
     f[%d] = f_add_function(&module, f_ftype(&module, %s, %d, %s));
-]]):format(f, ftype.ret, #ftype.args, args_str))
+]]):format(f, ret, #args, args_str))
 end
 
-function test.start_function(f, bb)
+function test.start_function(f)
     print(([[
-    bb[%d] = f_add_bblock(&module, f[%d]);
-    b = f_builder(&module, f[%d], bb[%d]);
-]]):format(bb, f, f, bb))
+    bb[0] = f_add_bblock(&module, f[%d]);
+    b = f_builder(&module, f[%d], bb[0]);
+]]):format(f, f))
 end
 
 -- Call the verify function and expect success
@@ -223,6 +220,9 @@ function test.verify_sucess()
     if(f_verify_module(&module, err)) {
       fprintf(stderr, "error: %s\n", err);
       exit(1);
+    }
+    else {
+      fprintf(stderr, "verification ok\n");
     }
 ]])
 end
@@ -233,6 +233,9 @@ function test.verify_fail()
     if(!f_verify_module(&module, err)) {
       fprintf(stderr, "expected an error\n");
       exit(1);
+    }
+    else {
+      fprintf(stderr, "error: %s\n", err);
     }
 ]])
 end
@@ -246,8 +249,8 @@ end
 
 -- Run a function
 function test.run_function(f, ftype, args, ret)
-    local fret = test.convert_type(ftype.ret)
-    local fargs = map(test.convert_type, ftype.args)
+    local fret = test.convert_type(ftype[1])
+    local fargs = map(test.convert_type, table.pack(table.unpack(ftype, 2)))
     local fargs_str = table.concat(fargs, ', ')
     if fargs_str == '' then fargs_str = 'void' end
     if ret then
@@ -261,34 +264,38 @@ function test.run_function(f, ftype, args, ret)
     end
 end
 
--- Print the module in stdout
-function test.print()
-    print([[
-    f_printer(&module, stdout);
-]])
-end
-
--- Test case that should fail
-function test.case_fail(ret, args, code)
-    test.setup()
-    local ftype = test.make_ftype(ret, table.unpack(args))
-    test.add_function(0, ftype)
-    test.start_function(0, 0)
-    print(code)
-    test.verify_fail()
-    test.teardown()
-end
-
--- Test case that should succeed
-function test.case_success(ret_type, args_type, code, args, expect_ret)
-    test.setup()
-    local ftype = test.make_ftype(ret_type, table.unpack(args_type))
-    test.add_function(0, ftype)
-    test.start_function(0, 0)
-    print(code)
-    test.verify_sucess()
-    test.compile()
-    test.run_function(0, ftype, args, expect_ret)
+-- Create a test case
+--
+-- Receive a table with the following structure:
+-- t = {
+--   decls = string?,           (declarations that should come before code)
+--   success = bool,            (true if the verification should succeed)
+--   args = {string...}?,       (list of arguments to the first function)
+--   ret = string?              (expected return from the function)
+--   functions = {              (list of the functions of the module)
+--     type = {ret, args...},   (function type)
+--     code = string,           (code that implements the function)
+--   },
+-- }
+function test.case(t)
+    test.setup(t.decls)
+    assert(t.functions)
+    for i, f in ipairs(t.functions) do
+        assert(f.type)
+        assert(f.code)
+        test.add_function(i - 1, f.type)
+        test.start_function(i - 1)
+        print(f.code)
+    end
+    print('    f_printer(&module, stdout);\n')
+    if t.success then
+        test.verify_sucess()
+        local args = table.concat(t.args, ', ')
+        test.compile()
+        test.run_function(0, t.functions[1].type, args, t.ret)
+    else
+        test.verify_fail()
+    end
     test.teardown()
 end
 

@@ -28,7 +28,7 @@ test.preamble()
 
 -- return arg in void function
 test.setup()
-test.add_function(0, test.make_ftype('FVoid', 'FInt32'))
+test.add_function(0, {'FVoid', 'FInt32'})
 test.start_function(0, 0)
 print([[
     v[0] = f_getarg(b, 0);
@@ -39,7 +39,7 @@ test.teardown()
 
 -- get arg from function without args
 test.setup()
-test.add_function(0, test.make_ftype('FVoid'))
+test.add_function(0, {'FVoid'})
 test.start_function(0, 0)
 print([[
     v[0] = f_getarg(b, 0);
@@ -51,7 +51,7 @@ test.teardown()
 -- return the arg (test for each type)
 for i = 1, #test.types - 1 do
     local t = test.types[i]
-    local ftype = test.make_ftype(t, t)
+    local ftype = {t, t}
     local v = test.default_value(t)
     test.setup()
     test.add_function(0, ftype)
@@ -67,7 +67,7 @@ for i = 1, #test.types - 1 do
 end
 
 -- return the second arg
-local ftype = test.make_ftype('FInt32', 'FFloat', 'FInt32')
+local ftype = {'FInt32', 'FFloat', 'FInt32'}
 test.setup()
 test.add_function(0, ftype)
 test.start_function(0, 0)
@@ -91,7 +91,7 @@ end
 table.insert(args_types, 'FInt32')
 table.insert(args, '123')
 local args_str = table.concat(args, ',')
-local ftype = test.make_ftype('FInt32', table.unpack(args_types))
+local ftype = {'FInt32', table.unpack(args_types)}
 test.setup()
 test.add_function(0, ftype)
 test.start_function(0, 0)

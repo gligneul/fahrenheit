@@ -38,13 +38,13 @@ test.teardown()
 
 -- empty function
 test.setup()
-test.add_function(0, test.make_ftype('FVoid'))
+test.add_function(0, {'FVoid'})
 test.verify_fail()
 test.teardown()
 
 -- return non void in void function
 test.setup()
-test.add_function(0, test.make_ftype('FVoid'))
+test.add_function(0, {'FVoid'})
 test.start_function(0, 0)
 print([[
     v[0] = f_consti(b, 123, FInt64);
@@ -55,7 +55,7 @@ test.teardown()
 
 -- return void in non void function
 test.setup()
-test.add_function(0, test.make_ftype('FInt64'))
+test.add_function(0, {'FInt64'})
 test.start_function(0, 0)
 print([[
     f_ret(b, FNullValue);
@@ -65,7 +65,7 @@ test.teardown()
 
 -- return void
 test.setup()
-local ftype = test.make_ftype('FVoid')
+local ftype = {'FVoid'}
 test.add_function(0, ftype)
 test.start_function(0, 0)
 print([[
@@ -80,7 +80,7 @@ test.teardown()
 for i = 1, #test.types - 1 do
     for j = 1, #test.types - 1 do
         test.setup()
-        local ftype = test.make_ftype(test.types[i])
+        local ftype = {test.types[i]}
         test.add_function(0, ftype)
         test.start_function(0, 0)
         local ktype = test.types[j]

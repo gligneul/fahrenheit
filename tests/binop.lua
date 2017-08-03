@@ -27,45 +27,75 @@ local test = require 'test'
 test.preamble()
 
 -- left value null
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_binop(b, FAdd, FNullValue, v[0]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_binop(b, FAdd, FNullValue, v[0]);]]
+    }}
+}
 
 -- right value null
-test.case_fail('FVoid', {'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_binop(b, FAdd, v[0], FNullValue);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_binop(b, FAdd, v[0], FNullValue);]]
+    }}
+}
 
 -- incompatible types
-test.case_fail('FVoid', {'FInt32', FInt64}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_binop(b, FAdd, v[0], v[1]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32', FInt64},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_getarg(b, 1);
+            v[2] = f_binop(b, FAdd, v[0], v[1]);]]
+    }}
+}
 
 -- pointer arithmetic
-test.case_fail('FVoid', {'FPointer'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_binop(b, FAdd, v[0], v[0]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FPointer'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_binop(b, FAdd, v[0], v[0]);]]
+    }}
+}
 
 -- pointer arithmetic 2
-test.case_fail('FVoid', {'FPointer', 'FInt32'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_binop(b, FAdd, v[0], v[1]);
-]])
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FPointer', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_getarg(b, 1);
+            v[2] = f_binop(b, FAdd, v[0], v[1]);]]
+    }}
+}
 
 -- invalid operations for floats
 local logical_ops = {'FRem', 'FShl', 'FShr', 'FAnd', 'FOr', 'FXor'}
 for _, op in ipairs(logical_ops) do
-    test.case_fail('FVoid', {'FFloat', 'FFloat'}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_binop(b, ]].. op ..[[, v[0], v[1]);
-]])
+    test.case {
+        success = false,
+        functions = {{
+            type = {'FVoid', 'FFloat', 'FFloat'},
+            code = [[
+                v[0] = f_getarg(b, 0);
+                v[1] = f_getarg(b, 1);
+                v[2] = f_binop(b, ]].. op ..[[, v[0], v[1]);]]
+        }}
+    }
 end
 
 -- create a string that performs the operation in C code
@@ -101,19 +131,29 @@ local function perform_op(t, op, l, r)
     end
 end
 
+-- test a binary op
+local function test_binary(t, op, r, l)
+    test.case {
+        success = true,
+        args =  {r, l},
+        ret = perform_op(t, op, r, l),
+        functions = {{
+            type = {t, t, t},
+            code = [[
+                v[0] = f_getarg(b, 0);
+                v[1] = f_getarg(b, 1);
+                v[2] = f_binop(b, ]].. op ..[[, v[0], v[1]);
+                       f_ret(b, v[2]);]]
+        }}
+    }
+end
+
 -- valid operations for floats
 local arith_ops = {'FAdd', 'FSub', 'FMul', 'FDiv'}
 for _, op in ipairs(arith_ops) do
     for _, t in ipairs(test.float_types) do
         local v = test.default_value(t)
-        local args = v .. ', ' .. v
-        local ret = perform_op(t, op, v, v)
-        test.case_success(t, {t, t}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_binop(b, ]].. op ..[[, v[0], v[1]);
-           f_ret(b, v[2]);
-]], args, ret)
+        test_binary(t, op, v, v)
     end
 end
 
@@ -121,14 +161,7 @@ end
 for _, op in ipairs(arith_ops) do
     for _, t in ipairs(test.int_types) do
         local v = test.default_value(t)
-        local args = v .. ', ' .. v
-        local ret = perform_op(t, op, v, v)
-        test.case_success(t, {t, t}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_binop(b, ]].. op ..[[, v[0], v[1]);
-           f_ret(b, v[2]);
-]], args, ret)
+        test_binary(t, op, v, v)
     end
 end
 
@@ -137,14 +170,7 @@ for _, op in ipairs(logical_ops) do
     for _, t in ipairs(test.int_types) do
         local r = test.default_value(t)
         local l = '4'
-        local args = r .. ', ' .. l
-        local ret = perform_op(t, op, r, l)
-        test.case_success(t, {t, t}, [[
-    v[0] = f_getarg(b, 0);
-    v[1] = f_getarg(b, 1);
-    v[2] = f_binop(b, ]].. op ..[[, v[0], v[1]);
-           f_ret(b, v[2]);
-]], args, ret)
+        test_binary(t, op, r, l)
     end
 end
 
