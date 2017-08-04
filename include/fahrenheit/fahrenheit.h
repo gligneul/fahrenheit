@@ -35,12 +35,13 @@
 Fahrenheit is a run-time code generator for JIT compilers.
 Currently, Fahrenheit uses the LLVM toolchain to generate machine code during
 run-time.
-Fahrenheit offers a ANSI C89 compliant API that encapsulates the
+Fahrenheit offers a ANSI C89 compliant API that encapsulates the C++ mess of
+LLVM.
 The API is simple and consise, with a few lines of code you can write a simple
-program that will be compiled during run-time:
+function that will be compiled during run-time:
 
 ```
-f_init_module(&m);
+// TODO
 ```
 
 # Installation
@@ -52,8 +53,8 @@ dependencies.
 
 ### C and C++ compiler
 
-Fahrenheit is a pure C library, but it requires a C++ compiler during the build
-phase.
+Fahrenheit provides a pure C interface, but it requires a C++ compiler during
+its the build phase.
 I recommend using g++:
 
 ```
@@ -69,23 +70,23 @@ should work:
 sudo apt-get install cmake
 ```
 
-If for some reason your cmake is out dated, you can download the source code and
+If for some reason your cmake is outdated, you can download the source code and
 compile it from: https://cmake.org/download/.
 
 ### LLVM
 
-Fahrenheit uses LLVM to generate code at runtime.
-You should download it directely from LLVM release page, instead of using the
-available on your package manager.
-The following commands will download and unpack LLVM-3.9 at your home folder.
+Fahrenheit uses LLVM to generate code at runtime. Download the version 3.9 from
+your package manager:
 
 ```
-cd ~
-wget http://releases.llvm.org/3.9.1/clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
-unxz clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz
-tar xfv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04.tar
-mv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04 llvm-3.9
+sudo apt-get install llvm-3.9-dev
 ```
+
+If your distro is outdated and doesn't have this version, you should download
+LLVM directely from their release page: http://releases.llvm.org/.
+
+And if you need to compile LLVM from source (it's not that hard), check out:
+https://llvm.org/docs/GettingStarted.html.
 
 ## Compiling Fahrenheit
 
@@ -100,14 +101,21 @@ cd fahrenheit
 git submodule update --init --recursive
 mkdir build
 cd build
-cmake -DLLVM_DIR="$HOME/llvm-3.9/lib/cmake/llvm/" ..
+cmake ..
 make -j4
 sudo make install
 ```
 
-## Installing Fahrenheit at a custom location
+### Useful CMake arguments:
 
-TODO
+- `-DLLVM_DIR="$HOME/llvm-3.9/lib/cmake/llvm/"`: use a LLVM from a custom folder
+  (eg. your home).
+- `-DCMAKE_INSTALL_PREFIX="$HOME/fahrenheit`: install Fahrenheit at a custom
+  location.
+- `-DFAHRENHEIT_DEV=1`: By default, Fahrenheit build will generate only the
+  library, no tests included. If you want to generate the tests, you must
+  include the FAHRENHEIT_DEV flag during cmake generation.
+- `-DCMAKE_BUILD_TYPE=Debug`: Useful if you want to debug Fahrenheit itself.
 
 # Examples
 
@@ -116,16 +124,6 @@ TODO
 # Documentation
 
 TODO
-
-# Develpment
-
-By default, Fahrenheit build will generate only the library, no tests included.
-If you want to generate the tests, you must include the FAHRENHEIT_DEV flag
-during cmake generation.
-
-```
-cmake -DFAHRENHEIT_DEV=1 -DLLVM_DIR="$HOME/llvm-3.9/lib/cmake/llvm/" ..
-```
 
 */
 
