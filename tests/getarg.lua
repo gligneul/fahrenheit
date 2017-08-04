@@ -27,58 +27,56 @@ local test = require 'test'
 test.preamble()
 
 -- return arg in void function
-test.setup()
-test.add_function(0, {'FVoid', 'FInt32'})
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 0);
-    f_ret(b, v[0]);
-]])
-test.verify_fail()
-test.teardown()
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            f_ret(b, v[0]);]]
+    }}
+}
 
 -- get arg from function without args
-test.setup()
-test.add_function(0, {'FVoid'})
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 0);
-    f_ret(b, v[0]);
-]])
-test.verify_fail()
-test.teardown()
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            f_ret(b, v[0]);]]
+    }}
+}
 
 -- return the arg (test for each type)
 for i = 1, #test.types - 1 do
     local t = test.types[i]
-    local ftype = {t, t}
     local v = test.default_value(t)
-    test.setup()
-    test.add_function(0, ftype)
-    test.start_function(0, 0)
-    print([[
-        v[0] = f_getarg(b, 0);
-        f_ret(b, v[0]);
-    ]])
-    test.verify_sucess()
-    test.compile()
-    test.run_function(0, ftype, v, v)
-    test.teardown()
+    test.case {
+        success = true,
+        args = {v},
+        ret = v,
+        functions = {{
+            type = {t, t},
+            code = [[
+                v[0] = f_getarg(b, 0);
+                f_ret(b, v[0]);]]
+        }}
+    }
 end
 
 -- return the second arg
-local ftype = {'FInt32', 'FFloat', 'FInt32'}
-test.setup()
-test.add_function(0, ftype)
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 1);
-    f_ret(b, v[0]);
-]])
-test.verify_sucess()
-test.compile()
-test.run_function(0, ftype, '0, 123', '123')
-test.teardown()
+test.case {
+    success = true,
+    args = {'0', '123'},
+    ret = '123',
+    functions = {{
+        type = {'FInt32', 'FFloat', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 1);
+            f_ret(b, v[0]);]]
+    }}
+}
 
 -- return the 10th arg
 local n = 10
@@ -90,19 +88,17 @@ for i = 1, n - 1 do
 end
 table.insert(args_types, 'FInt32')
 table.insert(args, '123')
-local args_str = table.concat(args, ',')
-local ftype = {'FInt32', table.unpack(args_types)}
-test.setup()
-test.add_function(0, ftype)
-test.start_function(0, 0)
-print([[
-    v[0] = f_getarg(b, 9);
-    f_ret(b, v[0]);
-]])
-test.verify_sucess()
-test.compile()
-test.run_function(0, ftype, args_str, '123')
-test.teardown()
+test.case {
+    success = true,
+    args = args,
+    ret = '123',
+    functions = {{
+        type = {'FInt32', table.unpack(args_types)},
+        code = [[
+            v[0] = f_getarg(b, 9);
+            f_ret(b, v[0]);]]
+    }}
+}
 
 test.epilog()
 

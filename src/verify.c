@@ -35,6 +35,7 @@ typedef struct VerifyState {
   int f;
   int bb;
   int i;
+  int bb_ended;
   jmp_buf jmp;
 } VerifyState;
 
@@ -63,6 +64,14 @@ static void verify_bb(VerifyState *vs, int bb) {
   FFunction *f = f_get_function(vs->m, vs->f);
   int nbbs = vec_size(f->u.bblocks);
   verify(vs, bb >= 1 && bb < nbbs, "invalid basic block %d", bb);
+}
+
+/* Verify if the instruction is the last one */
+static void verify_end(VerifyState *vs) {
+  FBBlock *bb = f_get_bblock(vs->m,  vs->f, vs->bb);
+  verify(vs, vs->i == (int)vec_size(*bb) - 1,
+    "instruction after basic block end");
+  vs->bb_ended = 1;
 }
 
 /* Verify an instruction */
@@ -154,10 +163,12 @@ static void verify_instr(VerifyState *vs) {
       verify(vs, cond->type == FBool, "condition must be boolean");
       verify_bb(vs, i->u.jmpif.truebr);
       verify_bb(vs, i->u.jmpif.falsebr);
+      verify_end(vs);
       break;
     }
     case FJmp: {
       verify_bb(vs, i->u.jmpif.truebr);
+      verify_end(vs);
       break;
     }
     case FSelect: {
@@ -178,6 +189,7 @@ static void verify_instr(VerifyState *vs) {
         FInstr *reti = get_instr(vs, retv);
         verify(vs, ftype->ret == reti->type, err);
       }
+      verify_end(vs);
       break;
     }
     case FCall:
@@ -190,10 +202,16 @@ static void verify_instr(VerifyState *vs) {
 }
 
 int f_verify_module(FModule *m, char *err) {
-  vec_for(m->functions, i, {
-    if (f_verify_function(m, i, err)) return 1;
-  });
-  return 0;
+  if (vec_empty(m->functions)) {
+    sprintf(err, "module with no functions");
+    return 1;
+  }
+  else {
+    vec_for(m->functions, i, {
+      if (f_verify_function(m, i, err)) return 1;
+    });
+    return 0;
+  }
 }
 
 int f_verify_function(FModule *m, int function, char *err) {
@@ -216,10 +234,12 @@ int f_verify_function(FModule *m, int function, char *err) {
       vec_for(f->u.bblocks, bb, {
         FBBlock *bblock = f_get_bblock(m, function, bb);
         vs.bb = bb;
+        vs.bb_ended = 0;
         vec_for(*bblock, i, {
           vs.i = i;
           verify_instr(&vs);
         });
+        verify(&vs, vs.bb_ended, "basic block not terminated");
       });
       break;
   }

@@ -22,88 +22,97 @@
 
 -- Test basic stuff, constants and return
 
--- TODO tests
--- bblock without return
--- instruction after return
--- unreacheable bblock
-
 local test = require 'test'
 
 test.preamble()
 
--- basic test, does nothing
-test.setup()
-test.verify_sucess()
-test.teardown()
+-- Module with no functions
+test.case {
+    success = false,
+    functions = {}
+}
 
--- empty function
-test.setup()
-test.add_function(0, {'FVoid'})
-test.verify_fail()
-test.teardown()
+-- Empty function
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid'},
+        code = ''
+    }}
+}
 
--- return non void in void function
-test.setup()
-test.add_function(0, {'FVoid'})
-test.start_function(0, 0)
-print([[
-    v[0] = f_consti(b, 123, FInt64);
-    f_ret(b, v[0]);
-]])
-test.verify_fail()
-test.teardown()
+-- Instruction after return
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid'},
+        code = [[
+            f_ret_void(b);
+            f_ret_void(b);]]
+    }}
+}
 
--- return void in non void function
-test.setup()
-test.add_function(0, {'FInt64'})
-test.start_function(0, 0)
-print([[
-    f_ret(b, FNullValue);
-]])
-test.verify_fail()
-test.teardown()
+-- Return value from void function
+test.case {
+    success = false,
+    functions = {{
+        type = {'FVoid'},
+        code = [[
+            v[0] = f_consti(b, 123, FInt64);
+            f_ret(b, v[0]);]]
+    }}
+}
 
--- return void
-test.setup()
-local ftype = {'FVoid'}
-test.add_function(0, ftype)
-test.start_function(0, 0)
-print([[
-    f_ret(b, FNullValue);
-]])
-test.verify_sucess()
-test.compile()
-test.run_function(0, ftype, '')
-test.teardown()
+-- No return in non void function
+test.case {
+    success = false,
+    functions = {{
+        type = {'FInt64'},
+        code = [[
+            f_ret(b, FNullValue);]]
+    }}
+}
 
--- return a constant
+-- Return void
+test.case {
+    success = true,
+    args = {},
+    functions = {{
+        type = {'FVoid'},
+        code = [[
+            f_ret_void(b);]]
+    }}
+}
+
+-- Create a IR constant
+local function create_const(v, ktype)
+    if ktype == 'FBool' then
+        return ('v[0] = f_constb(b, %s);'):format(v)
+    elseif test.is_int(ktype) then
+        return ('v[0] = f_consti(b, %s, %s);'):format(v, ktype)
+    elseif test.is_float(ktype) then
+        return ('v[0] = f_constf(b, %s, %s);'):format(v, ktype)
+    else
+        return ('v[0] = f_constp(b, %s);'):format(v)
+    end
+end
+
+-- Return a constant
 for i = 1, #test.types - 1 do
     for j = 1, #test.types - 1 do
-        test.setup()
-        local ftype = {test.types[i]}
-        test.add_function(0, ftype)
-        test.start_function(0, 0)
         local ktype = test.types[j]
         local v = test.default_value(ktype)
-        if ktype == 'FBool' then
-            print(('    v[0] = f_constb(b, %s);'):format(v))
-        elseif test.is_int(ktype) then
-            print(('    v[0] = f_consti(b, %s, %s);'):format(v, ktype))
-        elseif test.is_float(ktype) then
-            print(('    v[0] = f_constf(b, %s, %s);'):format(v, ktype))
-        else
-            print(('    v[0] = f_constp(b, %s);'):format(v))
-        end
-        print('    f_ret(b, v[0]);')
-        if i == j then
-            local ret = '(' .. test.convert_type(ktype) .. ')' .. v
-            test.verify_sucess()
-            test.compile()
-            test.run_function(0, ftype, '', ret)
-        else
-            test.verify_fail()
-        end
-        test.teardown()
+        local call = create_const(v, ktype)
+        test.case {
+            success = (i == j),
+            args = {},
+            ret = '(' .. test.convert_type(ktype) .. ')' .. v,
+            functions = {{
+                type = {test.types[i]},
+                code = call .. [[
+                   f_ret(b, v[0]);]]
+            }}
+        }
     end
 end
 

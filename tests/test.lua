@@ -164,7 +164,7 @@ end
 -- Declare the variables module, engine, f[n], bb[n], 
 -- v[n] (values) and b (builder)
 -- Receive a string with any other necessary declarations
-function test.setup(decls)
+local function setup_test(decls)
     decls = decls or ''
     print([[
   {
@@ -185,7 +185,7 @@ function test.setup(decls)
 end
 
 -- End a test case (must be called after setup)
-function test.teardown()
+local function teardown_test()
     print([[
     f_close_module(&module);
     f_close_engine(&engine);
@@ -197,28 +197,23 @@ function test.teardown()
 end
 
 -- Add a function with the given type
-function test.add_function(f, ftype)
+local function add_function(f, ftype)
     local ret = ftype[1]
     local args = table.pack(table.unpack(ftype, 2))
     local args_str = table.concat(args, ', ')
     if args_str == '' then args_str = '0' end
     print(([[
     f[%d] = f_add_function(&module, f_ftype(&module, %s, %d, %s));
-]]):format(f, ret, #args, args_str))
-end
-
-function test.start_function(f)
-    print(([[
     bb[0] = f_add_bblock(&module, f[%d]);
-    b = f_builder(&module, f[%d], bb[0]);
-]]):format(f, f))
+    b = f_builder(&module, f[%d], bb[0]);]]):
+        format(f, ret, #args, args_str, f, f))
 end
 
 -- Call the verify function and expect success
-function test.verify_sucess()
+local function verify_sucess()
     print([[
     if(f_verify_module(&module, err)) {
-      fprintf(stderr, "error: %s\n", err);
+      fprintf(stderr, "unexpected error: %s\n", err);
       exit(1);
     }
     else {
@@ -228,10 +223,10 @@ function test.verify_sucess()
 end
 
 -- Call the verify function and expect an error
-function test.verify_fail()
+local function verify_fail()
     print([[
     if(!f_verify_module(&module, err)) {
-      fprintf(stderr, "expected an error\n");
+      fprintf(stderr, "unexpected verification ok\n");
       exit(1);
     }
     else {
@@ -241,14 +236,14 @@ function test.verify_fail()
 end
 
 -- Compile the module
-function test.compile()
+local function compile()
     print([[
     test(f_compile(&engine, &module) == 0);
 ]])
 end
 
 -- Run a function
-function test.run_function(f, ftype, args, ret)
+local function run_function(f, ftype, args, ret)
     local fret = test.convert_type(ftype[1])
     local fargs = map(test.convert_type, table.pack(table.unpack(ftype, 2)))
     local fargs_str = table.concat(fargs, ', ')
@@ -271,32 +266,33 @@ end
 --   decls = string?,           (declarations that should come before code)
 --   success = bool,            (true if the verification should succeed)
 --   args = {string...}?,       (list of arguments to the first function)
---   ret = string?              (expected return from the function)
+--   ret = string?,             (expected return from the function)
+--   after = string?,           (code that will run after the function)
 --   functions = {              (list of the functions of the module)
 --     type = {ret, args...},   (function type)
 --     code = string,           (code that implements the function)
 --   },
 -- }
 function test.case(t)
-    test.setup(t.decls)
+    setup_test(t.decls)
     assert(t.functions)
     for i, f in ipairs(t.functions) do
         assert(f.type)
         assert(f.code)
-        test.add_function(i - 1, f.type)
-        test.start_function(i - 1)
+        add_function(i - 1, f.type)
         print(f.code)
     end
     print('    f_printer(&module, stdout);\n')
     if t.success then
-        test.verify_sucess()
+        verify_sucess()
         local args = table.concat(t.args, ', ')
-        test.compile()
-        test.run_function(0, t.functions[1].type, args, t.ret)
+        compile()
+        run_function(0, t.functions[1].type, args, t.ret)
+        if t.after then print(t.after) end
     else
-        test.verify_fail()
+        verify_fail()
     end
-    test.teardown()
+    teardown_test()
 end
 
 return test
