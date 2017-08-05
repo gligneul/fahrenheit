@@ -44,27 +44,31 @@ static void printer_init(PrinterState *ps, FILE *f, FModule *m,
   ps->f = f;
   ps->m = m;
   ps->function = function;
-  ps->valueid = mem_newarray(int *, vec_size(func->u.bblocks));
-  vec_for(func->u.bblocks, i, {
-    FBBlock *bb = vec_getref(func->u.bblocks, i);
-    ps->valueid[i] = mem_newarray(int, vec_size(*bb));
-    vec_for(*bb, j, {
-      FInstr *instr = f_instr(m, function, f_value(i, j));
-      if (instr->tag != FKonst && instr->type != FVoid)
-        ps->valueid[i][j] = id++;
-      else
-        ps->valueid[i][j] = -1;
+  if(func->tag == FModFunc) {
+    ps->valueid = mem_newarray(int *, vec_size(func->u.bblocks));
+    vec_for(func->u.bblocks, i, {
+      FBBlock *bb = vec_getref(func->u.bblocks, i);
+      ps->valueid[i] = mem_newarray(int, vec_size(*bb));
+      vec_for(*bb, j, {
+        FInstr *instr = f_instr(m, function, f_value(i, j));
+        if (instr->tag != FKonst && instr->type != FVoid)
+          ps->valueid[i][j] = id++;
+        else
+          ps->valueid[i][j] = -1;
+      });
     });
-  });
+  }
 }
 
 static void printer_finish(PrinterState *ps) {
   FFunction *func = f_get_function(ps->m, ps->function);
-  vec_for(func->u.bblocks, i, {
-    FBBlock *bb = vec_getref(func->u.bblocks, i);
-    mem_deletearray(ps->valueid[i], vec_size(*bb));
-  });
-  mem_deletearray(ps->valueid, vec_size(func->u.bblocks));
+  if(func->tag == FModFunc) {
+    vec_for(func->u.bblocks, i, {
+      FBBlock *bb = vec_getref(func->u.bblocks, i);
+      mem_deletearray(ps->valueid[i], vec_size(*bb));
+    });
+    mem_deletearray(ps->valueid, vec_size(func->u.bblocks));
+  }
 }
 
 static void print_type(PrinterState *ps, enum FType type) {
@@ -95,6 +99,8 @@ static void print_ftype(PrinterState *ps, FFunctionType *ftype) {
       print_type(ps, ftype->args[i]);
     }
   }
+  if (ftype->vararg)
+    fprintf(ps->f, ", ...");
   fprintf(ps->f, " -> ");
   print_type(ps, ftype->ret);
 }

@@ -22,6 +22,7 @@
  * IN THE SOFTWARE.
  */
 
+#include <sstream>
 #include <memory>
 #include <vector>
 
@@ -34,6 +35,7 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Verifier.h>
+#include <llvm/Support/DynamicLibrary.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 #pragma GCC diagnostic pop
@@ -133,15 +135,28 @@ llvm::Instruction::BinaryOps convert_binop(enum FBinopTag op, enum FType type) {
 
 /* Declare a function */
 void declare_function(ModuleState &ms, int function) {
+  auto f = f_get_function(ms.irmodule, function);
   auto ftype = f_get_ftype_by_function(ms.irmodule, function);
   auto ret = convert_type(ftype->ret);
   std::vector<llvm::Type*> args;
   for (int i = 0; i < ftype->nargs; ++i)
     args.push_back(convert_type(ftype->args[i]));
-  auto type = llvm::FunctionType::get(ret, args, false);
-  auto f = llvm::Function::Create(type, llvm::Function::ExternalLinkage,
-    "f" + std::to_string(function), ms.module.get());
-  ms.functions.push_back(f);
+  auto type = llvm::FunctionType::get(ret, args, ftype->vararg);
+  llvm::Function *llvm_f;
+  if (f->tag == FExtFunc) {
+    std::stringstream name;
+    name << "f" << f->u.ptr;
+    auto addr = reinterpret_cast<void*>(f->u.ptr);
+    llvm::sys::DynamicLibrary::AddSymbol(name.str(), addr);
+    llvm_f = ms.module->getFunction(name.str());
+    if (!llvm_f)
+      llvm_f = llvm::Function::Create(type, llvm::Function::ExternalLinkage,
+        name.str(), ms.module.get());
+  } else {
+    llvm_f = llvm::Function::Create(type, llvm::Function::ExternalLinkage,
+      "f" + std::to_string(function), ms.module.get());
+  }
+  ms.functions.push_back(llvm_f);
 }
 
 /* Obtain a llvm value given the ir value */
@@ -332,7 +347,7 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
 void compile_function(ModuleState &ms, int function) {
   FunctionState fs{function};
   auto f = f_get_function(ms.irmodule, function);
-  /* TODO check if func is external */
+  if (f->tag != FModFunc) return;
   /* Create basic the blocks */
   fs.bblocks.reserve(vec_size(f->u.bblocks));
   vec_for(f->u.bblocks, bb, {

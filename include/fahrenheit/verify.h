@@ -44,12 +44,6 @@ struct FModule;
  * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */
 int f_verify_module(struct FModule *m, char *err);
 
-/** Verify if the IR function is well formed
- * Return a value diferent from 0 if an error is found.
- * Return by reference the error message. The err parameter should be
- * pre-allocated with at least FVerifyBufferSize size. err can be NULL. */
-int f_verify_function(struct FModule *m, int function, char *err);
-
 /**@}*/
 
 #endif

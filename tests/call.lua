@@ -24,7 +24,27 @@
 
 local test = require 'test'
 
-test.preamble()
+local decls = [[
+#include <stdarg.h>
+
+static int ext_add(int a, int b) {
+    return a + b;
+}
+
+static ui32 ext_sum(int n, ...) {
+  int i;
+  int sum = 0;
+  va_list args;
+  va_start(args, n);
+  for(i = 0; i < n; ++i) {
+    sum += va_arg(args, int);
+  }
+  va_end(args);
+  return sum;
+}
+]]
+
+test.preamble(decls)
 
 -- Call non existent function
 test.case {
@@ -259,8 +279,71 @@ test.case {
 }
 
 -- Call external function
+test.case {
+    success = true,
+    functions = {
+    {
+        type = {'FInt32', 'FInt32', 'FInt32'},
+        ext = '(FFunctionPtr)ext_add',
+    },
+    {
+        args = {'3', '5'},
+        ret = '8',
+        type = {'FInt32', 'FInt32', 'FInt32'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_getarg(b, 1);
+            v[2] = f_callv(b, f[0], 2, v);
+            f_ret(b, v[2]);
+        ]]
+    },
+    }
+}
 
--- Call external variadic function
+-- Call external variadic function with not enough arguments
+test.case {
+    success = false,
+    functions = {
+    {
+        type = {'FInt32', 'FInt32'},
+        variadic = true,
+        ext = '(FFunctionPtr)ext_sum',
+    },
+    {
+        type = {'FInt32', 'FInt32'},
+        code = [[
+            v[0] = f_call(b, f[0], 0);
+            f_ret(b, v[0]);
+        ]]
+    },
+    }
+}
+
+-- Call external variadic
+test.case {
+    success = true,
+    functions = {
+    {
+        type = {'FInt32', 'FInt32'},
+        variadic = true,
+        ext = '(FFunctionPtr)ext_sum',
+    },
+    {
+        args = {'1', '2', '3', '4'},
+        ret = '10',
+        type = {'FInt32', 'FInt32', 'FInt32', 'FInt32', 'FInt32'},
+        code = [[
+            v[0] = f_consti(b, 4, FInt32);
+            v[1] = f_getarg(b, 0);
+            v[2] = f_getarg(b, 1);
+            v[3] = f_getarg(b, 2);
+            v[4] = f_getarg(b, 3);
+            v[5] = f_callv(b, f[0], 5, v);
+            f_ret(b, v[5]);
+        ]]
+    },
+    }
+}
 
 test.epilog()
 

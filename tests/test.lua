@@ -209,6 +209,21 @@ local function add_function(f, ftype)
         format(f, ret, #args, args_str, f, f))
 end
 
+-- Add an external function to the module
+local function add_ext_function(f, ftype, ptr, variadic)
+    local ret = ftype[1]
+    local args = table.pack(table.unpack(ftype, 2))
+    local args_str = table.concat(args, ', ')
+    if args_str == '' then args_str = '0' end
+    print(('    f[%d] = f_ftype(&module, %s, %d, %s);\n'):
+        format(f, ret, #args, args_str))
+    if variadic then
+        print(('    f_set_vararg(&module, f[%d]);\n'):format(f))
+    end
+    print(('    f[%d] = f_add_extfunction(&module, f[%d], %s);\n'):
+        format(f, f, ptr))
+end
+
 -- Call the verify function and expect success
 local function verify_sucess()
     print([[
@@ -266,12 +281,14 @@ end
 -- t = {
 --   decls = string?,           (declarations that should come before code)
 --   success = bool,            (true if the verification should succeed)
---   args = {string...}?,       (list of arguments to the first function)
---   ret = string?,             (expected return from the function)
 --   after = string?,           (code that will run after the function)
 --   functions = {              (list of the functions of the module)
+--     args = {string...}?,     (list of arguments to the first function)
+--     ret = string?,           (expected return from the function)
 --     type = {ret, args...},   (function type)
---     code = string,           (code that implements the function)
+--     vararg = bool?,          (true if the function is variadic)
+--     code = string?,          (code that implements the function)
+--     ext = string?,           (external function name)
 --   },
 -- }
 function test.case(t)
@@ -279,9 +296,12 @@ function test.case(t)
     assert(t.functions)
     for i, f in ipairs(t.functions) do
         assert(f.type)
-        assert(f.code)
-        add_function(i - 1, f.type)
-        print(f.code)
+        if f.ext then
+            add_ext_function(i - 1, f.type, f.ext, f.variadic)
+        else
+            add_function(i - 1, f.type)
+            print(assert(f.code))
+        end
     end
     print('    f_printer(&module, stdout);\n')
     if t.success then

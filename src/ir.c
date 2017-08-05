@@ -74,6 +74,7 @@ int f_ftype(FModule *m, enum FType ret, int nargs, ...) {
   type.ret = ret;
   type.args = mem_newarray(enum FType, nargs);
   type.nargs = nargs;
+  type.vararg = 0;
   for (i = 0; i < nargs; ++i)
     type.args[i] = va_arg(args, enum FType);
   va_end(args);
@@ -87,10 +88,16 @@ int f_ftypev(FModule *m, enum FType ret, int nargs, enum FType *args) {
   type.ret = ret;
   type.args = mem_newarray(enum FType, nargs);
   type.nargs = nargs;
+  type.vararg = 0;
   for (i = 0; i < nargs; ++i)
     type.args[i] = args[i];
   vec_push(m->ftypes, type);
   return vec_size(m->ftypes) - 1;
+}
+
+void f_set_vararg(FModule *m, int ftype) {
+  FFunctionType* type = f_get_ftype(m, ftype);
+  type->vararg = 1;
 }
 
 FFunctionType* f_get_ftype(FModule *m, int ftype) {

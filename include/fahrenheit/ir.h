@@ -132,6 +132,7 @@ typedef struct FFunctionType {
   enum FType ret;
   enum FType *args;
   int nargs;
+  int vararg;
 } FFunctionType;
 
 VEC_DECLARE(FFunctionType);
@@ -192,6 +193,9 @@ int f_ftype(FModule *m, enum FType ret, int nargs, ...);
 /** Create a function type given an array
  * This function creates a copy of the args array. */
 int f_ftypev(FModule *m, enum FType ret, int nargs, enum FType *args);
+
+/** Change the function type to become variadic */
+void f_set_vararg(FModule *m, int ftype);
 
 /** Obtain the function type given the index */
 FFunctionType *f_get_ftype(FModule *m, int ftype);

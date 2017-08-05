@@ -199,9 +199,13 @@ static void verify_instr(VerifyState *vs) {
       FFunctionType *called_type;
       verify(vs, called <= vs->f, "calling function not declared");
       called_type = f_get_ftype_by_function(vs->m, called);
-      verify(vs, called_type->nargs == i->u.call.nargs,
-        "wrong number of arguments");
-      nargs = i->u.call.nargs;
+      if (called_type->vararg)
+        verify(vs, called_type->nargs <= i->u.call.nargs,
+          "missing args in variadic function");
+      else
+        verify(vs, called_type->nargs == i->u.call.nargs,
+          "wrong number of arguments");
+      nargs = called_type->nargs;
       args = i->u.call.args;
       for (a = 0; a < nargs; ++a) {
         FInstr *arg = get_instr(vs, args[a]);
@@ -216,20 +220,7 @@ static void verify_instr(VerifyState *vs) {
   }
 }
 
-int f_verify_module(FModule *m, char *err) {
-  if (vec_empty(m->functions)) {
-    sprintf(err, "module with no functions");
-    return 1;
-  }
-  else {
-    vec_for(m->functions, i, {
-      if (f_verify_function(m, i, err)) return 1;
-    });
-    return 0;
-  }
-}
-
-int f_verify_function(FModule *m, int function, char *err) {
+static int verify_function(FModule *m, int function, char *err) {
   VerifyState vs;
   FFunction *f;
   vs.err = err;
@@ -259,5 +250,18 @@ int f_verify_function(FModule *m, int function, char *err) {
       break;
   }
   return 0;
+}
+
+int f_verify_module(FModule *m, char *err) {
+  if (vec_empty(m->functions)) {
+    sprintf(err, "module with no functions");
+    return 1;
+  }
+  else {
+    vec_for(m->functions, i, {
+      if (verify_function(m, i, err)) return 1;
+    });
+    return 0;
+  }
 }
 
