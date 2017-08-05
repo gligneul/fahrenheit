@@ -95,9 +95,9 @@ local function test_cast(cast_type, from_type, to_type, force_int_signed)
     end
     test.case {
         success = true,
-        args = {from_value},
-        ret = to_value,
         functions = {{
+            args = {from_value},
+            ret = to_value,
             type = {to_type, from_type},
             code = [[
                 v[0] = f_getarg(b, 0);

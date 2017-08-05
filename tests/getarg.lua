@@ -54,9 +54,9 @@ for i = 1, #test.types - 1 do
     local v = test.default_value(t)
     test.case {
         success = true,
-        args = {v},
-        ret = v,
         functions = {{
+            args = {v},
+            ret = v,
             type = {t, t},
             code = [[
                 v[0] = f_getarg(b, 0);
@@ -68,9 +68,9 @@ end
 -- return the second arg
 test.case {
     success = true,
-    args = {'0', '123'},
-    ret = '123',
     functions = {{
+        args = {'0', '123'},
+        ret = '123',
         type = {'FInt32', 'FFloat', 'FInt32'},
         code = [[
             v[0] = f_getarg(b, 1);
@@ -90,9 +90,9 @@ table.insert(args_types, 'FInt32')
 table.insert(args, '123')
 test.case {
     success = true,
-    args = args,
-    ret = '123',
     functions = {{
+        args = args,
+        ret = '123',
         type = {'FInt32', table.unpack(args_types)},
         code = [[
             v[0] = f_getarg(b, 9);

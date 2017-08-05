@@ -248,6 +248,7 @@ local function run_function(f, ftype, args, ret)
     local fargs = map(test.convert_type, table.pack(table.unpack(ftype, 2)))
     local fargs_str = table.concat(fargs, ', ')
     if fargs_str == '' then fargs_str = 'void' end
+    print('printf("runnig function @'.. f + 1 ..' with '.. args ..'\\n");\n')
     if ret then
         print(([[
     test(f_get_fpointer(engine, %d, %s, (%s))(%s) == (%s)(%s));
@@ -285,9 +286,13 @@ function test.case(t)
     print('    f_printer(&module, stdout);\n')
     if t.success then
         verify_sucess()
-        local args = table.concat(t.args, ', ')
-        compile()
-        run_function(0, t.functions[1].type, args, t.ret)
+        for i, f in ipairs(t.functions) do
+            if f.args then
+                local args = table.concat(f.args, ', ')
+                compile()
+                run_function(i - 1, f.type, args, f.ret)
+            end
+        end
         if t.after then print(t.after) end
     else
         verify_fail()

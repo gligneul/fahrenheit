@@ -315,6 +315,11 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
     case FCall: {
+      std::vector<llvm::Value*> args;
+      for(int a = 0; a < i->u.call.nargs; ++a) {
+        args.push_back(get_value(fs, i->u.call.args[a]));
+      }
+      v = b.CreateCall(ms.functions[i->u.call.function], args);
       break;
     }
     case FPhi: {

@@ -108,12 +108,12 @@ FValue f_ret(FBuilder b, FValue val);
 
 /** Call the given function with the given arguments
  * The arguments must match the function type. */
-FValue f_call(FBuilder b, int function, ...);
+FValue f_call(FBuilder b, int function, int nargs, ...);
 
 /** Call the given function with the given arguments
  * The arguments must match the function type.
  * Don't take the ownership of the array of arguments. */
-FValue f_callv(FBuilder b, int function, FValue *args);
+FValue f_callv(FBuilder b, int function, int nargs, FValue *args);
 
 /** Create a phi instruction of the given type
  * This instruction must be at the begining of the basic block. */

@@ -192,9 +192,24 @@ static void verify_instr(VerifyState *vs) {
       verify_end(vs);
       break;
     }
-    case FCall:
-      verify(vs, 0, "instruction not verified");
+    case FCall: {
+      int a, nargs;
+      FValue *args;
+      int called = i->u.call.function;
+      FFunctionType *called_type;
+      verify(vs, called <= vs->f, "calling function not declared");
+      called_type = f_get_ftype_by_function(vs->m, called);
+      verify(vs, called_type->nargs == i->u.call.nargs,
+        "wrong number of arguments");
+      nargs = i->u.call.nargs;
+      args = i->u.call.args;
+      for (a = 0; a < nargs; ++a) {
+        FInstr *arg = get_instr(vs, args[a]);
+        verify(vs, called_type->args[a] == arg->type,
+          "argument #%d has invalid type", a + 1);
+      }
       break;
+    }
     case FPhi:
       verify(vs, 0, "instruction not verified");
       break;

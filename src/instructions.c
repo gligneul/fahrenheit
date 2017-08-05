@@ -161,31 +161,36 @@ FValue f_ret(FBuilder b, FValue val) {
   return lastvalue(b);
 }
 
-FValue f_call(FBuilder b, int function, ...) {
+static FInstr *create_call(FBuilder b, int function, int nargs) {
+  FInstr *i;
+  enum FType type = FVoid;
+  if (function < (int)vec_size(b.module->functions)) {
+    FFunction *f = f_get_function(b.module, function);
+    FFunctionType *ftype = f_get_ftype(b.module, f->type);
+    type = ftype->ret;
+  }
+  i = addinstr(b, type, FCall);
+  i->u.call.function = function;
+  i->u.call.args = mem_newarray(FValue, nargs);
+  i->u.call.nargs = nargs;
+  return i;
+}
+
+FValue f_call(FBuilder b, int function, int nargs, ...) {
   int a;
   va_list args;
-  FFunction *f = f_get_function(b.module, function);
-  FFunctionType *ftype = f_get_ftype(b.module, f->type);
-  FInstr *i = addinstr(b, ftype->ret, FCall);
-  i->u.call.function = function;
-  i->u.call.args = mem_newarray(FValue, ftype->nargs);
-  i->u.call.nargs = ftype->nargs;
-  va_start(args, function);
-  for (a = 0; a < ftype->nargs; ++a)
+  FInstr *i = create_call(b, function, nargs);
+  va_start(args, nargs);
+  for (a = 0; a < nargs; ++a)
     i->u.call.args[a] = va_arg(args, FValue);
   va_end(args);
   return lastvalue(b);
 }
 
-FValue f_callv(FBuilder b, int function, FValue *args) {
+FValue f_callv(FBuilder b, int function, int nargs, FValue *args) {
   int a;
-  FFunction *f = f_get_function(b.module, function);
-  FFunctionType *ftype = f_get_ftype(b.module, f->type);
-  FInstr *i = addinstr(b, ftype->ret, FCall);
-  i->u.call.function = function;
-  i->u.call.args = mem_newarray(FValue, ftype->nargs);
-  i->u.call.nargs = ftype->nargs;
-  for (a = 0; a < ftype->nargs; ++a)
+  FInstr *i = create_call(b, function, nargs);
+  for (a = 0; a < nargs; ++a)
     i->u.call.args[a] = args[a];
   return lastvalue(b);
 }

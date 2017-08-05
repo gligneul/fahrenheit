@@ -135,9 +135,9 @@ end
 local function test_binary(t, op, r, l)
     test.case {
         success = true,
-        args =  {r, l},
-        ret = perform_op(t, op, r, l),
         functions = {{
+            args =  {r, l},
+            ret = perform_op(t, op, r, l),
             type = {t, t, t},
             code = [[
                 v[0] = f_getarg(b, 0);

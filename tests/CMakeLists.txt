@@ -22,6 +22,7 @@ fahrenheit_test(mem)
 fahrenheit_test(cast)
 fahrenheit_test(binop)
 fahrenheit_test(cmpjmp)
-
 fahrenheit_test(util)
+fahrenheit_test(call)
+fahrenheit_test(phi)
 

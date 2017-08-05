@@ -76,8 +76,8 @@ test.case {
 -- Return void
 test.case {
     success = true,
-    args = {},
     functions = {{
+        args = {},
         type = {'FVoid'},
         code = [[
             f_ret_void(b);]]
@@ -105,9 +105,9 @@ for i = 1, #test.types - 1 do
         local call = create_const(v, ktype)
         test.case {
             success = (i == j),
-            args = {},
-            ret = '(' .. test.convert_type(ktype) .. ')' .. v,
             functions = {{
+                args = {},
+                ret = '(' .. test.convert_type(ktype) .. ')' .. v,
                 type = {test.types[i]},
                 code = call .. [[
                    f_ret(b, v[0]);]]

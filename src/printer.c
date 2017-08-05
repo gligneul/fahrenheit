@@ -297,7 +297,16 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
       break;
     }
     case FCall: {
+      FValue* args = i->u.call.args;
+      int a, n = i->u.call.nargs;
       fprintf(ps->f, "call ");
+      print_fname(ps, i->u.call.function);
+      fprintf(ps->f, " ");
+      for (a = 0; a < n; ++a) {
+        print_value(ps, args[a]);
+        if (a != n - 1)
+          fprintf(ps->f, ", ");
+      }
       break;
     }
     case FPhi: {

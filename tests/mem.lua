@@ -46,9 +46,9 @@ for i = 1, #test.types - 1 do
     test.case {
         success = true,
         decls = ctype .. ' cell = ' .. v .. ';\n',
-        args = {'&cell'},
-        ret = v,
         functions = {{
+            args = {'&cell'},
+            ret = v,
             type = {t, 'FPointer'},
             code = [[
                 v[0] = f_getarg(b, 0);
@@ -93,9 +93,9 @@ for i = 1, #test.types - 1 do
     test.case {
         success = true,
         decls = ctype .. ' cell = 0;\n',
-        args = {'&cell', v},
-        after = 'test(cell == ('.. ctype ..')'.. v ..');',
         functions = {{
+            args = {'&cell', v},
+            after = 'test(cell == ('.. ctype ..')'.. v ..');',
             type = {'FVoid', 'FPointer', t},
             code = [[
                 v[0] = f_getarg(b, 0);
@@ -178,9 +178,9 @@ for i = 1, #test.types - 1 do
     test.case {
         success = true,
         decls = ctype .. ' cell[2] = {0};\n',
-        args = {'cell'},
-        ret = v,
         functions = {{
+            args = {'cell'},
+            ret = v,
             type = {t, 'FPointer'},
             code = [[
                 cell[1] = ]].. v ..[[;
@@ -200,9 +200,9 @@ local v = test.default_value(t)
 test.case {
     success = true,
     decls = ctype .. ' cell = ' .. v .. ';\n',
-    args = {'&cell'},
-    ret = v,
     functions = {{
+        args = {'&cell'},
+        ret = v,
         type = {t, 'FPointer'},
         code = [[
             v[0] = f_getarg(b, 0);
