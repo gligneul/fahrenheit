@@ -62,38 +62,11 @@ $(function() {
 <div class="title">Fahrenheit Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1>Getting started</h1>
-<p>Fahrenheit is a run-time code generator for JIT compilers. Currently, Fahrenheit uses the LLVM toolchain to generate machine code during run-time. Fahrenheit offers a ANSI C89 compliant API that encapsulates the C++ mess of LLVM. The API is simple and consise, with a few lines of code you can write a simple function that will be compiled during run-time:</p>
-<div class="fragment"><div class="line"><span class="comment">// Create a module</span></div><div class="line"><a class="code" href="group__IR.html#ga75df8dd6a3bb3887b79d043e0b99d662">f_init_module</a>(M);</div><div class="line"></div><div class="line"><span class="comment">// Add a function to the module</span></div><div class="line">fn_add = <a class="code" href="group__IR.html#gadbf9a19034cab4b17280bf9e235b6d75">f_add_function</a>(M, <a class="code" href="group__IR.html#ga8e00662ea30f7d6cf647a5383f70c8fc">f_ftype</a>(M, FInt32, 1, FInt32));</div><div class="line"></div><div class="line"><span class="comment">// Create a basic block</span></div><div class="line">bb = <a class="code" href="group__IR.html#ga93286c9f9112c8c53c5e1afa4a5a45e0">f_add_bblock</a>(M, fn_add);</div><div class="line"></div><div class="line"><span class="comment">// Add instructions to the basic block</span></div><div class="line">b = <a class="code" href="group__IR.html#gab44aa8a61ce8d4c7c370aba5fc7f543b">f_builder</a>(M, fn_add, bb);</div><div class="line">v_x = <a class="code" href="group__Instructions.html#ga30ed4c2b0c02847c5547796bee789618">f_getarg</a>(b, 0);</div><div class="line">v_y = <a class="code" href="group__Instructions.html#ga23c176bce9c44ef264e612108dbcbc09">f_binop</a>(b, FAdd, v_x, <a class="code" href="group__Instructions.html#ga77ab276ce4bfc9509e3d2363f9e91f4f">f_consti</a>(b, 1, FInt32));</div><div class="line"><a class="code" href="group__Instructions.html#gac24fd6f4d1a58ec4595e955bbacf7a7b">f_ret</a>(b, v_y);</div><div class="line"></div><div class="line"><span class="comment">// Compile the module</span></div><div class="line"><a class="code" href="group__Backend.html#ga877885b576292de30e80cd3941c87ad5">f_init_engine</a>(E);</div><div class="line"><a class="code" href="group__Backend.html#gac3dbb122547355cf61f8e8f42beed446">f_compile</a>(E, M);</div><div class="line"></div><div class="line"><span class="comment">// Obtain the function</span></div><div class="line">add = <a class="code" href="group__Backend.html#ga0efb927e4827b2b4976833374954bbfa">f_get_fpointer</a>(E, 0, i32, (i32));</div><div class="line"></div><div class="line"><span class="comment">// Run it</span></div><div class="line">printf(<span class="stringliteral">&quot;%d\n&quot;</span>, add(n));</div></div><!-- fragment --><p>Checkout the full example at <code>examples/add.c</code>.</p>
-<h1>Installation</h1>
-<p>Compiling Fahrenheit is easy, but first you need to download and install few dependencies.</p>
-<h2>Installing Dependencies</h2>
-<h3>C and C++ compiler</h3>
-<p>Fahrenheit provides a pure C interface, but it requires a C++ compiler during its the build phase. I recommend using g++:</p>
-<div class="fragment"><div class="line">sudo apt-<span class="keyword">get</span> install gcc g++</div></div><!-- fragment --><h3>Cmake</h3>
-<p>Fahrenheit use cmake as a build system. The version from your package manager should work:</p>
-<div class="fragment"><div class="line">sudo apt-<span class="keyword">get</span> install cmake</div></div><!-- fragment --><p>If for some reason your cmake is outdated, you can download the source code and compile it from: <a href="https://cmake.org/download/">https://cmake.org/download/</a>.</p>
-<h3>LLVM</h3>
-<p>Fahrenheit uses LLVM to generate code at runtime. Download the version 3.9 from your package manager:</p>
-<div class="fragment"><div class="line">sudo apt-<span class="keyword">get</span> install llvm-3.9-dev</div></div><!-- fragment --><p>If your distro is outdated and doesn't have this version, you should download LLVM directely from their release page: <a href="http://releases.llvm.org/">http://releases.llvm.org/</a>.</p>
-<p>And if you need to compile LLVM from source (it's not that hard), check out: <a href="https://llvm.org/docs/GettingStarted.html">https://llvm.org/docs/GettingStarted.html</a>.</p>
-<h2>Compiling Fahrenheit</h2>
-<p>After installing all dependencies you will be able to compile fahrenheit. You should clone the repository, download the submodules, create a build directory, generate the makefiles with cmake and then compile it. The following commands will do all those steps:</p>
-<div class="fragment"><div class="line">git clone https:<span class="comment">//github.com/gligneul/fahrenheit.git</span></div><div class="line">cd fahrenheit</div><div class="line">git submodule update --init --recursive</div><div class="line">mkdir build</div><div class="line">cd build</div><div class="line">cmake ..</div><div class="line">make -j4</div><div class="line">sudo make install</div></div><!-- fragment --><h3>Useful CMake arguments:</h3>
-<ul>
-<li><code>-DLLVM_DIR="$HOME/llvm-3.9/lib/cmake/llvm/"</code>: use a LLVM from a custom folder (eg. your home).</li>
-<li><code>-DCMAKE_INSTALL_PREFIX="$HOME/fahrenheit</code>: install Fahrenheit at a custom location.</li>
-<li><code>-DFAHRENHEIT_DEV=1</code>: By default, Fahrenheit build will generate only the library, no tests included. If you want to generate the tests, you must include the FAHRENHEIT_DEV flag during cmake generation.</li>
-<li><code>-DCMAKE_BUILD_TYPE=Debug</code>: Useful if you want to debug Fahrenheit itself.</li>
-</ul>
-<h1>Examples</h1>
-<p>Checkout the examples in the examples directory. Run the following commands to build and run them:</p>
-<div class="fragment"><div class="line">cd examples</div><div class="line">mkdir build</div><div class="line">cd build</div><div class="line">cmake ..</div><div class="line">make</div><div class="line">./hello</div></div><!-- fragment --><h1>Documentation</h1>
-<p>TODO </p>
+<div class="textblock"><p>Check the readme for overall instructions: <a href="https://github.com/gligneul/fahrenheit">https://github.com/gligneul/fahrenheit</a> </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Aug 5 2017 18:52:37 for Fahrenheit by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Aug 5 2017 19:17:10 for Fahrenheit by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
