@@ -30,16 +30,11 @@ target_link_libraries(fahrenheit stdplus)
 
 SET(fahrenheit_headers
   ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include)
+target_include_directories(fahrenheit PUBLIC ${fahrenheit_headers})
 include_directories("${fahrenheit_headers}")
 
 install(TARGETS fahrenheit DESTINATION lib)
 install(DIRECTORY ${fahrenheit_headers} DESTINATION include)
-
-add_custom_target(doc
-    doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating API documentation with Doxygen" VERBATIM
-)
 
 if(FAHRENHEIT_DEV)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \

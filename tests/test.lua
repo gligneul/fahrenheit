@@ -266,11 +266,11 @@ local function run_function(f, ftype, args, ret)
     print('printf("runnig function @'.. f + 1 ..' with '.. args ..'\\n");\n')
     if ret then
         print(([[
-    test(f_get_fpointer(engine, %d, %s, (%s))(%s) == (%s)(%s));
+    test(f_get_fpointer(&engine, %d, %s, (%s))(%s) == (%s)(%s));
 ]]):format(f, fret, fargs_str, args, fret, ret))
     else
         print(([[
-    f_get_fpointer(engine, %d, %s, (%s))(%s);
+    f_get_fpointer(&engine, %d, %s, (%s))(%s);
 ]]):format(f, fret, fargs_str, args))
     end
 end

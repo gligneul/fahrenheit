@@ -61,7 +61,7 @@ int f_compile(FEngine *e, struct FModule *m);
 /** Obtain the function pointer given the type
  * The parameter args should be inside a parenteses (eg. (void), (int, int)). */
 #define f_get_fpointer(e, function, ret, args) \
-  ((ret(*)args)(e.funcs[function]))
+  ((ret(*)args)((e)->funcs[function]))
 
 /**@}*/
 

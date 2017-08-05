@@ -41,8 +41,33 @@ The API is simple and consise, with a few lines of code you can write a simple
 function that will be compiled during run-time:
 
 ```
-// TODO
+    // Create a module
+    f_init_module(M);
+
+    // Add a function to the module
+    fn_add = f_add_function(M, f_ftype(M, FInt32, 1, FInt32));
+
+    // Create a basic block
+    bb = f_add_bblock(M, fn_add);
+
+    // Add instructions to the basic block
+    b = f_builder(M, fn_add, bb);
+    v_x = f_getarg(b, 0);
+    v_y = f_binop(b, FAdd, v_x, f_consti(b, 1, FInt32));
+    f_ret(b, v_y);
+
+    // Compile the module
+    f_init_engine(E);
+    f_compile(E, M);
+
+    // Obtain the function
+    add = f_get_fpointer(E, 0, i32, (i32));
+
+    // Run it
+    printf("%d\n", add(n));
 ```
+
+Checkout the full example at `examples/add.c`.
 
 # Installation
 
@@ -119,7 +144,17 @@ sudo make install
 
 # Examples
 
-TODO
+Checkout the examples in the examples directory.
+Run the following commands to build and run them:
+
+```
+cd examples
+mkdir build
+cd build
+cmake ..
+make
+./hello
+```
 
 # Documentation
 
