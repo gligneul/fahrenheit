@@ -74,6 +74,17 @@ static void verify_end(VerifyState *vs) {
   vs->bb_ended = 1;
 }
 
+/* Verify if there is a non phi instruction before phi */
+static void verify_instr_before_phi(VerifyState *vs) {
+  FBBlock *bb = f_get_bblock(vs->m,  vs->f, vs->bb);
+  vec_for(*bb, instr_id, {
+    FInstr *instr;
+    if ((int)instr_id >= vs->i) break;
+    instr = f_instr(vs->m, vs->f, f_value(vs->bb, instr_id));    
+    verify(vs, instr->tag == FPhi, "phi after instruction");
+  });
+}
+
 /* Verify an instruction */
 static void verify_instr(VerifyState *vs) {
   FFunctionType *ftype = f_get_ftype_by_function(vs->m, vs->f);
@@ -167,7 +178,7 @@ static void verify_instr(VerifyState *vs) {
       break;
     }
     case FJmp: {
-      verify_bb(vs, i->u.jmpif.truebr);
+      verify_bb(vs, i->u.jmp.dest);
       verify_end(vs);
       break;
     }
@@ -214,9 +225,15 @@ static void verify_instr(VerifyState *vs) {
       }
       break;
     }
-    case FPhi:
-      verify(vs, 0, "instruction not verified");
+    case FPhi: {
+      verify(vs, vs->bb != 0, "phi instruction in the first block");
+      verify_instr_before_phi(vs);
+      vec_foreach(i->u.phi.inc, inc, {
+        FInstr *inc_value = get_instr(vs, inc->value);
+        verify(vs, inc_value->type == i->type, "mismatch phi type");
+      });
       break;
+    }
   }
 }
 

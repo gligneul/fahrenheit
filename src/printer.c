@@ -317,6 +317,16 @@ static void print_instruction(PrinterState *ps, int bblock, int instr) {
     }
     case FPhi: {
       fprintf(ps->f, "phi ");
+      vec_for(i->u.phi.inc, p, {
+        FPhiInc *phi = vec_getref(i->u.phi.inc, p);
+        fprintf(ps->f, "[");
+        print_bblock(ps, phi->bb);
+        fprintf(ps->f, " -> ");
+        print_value(ps, phi->value);
+        fprintf(ps->f, "]");
+        if (p != vec_size(i->u.phi.inc) - 1)
+          fprintf(ps->f, ", ");
+      });
       break;
     }
   }

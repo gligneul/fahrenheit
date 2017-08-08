@@ -338,9 +338,30 @@ void compile_instruction(ModuleState &ms, FunctionState &fs, FValue irvalue) {
       break;
     }
     case FPhi: {
+      auto type = convert_type(i->type);
+      v = b.CreatePHI(type, vec_size(i->u.phi.inc));
       break;
     }
   }
+}
+
+/* Link the phi values in the function */
+void link_phi_values(ModuleState &ms, FunctionState &fs) {
+  auto f = f_get_function(ms.irmodule, fs.function);
+  vec_for(f->u.bblocks, b, {
+    auto bblock = f_get_bblock(ms.irmodule, fs.function, b);
+    vec_for(*bblock, i, {
+      auto instr = f_instr(ms.irmodule, fs.function, f_value(b, i));
+      if (instr->tag == FPhi) {
+        auto v = static_cast<llvm::PHINode*>(fs.values[b][i]);
+        vec_foreach(instr->u.phi.inc, inc, {
+          auto inc_value = fs.values[inc->value.bblock][inc->value.instr];
+          auto inc_bb = fs.bblocks[inc->bb];
+          v->addIncoming(inc_value, inc_bb);
+        });
+      }
+    });
+  });
 }
 
 /* Compile a function */
@@ -363,6 +384,7 @@ void compile_function(ModuleState &ms, int function) {
       compile_instruction(ms, fs, f_value(b, i));
     });
   });
+  link_phi_values(ms, fs);
 }
 
 }
