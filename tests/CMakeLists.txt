@@ -1,4 +1,30 @@
+cmake_minimum_required(VERSION 2.6)
+project(fahrenheit_tests)
+
+add_subdirectory(.. fahrenheit)
+
 include(CTest)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+  -std=c++11 \
+  -Wall \
+  -Werror \
+  -Wshadow \
+  -Wundef")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
+  -std=c89 \
+  -Wall \
+  -Wextra \
+  -Werror \
+  -Wundef \
+  -Wshadow \
+  -Wcast-align \
+  -Wstrict-prototypes \
+  -Wmissing-prototypes \
+  -pedantic")
+
+enable_testing()
 
 # Create a test case given a generator
 macro(fahrenheit_test testname)

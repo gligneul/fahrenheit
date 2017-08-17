@@ -109,10 +109,20 @@ sudo make install
   (eg. your home).
 - `-DCMAKE_INSTALL_PREFIX="$HOME/fahrenheit`: install Fahrenheit at a custom
   location.
-- `-DFAHRENHEIT_DEV=1`: By default, Fahrenheit build will generate only the
-  library, no tests included. If you want to generate the tests, you must
-  include the FAHRENHEIT_DEV flag during cmake generation.
 - `-DCMAKE_BUILD_TYPE=Debug`: Useful if you want to debug Fahrenheit itself.
+
+# Tests
+
+You should use the cmake in the `tests` folder to build the tests:
+
+```
+cd tests 
+mkdir build
+cd build
+cmake ..
+make
+make test
+```
 
 # Examples
 

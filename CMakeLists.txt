@@ -36,27 +36,3 @@ include_directories("${fahrenheit_headers}")
 install(TARGETS fahrenheit DESTINATION lib)
 install(DIRECTORY ${fahrenheit_headers} DESTINATION include)
 
-if(FAHRENHEIT_DEV)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-    -std=c++11 \
-    -Wall \
-    -Werror \
-    -Wshadow \
-    -Wundef")
-  
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
-    -std=c89 \
-    -Wall \
-    -Wextra \
-    -Werror \
-    -Wundef \
-    -Wshadow \
-    -Wcast-align \
-    -Wstrict-prototypes \
-    -Wmissing-prototypes \
-    -pedantic")
-
-  enable_testing()
-  add_subdirectory(tests)
-endif(FAHRENHEIT_DEV)
-
