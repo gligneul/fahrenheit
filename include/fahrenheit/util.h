@@ -38,7 +38,8 @@
 #define f_arr_offset(b, arr_type, arr, index) \
     f_offset(b, arr, \
         f_binop(b, FMul, index, \
-            f_consti(b, sizeof(arr_type), index->type)), 0)
+            f_consti(b, sizeof(arr_type), \
+               f_instr(b.module, b.function, index)->type)), 0)
 
 /** Obtain an element from an array */
 #define f_arr_get(b, arr_type, arr, index, type) \
