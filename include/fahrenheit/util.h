@@ -25,6 +25,14 @@
 #ifndef fahrenheit_util_h
 #define fahrenheit_util_h
 
+#ifndef offsetof
+# ifdef __builtin_offsetof
+#  define offsetof(st, m) __builtin_offsetof(st, m)
+# else
+#  define offsetof(st, m) ((size_t)&(((st *)0)->m))
+# endif
+#endif
+
 /** @file util.h
  *
  * @defgroup Util
@@ -51,15 +59,15 @@
 
 /** Obtain an offset of a struct's field */
 #define f_field_offset(b, strukt, addr, field) \
-    f_offset(b, addr, f_consti(b, offsetof(strukt, field, FInt32)), 0)
+    f_offset(b, addr, f_consti(b, offsetof(strukt, field), FInt32), 0)
 
 /** Obtain a struct's field value */
 #define f_field_get(b, strukt, addr, field, type) \
-    f_load(b, f_offsetof(b, strukt, addr, field), type)
+    f_load(b, f_field_offset(b, strukt, addr, field), type)
 
 /** Store a value in a struct's field */
 #define f_field_set(b, strukt, addr, field, val) \
-    f_store(b, f_offsetof(b, strukt, addr, field), val)
+    f_store(b, f_field_offset(b, strukt, addr, field), val)
 
 /**@}*/
 
