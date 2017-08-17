@@ -23,9 +23,10 @@
  */
 
 /*
- * Create a function that print hello, world
+ * Obtain the sum of an array
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -34,48 +35,69 @@
 int main(void) {
     FModule module;
     FModule *M = &module;
-    int t_printf, fn_printf, t_hello, fn_hello, bb;
-    FValue v_str;
-    FBuilder b;
     FEngine engine;
     FEngine *E = &engine;
+    int fn_sum, bb_init, bb_header, bb_loop, bb_exit;
+    FValue i_init, i_curr, i_next, s_init, s_curr, s_next, array, size, elem,
+           cond;
+    FBuilder b;
     char err[FVerifyBufferSize] = {0};
-    void (*hello)(void);
+    i32 (*sum)(void *, i32);
+    int c_array[] = {1, 2, 3, 4, 5, 6};
+    int c_array_size = sizeof(c_array) / sizeof(*c_array);
 
     f_init_module(M);
 
-    /* Add printf to IR */
-    t_printf = f_ftype(M, FVoid, 1, FPointer);
-    f_set_vararg(M, t_printf);
-    fn_printf = f_add_extfunction(M, t_printf, (FFunctionPtr)printf);
+    fn_sum = f_add_function(M, f_ftype(M, FInt32, 2, FPointer, FInt32));
+    bb_init = f_add_bblock(M, fn_sum);
+    bb_header = f_add_bblock(M, fn_sum);
+    bb_loop = f_add_bblock(M, fn_sum);
+    bb_exit = f_add_bblock(M, fn_sum);
 
-    /* Create the function that will be JITed */
-    t_hello = f_ftype(M, FVoid, 0);
-    fn_hello = f_add_function(M, t_hello);
+    b = f_builder(M, fn_sum, bb_init);
+    array = f_getarg(b, 0);
+    size = f_getarg(b, 1);
+    i_init = s_init = f_consti(b, 0, FInt32);
+    f_jmp(b, bb_header);
 
-    /* Call printf from hello */
-    bb = f_add_bblock(M, fn_hello);
-    b = f_builder(M, fn_hello, bb);
-    v_str = f_constp(b, "Hello world!\n");
-    f_call(b, fn_printf, 1, v_str);
-    f_ret_void(b);
+    b = f_builder(M, fn_sum, bb_header);
+    i_curr = f_phi(b, FInt32);
+    s_curr = f_phi(b, FInt32);
+    cond = f_intcmp(b, FIntSLt, i_curr, size);
+    f_jmpif(b, cond, bb_loop, bb_exit);
 
-    /* Build the module */
+    b = f_builder(M, fn_sum, bb_loop);
+    elem = f_arr_get(b, i32, array, i_curr, FInt32);
+    s_next = f_binop(b, FAdd, s_curr, elem);
+    i_next = f_binop(b, FAdd, i_curr, f_consti(b, 1, FInt32));
+    f_jmp(b, bb_header);
+
+    b = f_builder(M, fn_sum, bb_exit);
+    f_ret(b, s_curr);
+
+    f_add_incoming(b, i_curr, bb_init, i_init);
+    f_add_incoming(b, i_curr, bb_loop, i_next);
+
+    f_add_incoming(b, s_curr, bb_init, s_init);
+    f_add_incoming(b, s_curr, bb_loop, s_next);
+
+    /* Verify the generated IR */
     if(f_verify_module(M, err)) {
       fprintf(stderr, "%s\n", err);
       exit(1);
     }
     f_init_engine(E);
     f_compile(E, M);
+    sum = f_get_fpointer(E, fn_sum, i32, (void *, i32));
     f_close_module(M);
 
-    /* Obtain the function and run it */
-    hello = f_get_fpointer(E, fn_hello, void, (void));
-    hello();
+    /* Obtain the number from argv */
+    printf("%d\n", sum(c_array, c_array_size));
 
     /* Clean up */
     f_close_engine(E);
 
     return 0;
 }
+
 

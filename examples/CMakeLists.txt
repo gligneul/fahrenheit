@@ -21,4 +21,9 @@ target_link_libraries(hello fahrenheit)
 add_executable(add add.c)
 target_link_libraries(add fahrenheit)
 
+add_executable(phi phi.c)
+target_link_libraries(phi fahrenheit)
+
+add_executable(array array.c)
+target_link_libraries(array fahrenheit)
 

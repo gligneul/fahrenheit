@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
     f_compile(E, M);
 
     /* Obtain the function */
-    add = f_get_fpointer(E, 0, i32, (i32));
+    add = f_get_fpointer(E, fn_add, i32, (i32));
 
     /* You can already delete the IR */
     f_close_module(M);
