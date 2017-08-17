@@ -15,7 +15,16 @@ before_install:
   - mv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04 llvm
 
 script:
-  - cmake -DFAHRENHEIT_DEV=1 -DLLVM_DIR="`pwd`/llvm/lib/cmake/llvm" .
+  - mkdir build; cd build
+  - cmake -DLLVM_DIR="`pwd`/../llvm/lib/cmake/llvm" .
+  - make 
+  - cd ../examples
+  - mkdir build; cd build
+  - cmake -DLLVM_DIR="`pwd`/../../llvm/lib/cmake/llvm" .
+  - make
+  - cd ../../tests
+  - mkdir build; cd build
+  - cmake -DLLVM_DIR="`pwd`/../../llvm/lib/cmake/llvm" .
   - make 
   - make test
 
