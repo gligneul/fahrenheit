@@ -14,6 +14,8 @@ add_library(fahrenheit
   src/printer.c
   src/verify.c)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 # dependencies
 message(STATUS "LLVM_DIR: ${LLVM_DIR}")
 find_package(LLVM REQUIRED)

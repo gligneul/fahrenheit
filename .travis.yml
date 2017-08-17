@@ -15,16 +15,17 @@ before_install:
   - mv clang+llvm-3.9.1-x86_64-linux-gnu-ubuntu-14.04 llvm
 
 script:
+  - export fahrenheit_dir=`pwd`; export llvm_dir=`pwd`/llvm/lib/cmake/llvm
   - mkdir build; cd build
-  - cmake -DLLVM_DIR="`pwd`/../llvm/lib/cmake/llvm" .
+  - cmake -DLLVM_DIR="${llvm_dir}" ..
   - make 
-  - cd ../examples
+  - cd ${fahrenheit_dir}/examples
   - mkdir build; cd build
-  - cmake -DLLVM_DIR="`pwd`/../../llvm/lib/cmake/llvm" .
+  - cmake -DLLVM_DIR="${llvm_dir}" ..
   - make
-  - cd ../../tests
+  - cd ${fahrenheit_dir}/tests
   - mkdir build; cd build
-  - cmake -DLLVM_DIR="`pwd`/../../llvm/lib/cmake/llvm" .
+  - cmake -DLLVM_DIR="${llvm_dir}" ..
   - make 
   - make test
 
