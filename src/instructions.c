@@ -147,8 +147,13 @@ FValue f_jmp(FBuilder b, int dest) {
 }
 
 FValue f_select(FBuilder b, FValue cond, FValue truev, FValue falsev) {
-  FInstr *truevi = f_instr(b.module, b.function, truev);
-  FInstr *i = addinstr(b, truevi->type, FSelect);
+  FInstr *i = NULL;
+  enum FType type = FVoid;
+  if (!f_null(truev)) {
+    FInstr *truevi = f_instr(b.module, b.function, truev);
+    type = truevi->type;
+  }
+  i = addinstr(b, type, FSelect);
   i->u.select.cond = cond;
   i->u.select.truev = truev;
   i->u.select.falsev = falsev;

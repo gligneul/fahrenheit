@@ -237,6 +237,15 @@ static void verify_instr(VerifyState *vs) {
   }
 }
 
+static void verify_ftype(VerifyState *vs) {
+  int i;
+  FFunctionType *ftype;
+
+  ftype = f_get_ftype_by_function(vs->m, vs->f);
+  for (i = 0; i < ftype->nargs; ++i)
+    verify(vs, ftype->args[i] != FVoid, "void argument");
+}
+
 static int verify_function(FModule *m, int function, char *err) {
   VerifyState vs;
   FFunction *f;
@@ -249,6 +258,7 @@ static int verify_function(FModule *m, int function, char *err) {
   verify(&vs, function >= 0 && (size_t)function < vec_size(m->functions),
     "function not found");
   f = f_get_function(m, function);
+  verify_ftype(&vs);
   switch (f->tag) {
     case FExtFunc:
       break;

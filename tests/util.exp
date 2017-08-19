@@ -1,0 +1,78 @@
+Fahrenheit module
+function @01 : ptr -> ptr
+ bb1
+  $001 = getarg 0
+  $002 = binop (const i32 2) * (const i32 4)
+  $003 = offset (ptr $001) + (i32 $002)
+         ret (ptr $003)
+
+.
+verification ok
+running function @1 with arr
+0
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = binop (const i32 2) * (const i32 4)
+  $003 = offset (ptr $001) + (i32 $002)
+  $004 = load i32 from (ptr $003)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with arr
+3
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = binop (const i32 2) * (const i32 4)
+  $003 = offset (ptr $001) + (i32 $002)
+         store (const i32 20) at (ptr $003)
+         ret void
+
+.
+verification ok
+running function @1 with arr
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> ptr
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 16)
+         ret (ptr $002)
+
+.
+verification ok
+running function @1 with &data
+0
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i8
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 8)
+  $003 = load i8 from (ptr $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with &data
+254
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 8)
+         store (const i8 254) at (ptr $002)
+         ret void
+
+.
+verification ok
+running function @1 with &data
+----------------------------------------
+Number of tests cases: 6

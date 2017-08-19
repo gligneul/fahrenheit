@@ -1,0 +1,732 @@
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         binop null + (i32 $001)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = binop (i32 $001) + null
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         getarg 1
+  $002 = binop (i32 $001) + (void $xxx)
+
+.
+error: invalid argument
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = binop (ptr $001) + (ptr $001)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (ptr $001) + (i32 $002)
+
+.
+error: type mismatch in binop
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) % (flt $002)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) << (flt $002)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) >> (flt $002)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) & (flt $002)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) | (flt $002)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) ^ (flt $002)
+
+.
+error: invalid binop type
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> flt
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) + (flt $002)
+         ret (flt $003)
+
+.
+verification ok
+running function @1 with 123.45, 123.45
+246.9
+----------------------------------------
+Fahrenheit module
+function @01 : dbl, dbl -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (dbl $001) + (dbl $002)
+         ret (dbl $003)
+
+.
+verification ok
+running function @1 with 12345.56789, 12345.56789
+24691.1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> flt
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) - (flt $002)
+         ret (flt $003)
+
+.
+verification ok
+running function @1 with 123.45, 123.45
+0
+----------------------------------------
+Fahrenheit module
+function @01 : dbl, dbl -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (dbl $001) - (dbl $002)
+         ret (dbl $003)
+
+.
+verification ok
+running function @1 with 12345.56789, 12345.56789
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> flt
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) * (flt $002)
+         ret (flt $003)
+
+.
+verification ok
+running function @1 with 123.45, 123.45
+15239.9
+----------------------------------------
+Fahrenheit module
+function @01 : dbl, dbl -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (dbl $001) * (dbl $002)
+         ret (dbl $003)
+
+.
+verification ok
+running function @1 with 12345.56789, 12345.56789
+1.52413e+08
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> flt
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (flt $001) / (flt $002)
+         ret (flt $003)
+
+.
+verification ok
+running function @1 with 123.45, 123.45
+1
+----------------------------------------
+Fahrenheit module
+function @01 : dbl, dbl -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (dbl $001) / (dbl $002)
+         ret (dbl $003)
+
+.
+verification ok
+running function @1 with 12345.56789, 12345.56789
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) + (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 255
+254
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) + (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 1234
+2468
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) + (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 12345
+24690
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) + (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 123456
+246912
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) - (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 255
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) - (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 1234
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) - (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 12345
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) - (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 123456
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) * (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 255
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) * (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 1234
+15428
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) * (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 12345
+152399025
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) * (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 123456
+15241383936
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) / (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 255
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) / (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 1234
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) / (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 12345
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) / (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 123456
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) % (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 4
+3
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) % (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 4
+2
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) % (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 4
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) % (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 4
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) << (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 4
+240
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) << (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 4
+19744
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) << (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 4
+197520
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) << (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 4
+1975296
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) >> (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 4
+15
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) >> (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 4
+77
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) >> (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 4
+771
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) >> (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 4
+7716
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) & (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 4
+4
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) & (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 4
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) & (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 4
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) & (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 4
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) | (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 4
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) | (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 4
+1238
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) | (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 4
+12349
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) | (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 4
+123460
+----------------------------------------
+Fahrenheit module
+function @01 : i8, i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i8 $001) ^ (i8 $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with 255, 4
+251
+----------------------------------------
+Fahrenheit module
+function @01 : i16, i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i16 $001) ^ (i16 $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with 1234, 4
+1238
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i32 $001) ^ (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 12345, 4
+12349
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = binop (i64 $001) ^ (i64 $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with 123456, 4
+123460
+----------------------------------------
+Number of tests cases: 59

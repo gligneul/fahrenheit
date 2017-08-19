@@ -1,0 +1,205 @@
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         call @02 
+
+.
+error: calling function not declared
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         call @02 (i32 $001), (i32 $001)
+
+.
+error: calling function not declared
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+         ret void
+
+function @02 : i32 -> void
+ bb1
+  $001 = getarg 0
+         call @01 (i32 $001), (i32 $001)
+
+.
+error: wrong number of arguments
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+         ret void
+
+function @02 : i32 -> void
+ bb1
+  $001 = getarg 0
+         call @01 
+
+.
+error: wrong number of arguments
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+         ret void
+
+function @02 : i64 -> void
+ bb1
+  $001 = getarg 0
+         call @01 (i64 $001)
+
+.
+error: argument #1 has invalid type
+----------------------------------------
+Fahrenheit module
+function @01 : i64, i32 -> void
+ bb1
+         ret void
+
+function @02 : i64 -> void
+ bb1
+  $001 = getarg 0
+         call @01 (i64 $001), (i64 $001)
+
+.
+error: argument #2 has invalid type
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         ret void
+
+function @02 : void -> void
+ bb1
+         call @01 
+         ret void
+
+.
+verification ok
+running function @2 with 
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+         ret (i32 $001)
+
+function @02 : i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = call @01 (i32 $001)
+         ret (i32 $002)
+
+.
+verification ok
+running function @2 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i64, bool, dbl, i32 -> i32
+ bb1
+  $001 = getarg 3
+         ret (i32 $001)
+
+function @02 : i64, bool, dbl, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = getarg 3
+  $005 = call @01 (i64 $001), (bool $002), (dbl $003), (i32 $004)
+         ret (i32 $005)
+
+.
+verification ok
+running function @2 with 0xFFFFFFEF, 1, 123.0123, 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = getarg 3
+  $005 = binop (const i32 0) + (i32 $001)
+  $006 = binop (i32 $005) + (i32 $002)
+  $007 = binop (i32 $006) + (i32 $003)
+  $008 = binop (i32 $007) + (i32 $004)
+         ret (i32 $008)
+
+function @02 : i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = call @01 (i32 $001), (i32 $001), (i32 $001), (i32 $001)
+         ret (i32 $002)
+
+.
+verification ok
+running function @2 with 10
+40
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = intcmp (i32 $001) S <= (const i32 0)
+         jmpif (bool $002) then bb2 else bb3
+ bb2
+         ret void
+ bb3
+  $003 = binop (i32 $001) - (const i32 1)
+         call @01 (i32 $003)
+         ret void
+
+.
+verification ok
+running function @1 with 10
+----------------------------------------
+Fahrenheit module
+external function @01 : i32, i32 -> i32
+
+function @02 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = call @01 (i32 $001), (i32 $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @2 with 3, 5
+8
+----------------------------------------
+Fahrenheit module
+external function @01 : i32, ... -> i32
+
+function @02 : i32 -> i32
+ bb1
+  $001 = call @01 
+         ret (i32 $001)
+
+.
+error: missing args in variadic function
+----------------------------------------
+Fahrenheit module
+external function @01 : i32, ... -> i32
+
+function @02 : i32, i32, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = getarg 3
+  $005 = call @01 (const i32 4), (i32 $001), (i32 $002), (i32 $003), (i32 $004)
+         ret (i32 $005)
+
+.
+verification ok
+running function @2 with 1, 2, 3, 4
+10
+----------------------------------------
+Number of tests cases: 14

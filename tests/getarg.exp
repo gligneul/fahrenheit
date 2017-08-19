@@ -1,0 +1,137 @@
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         ret (i32 $001)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         getarg 0
+         ret (void $xxx)
+
+.
+error: invalid argument
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         ret void
+
+.
+error: void argument
+----------------------------------------
+Fahrenheit module
+function @01 : bool -> bool
+ bb1
+  $001 = getarg 0
+         ret (bool $001)
+
+.
+verification ok
+running function @1 with 1
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i8
+ bb1
+  $001 = getarg 0
+         ret (i8 $001)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i16
+ bb1
+  $001 = getarg 0
+         ret (i16 $001)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+         ret (i32 $001)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i64
+ bb1
+  $001 = getarg 0
+         ret (i64 $001)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> flt
+ bb1
+  $001 = getarg 0
+         ret (flt $001)
+
+.
+verification ok
+running function @1 with 123.45
+123.45
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> dbl
+ bb1
+  $001 = getarg 0
+         ret (dbl $001)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345.6
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> ptr
+ bb1
+  $001 = getarg 0
+         ret (ptr $001)
+
+.
+verification ok
+running function @1 with &module
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, i32 -> i32
+ bb1
+  $001 = getarg 1
+         ret (i32 $001)
+
+.
+verification ok
+running function @1 with 0, 123
+123
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt, flt, flt, flt, flt, flt, flt, flt, i32 -> i32
+ bb1
+  $001 = getarg 9
+         ret (i32 $001)
+
+.
+verification ok
+running function @1 with 0, 0, 0, 0, 0, 0, 0, 0, 0, 123
+123
+----------------------------------------
+Number of tests cases: 13

@@ -1,0 +1,863 @@
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = cast null to i32
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> void
+ bb1
+  $001 = getarg 0
+         store (ptr $001) at (ptr $001)
+  $002 = cast (void $xxx) to i32
+
+.
+error: invalid cast
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = cast (ptr $001) to i32
+
+.
+error: invalid cast
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         cast (i32 $001) to void
+
+.
+error: invalid cast
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to ptr
+
+.
+error: invalid cast
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 255
+65535
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 255
+4294967295
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 255
+18446744073709551615
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 1234
+210
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 1234
+210
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 12345
+57
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 12345
+57
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 123456
+64
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 123456
+64
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 123456
+57920
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 123456
+57920
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 123.45
+123.45
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 123.45
+123.45
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345.6
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345.6
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 255
+-1
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+57
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i8
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i8
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+57
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 255
+255
+----------------------------------------
+Fahrenheit module
+function @01 : i8 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i8 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 255
+-1
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i16
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i16
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : i16 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i16 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 1234
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i32
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i32
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i32 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 12345
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (flt $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 123.45
+123
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> flt
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to flt
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : dbl -> i64
+ bb1
+  $001 = getarg 0
+  $002 = cast (dbl $001) to i64
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with 12345.56789
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : i64 -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = cast (i64 $001) to dbl
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with 123456
+123456
+----------------------------------------
+Number of tests cases: 73

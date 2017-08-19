@@ -232,7 +232,7 @@ local function verify_sucess()
       exit(1);
     }
     else {
-      fprintf(stderr, "verification ok\n");
+      printf("verification ok\n");
     }
 ]])
 end
@@ -245,7 +245,7 @@ local function verify_fail()
       exit(1);
     }
     else {
-      fprintf(stderr, "error: %s\n", err);
+      printf("error: %s\n", err);
     }
 ]])
 end
@@ -257,21 +257,37 @@ local function compile()
 ]])
 end
 
+-- Obtain the print format for the type
+local function print_format(type)
+    return ({
+        FBool = '%u',
+        FInt8 = '%u',
+        FInt16 = '%u',
+        FInt32 = '%u',
+        FInt64 = '%lu',
+        FFloat = '%g',
+        FDouble = '%g',
+        FPointer = '%p',
+    })[type]
+end
+
 -- Run a function
-local function run_function(f, ftype, args, ret)
+local function run_function(f, ftype, args)
     local fret = test.convert_type(ftype[1])
     local fargs = map(test.convert_type, table.pack(table.unpack(ftype, 2)))
     local fargs_str = table.concat(fargs, ', ')
     if fargs_str == '' then fargs_str = 'void' end
-    print('printf("runnig function @'.. f + 1 ..' with '.. args ..'\\n");\n')
-    if ret then
-        print(([[
-    test(f_get_fpointer(&engine, %d, %s, (%s))(%s) == (%s)(%s));
-]]):format(f, fret, fargs_str, args, fret, ret))
+    print('printf("running function @'.. f + 1 ..' with '.. args ..'\\n");\n')
+    if ftype[1] == 'FPointer' then
+        print(('printf("%%d\\n", ' ..
+               'f_get_fpointer(&engine, %d, %s, (%s))(%s) == &module);\n')
+            :format(f, fret, fargs_str, args))
+    elseif ftype[1] ~= 'FVoid' then
+        print(('printf("%s\\n", f_get_fpointer(&engine, %d, %s, (%s))(%s));\n')
+            :format(print_format(ftype[1]), f, fret, fargs_str, args))
     else
-        print(([[
-    f_get_fpointer(&engine, %d, %s, (%s))(%s);
-]]):format(f, fret, fargs_str, args))
+        print(('f_get_fpointer(&engine, %d, %s, (%s))(%s);\n')
+            :format(f, fret, fargs_str, args))
     end
 end
 
@@ -284,7 +300,6 @@ end
 --   after = string?,           (code that will run after the function)
 --   functions = {              (list of the functions of the module)
 --     args = {string...}?,     (list of arguments to the first function)
---     ret = string?,           (expected return from the function)
 --     type = {ret, args...},   (function type)
 --     vararg = bool?,          (true if the function is variadic)
 --     code = string?,          (code that implements the function)
@@ -310,7 +325,7 @@ function test.case(t)
             if f.args then
                 local args = table.concat(f.args, ', ')
                 compile()
-                run_function(i - 1, f.type, args, f.ret)
+                run_function(i - 1, f.type, args)
             end
         end
         if t.after then print(t.after) end

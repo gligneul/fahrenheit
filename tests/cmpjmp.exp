@@ -1,0 +1,659 @@
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = intcmp null == (i32 $001)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = intcmp (i32 $001) == null
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i64 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) == (i64 $002)
+
+.
+error: type mismatch
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = intcmp null == (i32 $001)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = intcmp (i32 $001) == null
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i64 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) == (i64 $002)
+
+.
+error: type mismatch
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) S <= (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) S < (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) S >= (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) S > (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) U <= (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) U < (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) U >= (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) U > (ptr $002)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = intcmp (flt $001) S <= (flt $001)
+
+.
+error: invalid integer comparison
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = fpcmp (i32 $001) O <= (i32 $001)
+
+.
+error: invalid float comparison
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         jmpif null then bb2 else bb2
+ bb2
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         jmpif (i32 $001) then bb2 else bb2
+ bb2
+
+.
+error: condition must be boolean
+----------------------------------------
+Fahrenheit module
+function @01 : bool -> void
+ bb1
+         jmp bb1
+
+.
+error: invalid basic block 0
+----------------------------------------
+Fahrenheit module
+function @01 : bool -> void
+ bb1
+  $001 = getarg 0
+         jmpif (bool $001) then bb1 else bb2
+ bb2
+
+.
+error: invalid basic block 0
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         jmp bb3
+ bb2
+         ret void
+ bb3
+         jmp bb2
+
+.
+verification ok
+running function @1 with 
+----------------------------------------
+Fahrenheit module
+function @01 : bool -> i32
+ bb1
+  $001 = getarg 0
+         jmpif (bool $001) then bb2 else bb3
+ bb2
+         ret (const i32 1)
+ bb3
+         ret (const i32 0)
+
+.
+verification ok
+running function @1 with 1
+1
+----------------------------------------
+Fahrenheit module
+function @01 : bool -> i32
+ bb1
+  $001 = getarg 0
+         jmpif (bool $001) then bb2 else bb3
+ bb2
+         ret (const i32 1)
+ bb3
+         ret (const i32 0)
+
+.
+verification ok
+running function @1 with 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = select null then (i32 $002) else (i32 $003)
+         ret (i32 $004)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+         select (bool $001) then null else (i32 $003)
+         ret (void $xxx)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = select (bool $001) then (i32 $002) else null
+         ret (i32 $004)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = select (i32 $002) then (i32 $002) else (i32 $003)
+         ret (i32 $004)
+
+.
+error: select condition must be boolean
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = select (bool $001) then (bool $001) else (i32 $003)
+         ret (bool $004)
+
+.
+error: type mismatch in select
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = select (bool $001) then (i32 $002) else (i32 $003)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 1, 123, 0
+123
+----------------------------------------
+Fahrenheit module
+function @01 : bool, i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = getarg 2
+  $004 = select (bool $001) then (i32 $002) else (i32 $003)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0, 123
+123
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) == (ptr $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with NULL, &module
+0
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (ptr $001) ~= (ptr $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with NULL, &module
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) == (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) ~= (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) S <= (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) S < (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) S >= (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) S > (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) U <= (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) U < (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) U >= (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = intcmp (i32 $001) U > (i32 $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) O == (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) O ~= (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) O <= (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) O < (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) O >= (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) O > (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) U == (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) U ~= (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) U <= (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) U < (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) U >= (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+1
+----------------------------------------
+Fahrenheit module
+function @01 : flt, flt -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+  $003 = fpcmp (flt $001) U > (flt $002)
+  $004 = select (bool $003) then (const i32 1) else (const i32 0)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with 0, 0
+0
+----------------------------------------
+Number of tests cases: 54

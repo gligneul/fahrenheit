@@ -1,0 +1,104 @@
+Fahrenheit module
+function @01 : void -> void
+ bb1
+  $001 = phi 
+
+.
+error: phi instruction in the first block
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> void
+ bb1
+  $001 = getarg 0
+         jmp bb2
+ bb2
+  $002 = binop (i32 $001) + (i32 $001)
+  $003 = phi 
+
+.
+error: phi after instruction
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+         jmp bb2
+ bb2
+  $002 = phi [bb1 -> (i32 $001)]
+         ret (i64 $002)
+
+.
+error: mismatch phi type
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+         jmp bb2
+ bb2
+  $002 = phi [bb1 -> (i32 $001)]
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 123
+123
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         jmp bb2
+ bb2
+  $003 = phi [bb1 -> (i32 $001)]
+  $004 = phi [bb1 -> (i32 $002)]
+  $005 = binop (i32 $003) + (i32 $004)
+         ret (i32 $005)
+
+.
+verification ok
+running function @1 with 3, 5
+8
+----------------------------------------
+Fahrenheit module
+function @01 : bool -> i32
+ bb1
+  $001 = getarg 0
+         jmpif (bool $001) then bb2 else bb3
+ bb2
+         jmp bb4
+ bb3
+         jmp bb4
+ bb4
+  $002 = phi [bb2 -> (const i32 0)], [bb3 -> (const i32 1)]
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with 123
+0
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+         jmp bb2
+ bb2
+  $002 = phi [bb1 -> (i32 $001)], [bb3 -> (i32 $005)]
+  $003 = phi [bb1 -> (const i32 0)], [bb3 -> (i32 $006)]
+  $004 = intcmp (i32 $002) S > (const i32 0)
+         jmpif (bool $004) then bb3 else bb4
+ bb3
+  $005 = binop (i32 $002) - (const i32 1)
+  $006 = binop (i32 $003) + (const i32 1)
+         jmp bb2
+ bb4
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with 10
+10
+----------------------------------------
+Number of tests cases: 7

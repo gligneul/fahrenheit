@@ -1,0 +1,574 @@
+Fahrenheit module
+.
+error: module with no functions
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+
+.
+error: basic block not terminated
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         ret void
+         ret void
+
+.
+error: instruction after basic block end
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         ret (const i64 123)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret void
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : void -> void
+ bb1
+         ret void
+
+.
+verification ok
+running function @1 with 
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const bool true)
+
+.
+verification ok
+running function @1 with 
+1
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> bool
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const i8 255)
+
+.
+verification ok
+running function @1 with 
+255
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i8
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const i16 1234)
+
+.
+verification ok
+running function @1 with 
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i16
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const i32 12345)
+
+.
+verification ok
+running function @1 with 
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i32
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const i64 123456)
+
+.
+verification ok
+running function @1 with 
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> i64
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const flt 123.450000)
+
+.
+verification ok
+running function @1 with 
+123.45
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> flt
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+verification ok
+running function @1 with 
+12345.6
+----------------------------------------
+Fahrenheit module
+function @01 : void -> dbl
+ bb1
+         ret (const ptr ptr)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const bool true)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const i8 255)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const i16 1234)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const i32 12345)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const i64 123456)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const flt 123.450000)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const dbl 12345.567890)
+
+.
+error: return type missmatch
+----------------------------------------
+Fahrenheit module
+function @01 : void -> ptr
+ bb1
+         ret (const ptr ptr)
+
+.
+verification ok
+running function @1 with 
+1
+----------------------------------------
+Number of tests cases: 70

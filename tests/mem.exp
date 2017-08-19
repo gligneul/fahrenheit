@@ -1,0 +1,388 @@
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = load i32 from (i32 $001)
+         ret (i32 $002)
+
+.
+error: load from non pointer
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> bool
+ bb1
+  $001 = getarg 0
+  $002 = load bool from (ptr $001)
+         ret (bool $002)
+
+.
+verification ok
+running function @1 with &cell
+1
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i8
+ bb1
+  $001 = getarg 0
+  $002 = load i8 from (ptr $001)
+         ret (i8 $002)
+
+.
+verification ok
+running function @1 with &cell
+255
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i16
+ bb1
+  $001 = getarg 0
+  $002 = load i16 from (ptr $001)
+         ret (i16 $002)
+
+.
+verification ok
+running function @1 with &cell
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = load i32 from (ptr $001)
+         ret (i32 $002)
+
+.
+verification ok
+running function @1 with &cell
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i64
+ bb1
+  $001 = getarg 0
+  $002 = load i64 from (ptr $001)
+         ret (i64 $002)
+
+.
+verification ok
+running function @1 with &cell
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> flt
+ bb1
+  $001 = getarg 0
+  $002 = load flt from (ptr $001)
+         ret (flt $002)
+
+.
+verification ok
+running function @1 with &cell
+123.45
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = load dbl from (ptr $001)
+         ret (dbl $002)
+
+.
+verification ok
+running function @1 with &cell
+12345.6
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> ptr
+ bb1
+  $001 = getarg 0
+  $002 = load ptr from (ptr $001)
+         ret (ptr $002)
+
+.
+verification ok
+running function @1 with &cell
+1
+----------------------------------------
+Fahrenheit module
+function @01 : i32, i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (i32 $002) at (i32 $001)
+         ret void
+
+.
+error: store in non pointer
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (i32 $002) at (ptr $001)
+         store (void $xxx) at (ptr $001)
+         ret void
+
+.
+error: store void value
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, bool -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (bool $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 1
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, i8 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (i8 $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 255
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, i16 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (i16 $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 1234
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, i32 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (i32 $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 12345
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, i64 -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (i64 $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 123456
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, flt -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (flt $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 123.45
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, dbl -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (dbl $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, 12345.56789
+----------------------------------------
+Fahrenheit module
+function @01 : ptr, ptr -> void
+ bb1
+  $001 = getarg 0
+  $002 = getarg 1
+         store (ptr $002) at (ptr $001)
+         ret void
+
+.
+verification ok
+running function @1 with &cell, &module
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = offset null + (const i32 4)
+  $003 = load i32 from (ptr $002)
+         ret (i32 $003)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : i32 -> i32
+ bb1
+  $001 = getarg 0
+  $002 = offset (i32 $001) + (const i32 4)
+  $003 = load i32 from (ptr $002)
+         ret (i32 $003)
+
+.
+error: store in non pointer
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + null
+  $003 = load i32 from (ptr $002)
+         ret (i32 $003)
+
+.
+error: null value
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const flt 0.000000)
+  $003 = load i32 from (ptr $002)
+         ret (i32 $003)
+
+.
+error: offset must be an integer
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> bool
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 1)
+  $003 = load bool from (ptr $002)
+         ret (bool $003)
+
+.
+verification ok
+running function @1 with cell
+1
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i8
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 1)
+  $003 = load i8 from (ptr $002)
+         ret (i8 $003)
+
+.
+verification ok
+running function @1 with cell
+255
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i16
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 2)
+  $003 = load i16 from (ptr $002)
+         ret (i16 $003)
+
+.
+verification ok
+running function @1 with cell
+1234
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 4)
+  $003 = load i32 from (ptr $002)
+         ret (i32 $003)
+
+.
+verification ok
+running function @1 with cell
+12345
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i64
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 8)
+  $003 = load i64 from (ptr $002)
+         ret (i64 $003)
+
+.
+verification ok
+running function @1 with cell
+123456
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> flt
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 4)
+  $003 = load flt from (ptr $002)
+         ret (flt $003)
+
+.
+verification ok
+running function @1 with cell
+123.45
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> dbl
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 8)
+  $003 = load dbl from (ptr $002)
+         ret (dbl $003)
+
+.
+verification ok
+running function @1 with cell
+12345.6
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> ptr
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 8)
+  $003 = load ptr from (ptr $002)
+         ret (ptr $003)
+
+.
+verification ok
+running function @1 with cell
+1
+----------------------------------------
+Fahrenheit module
+function @01 : ptr -> i32
+ bb1
+  $001 = getarg 0
+  $002 = offset (ptr $001) + (const i32 4)
+  $003 = offset (ptr $002) - (const i32 4)
+  $004 = load i32 from (ptr $003)
+         ret (i32 $004)
+
+.
+verification ok
+running function @1 with &cell
+12345
+----------------------------------------
+Number of tests cases: 32

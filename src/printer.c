@@ -130,7 +130,8 @@ static void print_konst(PrinterState *ps, FInstr *i) {
     case FInt64:   fprintf(ps->f, "%lu", i->u.konst.i); break;
     case FFloat:   fprintf(ps->f, "%f", i->u.konst.f); break;
     case FDouble:  fprintf(ps->f, "%f", i->u.konst.f); break;
-    case FPointer: fprintf(ps->f, "%p", i->u.konst.p); break;
+    case FPointer:
+        fprintf(ps->f, "%s", i->u.konst.p != NULL ? "ptr" : "null"); break;
     default: break;
   }
 }

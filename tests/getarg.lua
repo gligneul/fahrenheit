@@ -48,6 +48,17 @@ test.case {
     }}
 }
 
+-- void argument
+test.case {
+    success = false,
+    functions = {{
+        args = {},
+        type = {'FVoid', 'FVoid'},
+        code = [[
+            f_ret_void(b);]]
+    }}
+}
+
 -- return the arg (test for each type)
 for i = 1, #test.types - 1 do
     local t = test.types[i]

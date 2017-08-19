@@ -58,6 +58,21 @@ test.case {
     }}
 }
 
+-- Test array get
+test.case {
+    success = true,
+    decls = 'i32 arr[] = {1, 2, 3};',
+    functions = {{
+        type = {'FInt32', 'FPointer'},
+        args = {'arr'},
+        ret = '3',
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_arr_get(b, i32, v[0], f_consti(b, 2, FInt32), FInt32);
+                   f_ret(b, v[1]);]]
+    }}
+}
+
 -- Test array set
 test.case {
     success = true,
@@ -71,21 +86,6 @@ test.case {
             v[1] = f_arr_set(b, i32, v[0], f_consti(b, 2, FInt32), 
                              f_consti(b, 20, FInt32));
                    f_ret_void(b);]]
-    }}
-}
-
--- Test array get
-test.case {
-    success = true,
-    decls = 'i32 arr[] = {1, 2, 3};',
-    functions = {{
-        type = {'FInt32', 'FPointer'},
-        args = {'arr'},
-        ret = '3',
-        code = [[
-            v[0] = f_getarg(b, 0);
-            v[1] = f_arr_get(b, i32, v[0], f_consti(b, 2, FInt32), FInt32);
-                   f_ret(b, v[1]);]]
     }}
 }
 
@@ -109,17 +109,30 @@ test.case {
     success = true,
     decls = 'Data data = _data;',
     functions = {{
-        type = {'FPointer', 'FPointer'},
+        type = {'FInt8', 'FPointer'},
         args = {'&data'},
-        ret = '&(data.d)',
+        ret = '_c',
         code = [[
             v[0] = f_getarg(b, 0);
-            v[1] = f_field_offset(b, Data, v[0], d);
+            v[1] = f_field_get(b, Data, v[0], c, FInt8);
                    f_ret(b, v[1]);]]
     }}
 }
 
 -- Test field set
+test.case {
+    success = true,
+    decls = 'Data data = {0};',
+    after = 'test(data.c == data.c);',
+    functions = {{
+        type = {'FVoid', 'FPointer'},
+        args = {'&data'},
+        code = [[
+            v[0] = f_getarg(b, 0);
+            v[1] = f_field_set(b, Data, v[0], c, f_consti(b, _data.c, FInt8));
+                   f_ret_void(b);]]
+    }}
+}
 
 test.epilog()
 
