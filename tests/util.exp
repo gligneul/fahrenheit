@@ -7,7 +7,7 @@ function @01 : ptr -> ptr
          ret (ptr $003)
 
 .
-verification ok
+ok
 running function @1 with arr
 0
 ----------------------------------------
@@ -21,7 +21,7 @@ function @01 : ptr -> i32
          ret (i32 $004)
 
 .
-verification ok
+ok
 running function @1 with arr
 3
 ----------------------------------------
@@ -35,7 +35,7 @@ function @01 : ptr -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with arr
 ----------------------------------------
 Fahrenheit module
@@ -46,7 +46,7 @@ function @01 : ptr -> ptr
          ret (ptr $002)
 
 .
-verification ok
+ok
 running function @1 with &data
 0
 ----------------------------------------
@@ -59,7 +59,7 @@ function @01 : ptr -> i8
          ret (i8 $003)
 
 .
-verification ok
+ok
 running function @1 with &data
 254
 ----------------------------------------
@@ -72,7 +72,7 @@ function @01 : ptr -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &data
 ----------------------------------------
 Number of tests cases: 6

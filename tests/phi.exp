@@ -4,7 +4,8 @@ function @01 : void -> void
   $001 = phi 
 
 .
-error: phi instruction in the first block
+error at function 1, basic block 1, instruction 1:
+phi instruction in the first block
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -16,7 +17,8 @@ function @01 : i32 -> void
   $003 = phi 
 
 .
-error: phi after instruction
+error at function 1, basic block 2, instruction 2:
+phi after instruction
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> i32
@@ -28,7 +30,8 @@ function @01 : i32 -> i32
          ret (i64 $002)
 
 .
-error: mismatch phi type
+error at function 1, basic block 2, instruction 1:
+mismatch phi type
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> i32
@@ -40,7 +43,7 @@ function @01 : i32 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 123
 123
 ----------------------------------------
@@ -57,7 +60,7 @@ function @01 : i32, i32 -> i32
          ret (i32 $005)
 
 .
-verification ok
+ok
 running function @1 with 3, 5
 8
 ----------------------------------------
@@ -75,7 +78,7 @@ function @01 : bool -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 123
 0
 ----------------------------------------
@@ -97,7 +100,7 @@ function @01 : i32 -> i32
          ret (i32 $003)
 
 .
-verification ok
+ok
 running function @1 with 10
 10
 ----------------------------------------

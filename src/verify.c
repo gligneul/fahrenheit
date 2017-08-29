@@ -25,6 +25,7 @@
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <fahrenheit/ir.h>
 #include <fahrenheit/verify.h>
@@ -39,11 +40,42 @@ typedef struct VerifyState {
   jmp_buf jmp;
 } VerifyState;
 
+static int
+instruction_id(VerifyState *vs) {
+  FFunction *func = f_get_function(vs->m, vs->f);
+  vec_for(func->u.bblocks, i, {
+    FBBlock *bb = vec_getref(func->u.bblocks, i);
+    int id = 0;
+    vec_for(*bb, j, {
+      FInstr *instr = f_instr(vs->m, vs->f, f_value(i, j));
+      if (instr->tag != FKonst)
+        id++;
+      if (vs->bb == i && vs->i == j)
+        return id;
+    });
+  });
+  return 0;
+}
+
 /* Verify the condition and write the error message if it fails */
 static void verify(VerifyState *vs, int cond, const char *format, ...) {
+  va_list args;
+  int id;
+
   if (!(cond)) {
     if (vs->err != NULL) {
-      va_list args;
+      sprintf(vs->err, "error at function %d", vs->f + 1);
+      vs->err += strlen(vs->err);
+      if (vs->bb >= 0) {
+        sprintf(vs->err, ", basic block %d", vs->bb + 1);
+        vs->err += strlen(vs->err);
+        if (id = instruction_id(vs)) {
+          sprintf(vs->err, ", instruction %d", id);
+          vs->err += strlen(vs->err);
+        }
+      }
+      sprintf(vs->err, ":\n");
+      vs->err += strlen(vs->err);
       va_start(args, format);
       vsprintf(vs->err, format, args);
       va_end(args);

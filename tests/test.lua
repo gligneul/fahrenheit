@@ -228,11 +228,11 @@ end
 local function verify_sucess()
     print([[
     if(f_verify_module(&module, err)) {
-      fprintf(stderr, "unexpected error: %s\n", err);
+      fprintf(stderr, "unexpected! %s\n", err);
       exit(1);
     }
     else {
-      printf("verification ok\n");
+      printf("ok\n");
     }
 ]])
 end
@@ -241,11 +241,11 @@ end
 local function verify_fail()
     print([[
     if(!f_verify_module(&module, err)) {
-      fprintf(stderr, "unexpected verification ok\n");
+      fprintf(stderr, "unexpected ok!\n");
       exit(1);
     }
     else {
-      printf("error: %s\n", err);
+      printf("%s\n", err);
     }
 ]])
 end

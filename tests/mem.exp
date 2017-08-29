@@ -6,7 +6,8 @@ function @01 : i32 -> i32
          ret (i32 $002)
 
 .
-error: load from non pointer
+error at function 1, basic block 1, instruction 2:
+load from non pointer
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr -> bool
@@ -16,7 +17,7 @@ function @01 : ptr -> bool
          ret (bool $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 1
 ----------------------------------------
@@ -28,7 +29,7 @@ function @01 : ptr -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 255
 ----------------------------------------
@@ -40,7 +41,7 @@ function @01 : ptr -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 1234
 ----------------------------------------
@@ -52,7 +53,7 @@ function @01 : ptr -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 12345
 ----------------------------------------
@@ -64,7 +65,7 @@ function @01 : ptr -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 123456
 ----------------------------------------
@@ -76,7 +77,7 @@ function @01 : ptr -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 123.45
 ----------------------------------------
@@ -88,7 +89,7 @@ function @01 : ptr -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 12345.6
 ----------------------------------------
@@ -100,7 +101,7 @@ function @01 : ptr -> ptr
          ret (ptr $002)
 
 .
-verification ok
+ok
 running function @1 with &cell
 1
 ----------------------------------------
@@ -113,7 +114,8 @@ function @01 : i32, i32 -> void
          ret void
 
 .
-error: store in non pointer
+error at function 1, basic block 1, instruction 3:
+store in non pointer
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr, i32 -> void
@@ -125,7 +127,8 @@ function @01 : ptr, i32 -> void
          ret void
 
 .
-error: store void value
+error at function 1, basic block 1, instruction 4:
+store void value
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr, bool -> void
@@ -136,7 +139,7 @@ function @01 : ptr, bool -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 1
 ----------------------------------------
 Fahrenheit module
@@ -148,7 +151,7 @@ function @01 : ptr, i8 -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 255
 ----------------------------------------
 Fahrenheit module
@@ -160,7 +163,7 @@ function @01 : ptr, i16 -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 1234
 ----------------------------------------
 Fahrenheit module
@@ -172,7 +175,7 @@ function @01 : ptr, i32 -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 12345
 ----------------------------------------
 Fahrenheit module
@@ -184,7 +187,7 @@ function @01 : ptr, i64 -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 123456
 ----------------------------------------
 Fahrenheit module
@@ -196,7 +199,7 @@ function @01 : ptr, flt -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 123.45
 ----------------------------------------
 Fahrenheit module
@@ -208,7 +211,7 @@ function @01 : ptr, dbl -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, 12345.56789
 ----------------------------------------
 Fahrenheit module
@@ -220,7 +223,7 @@ function @01 : ptr, ptr -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with &cell, &module
 ----------------------------------------
 Fahrenheit module
@@ -232,7 +235,8 @@ function @01 : ptr -> i32
          ret (i32 $003)
 
 .
-error: null value
+error at function 1, basic block 1, instruction 2:
+null value
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> i32
@@ -243,7 +247,8 @@ function @01 : i32 -> i32
          ret (i32 $003)
 
 .
-error: store in non pointer
+error at function 1, basic block 1, instruction 2:
+store in non pointer
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr -> i32
@@ -254,7 +259,8 @@ function @01 : ptr -> i32
          ret (i32 $003)
 
 .
-error: null value
+error at function 1, basic block 1, instruction 2:
+null value
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr -> i32
@@ -265,7 +271,8 @@ function @01 : ptr -> i32
          ret (i32 $003)
 
 .
-error: offset must be an integer
+error at function 1, basic block 1, instruction 2:
+offset must be an integer
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr -> bool
@@ -276,7 +283,7 @@ function @01 : ptr -> bool
          ret (bool $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 1
 ----------------------------------------
@@ -289,7 +296,7 @@ function @01 : ptr -> i8
          ret (i8 $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 255
 ----------------------------------------
@@ -302,7 +309,7 @@ function @01 : ptr -> i16
          ret (i16 $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 1234
 ----------------------------------------
@@ -315,7 +322,7 @@ function @01 : ptr -> i32
          ret (i32 $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 12345
 ----------------------------------------
@@ -328,7 +335,7 @@ function @01 : ptr -> i64
          ret (i64 $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 123456
 ----------------------------------------
@@ -341,7 +348,7 @@ function @01 : ptr -> flt
          ret (flt $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 123.45
 ----------------------------------------
@@ -354,7 +361,7 @@ function @01 : ptr -> dbl
          ret (dbl $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 12345.6
 ----------------------------------------
@@ -367,7 +374,7 @@ function @01 : ptr -> ptr
          ret (ptr $003)
 
 .
-verification ok
+ok
 running function @1 with cell
 1
 ----------------------------------------
@@ -381,7 +388,7 @@ function @01 : ptr -> i32
          ret (i32 $004)
 
 .
-verification ok
+ok
 running function @1 with &cell
 12345
 ----------------------------------------

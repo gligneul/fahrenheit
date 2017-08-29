@@ -4,7 +4,8 @@ function @01 : void -> void
          call @02 
 
 .
-error: calling function not declared
+error at function 1, basic block 1, instruction 1:
+calling function not declared
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -13,7 +14,8 @@ function @01 : i32 -> void
          call @02 (i32 $001), (i32 $001)
 
 .
-error: calling function not declared
+error at function 1, basic block 1, instruction 2:
+calling function not declared
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -26,7 +28,8 @@ function @02 : i32 -> void
          call @01 (i32 $001), (i32 $001)
 
 .
-error: wrong number of arguments
+error at function 2, basic block 1, instruction 2:
+wrong number of arguments
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -39,7 +42,8 @@ function @02 : i32 -> void
          call @01 
 
 .
-error: wrong number of arguments
+error at function 2, basic block 1, instruction 2:
+wrong number of arguments
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -52,7 +56,8 @@ function @02 : i64 -> void
          call @01 (i64 $001)
 
 .
-error: argument #1 has invalid type
+error at function 2, basic block 1, instruction 2:
+argument #1 has invalid type
 ----------------------------------------
 Fahrenheit module
 function @01 : i64, i32 -> void
@@ -65,7 +70,8 @@ function @02 : i64 -> void
          call @01 (i64 $001), (i64 $001)
 
 .
-error: argument #2 has invalid type
+error at function 2, basic block 1, instruction 2:
+argument #2 has invalid type
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
@@ -78,7 +84,7 @@ function @02 : void -> void
          ret void
 
 .
-verification ok
+ok
 running function @2 with 
 ----------------------------------------
 Fahrenheit module
@@ -94,7 +100,7 @@ function @02 : i32 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @2 with 1234
 1234
 ----------------------------------------
@@ -114,7 +120,7 @@ function @02 : i64, bool, dbl, i32 -> i32
          ret (i32 $005)
 
 .
-verification ok
+ok
 running function @2 with 0xFFFFFFEF, 1, 123.0123, 1234
 1234
 ----------------------------------------
@@ -138,7 +144,7 @@ function @02 : i32 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @2 with 10
 40
 ----------------------------------------
@@ -156,7 +162,7 @@ function @01 : i32 -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with 10
 ----------------------------------------
 Fahrenheit module
@@ -170,7 +176,7 @@ function @02 : i32, i32 -> i32
          ret (i32 $003)
 
 .
-verification ok
+ok
 running function @2 with 3, 5
 8
 ----------------------------------------
@@ -183,7 +189,8 @@ function @02 : i32 -> i32
          ret (i32 $001)
 
 .
-error: missing args in variadic function
+error at function 2, basic block 1, instruction 1:
+missing args in variadic function
 ----------------------------------------
 Fahrenheit module
 external function @01 : i32, ... -> i32
@@ -198,7 +205,7 @@ function @02 : i32, i32, i32, i32 -> i32
          ret (i32 $005)
 
 .
-verification ok
+ok
 running function @2 with 1, 2, 3, 4
 10
 ----------------------------------------

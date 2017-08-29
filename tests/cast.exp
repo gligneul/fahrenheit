@@ -5,7 +5,8 @@ function @01 : i32 -> void
   $002 = cast null to i32
 
 .
-error: null value
+error at function 1, basic block 1, instruction 2:
+null value
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr -> void
@@ -15,7 +16,8 @@ function @01 : ptr -> void
   $002 = cast (void $xxx) to i32
 
 .
-error: invalid cast
+error at function 1, basic block 1, instruction 3:
+invalid cast
 ----------------------------------------
 Fahrenheit module
 function @01 : ptr -> void
@@ -24,7 +26,8 @@ function @01 : ptr -> void
   $002 = cast (ptr $001) to i32
 
 .
-error: invalid cast
+error at function 1, basic block 1, instruction 2:
+invalid cast
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -33,7 +36,8 @@ function @01 : i32 -> void
          cast (i32 $001) to void
 
 .
-error: invalid cast
+error at function 1, basic block 1, instruction 2:
+invalid cast
 ----------------------------------------
 Fahrenheit module
 function @01 : i32 -> void
@@ -42,7 +46,8 @@ function @01 : i32 -> void
   $002 = cast (i32 $001) to ptr
 
 .
-error: invalid cast
+error at function 1, basic block 1, instruction 2:
+invalid cast
 ----------------------------------------
 Fahrenheit module
 function @01 : i8 -> i8
@@ -52,7 +57,7 @@ function @01 : i8 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -64,7 +69,7 @@ function @01 : i8 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -76,7 +81,7 @@ function @01 : i8 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -88,7 +93,7 @@ function @01 : i8 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 65535
 ----------------------------------------
@@ -100,7 +105,7 @@ function @01 : i8 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -112,7 +117,7 @@ function @01 : i8 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 4294967295
 ----------------------------------------
@@ -124,7 +129,7 @@ function @01 : i8 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -136,7 +141,7 @@ function @01 : i8 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 18446744073709551615
 ----------------------------------------
@@ -148,7 +153,7 @@ function @01 : i16 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 210
 ----------------------------------------
@@ -160,7 +165,7 @@ function @01 : i16 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 210
 ----------------------------------------
@@ -172,7 +177,7 @@ function @01 : i16 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -184,7 +189,7 @@ function @01 : i16 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -196,7 +201,7 @@ function @01 : i16 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -208,7 +213,7 @@ function @01 : i16 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -220,7 +225,7 @@ function @01 : i16 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -232,7 +237,7 @@ function @01 : i16 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -244,7 +249,7 @@ function @01 : i32 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 57
 ----------------------------------------
@@ -256,7 +261,7 @@ function @01 : i32 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 57
 ----------------------------------------
@@ -268,7 +273,7 @@ function @01 : i32 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -280,7 +285,7 @@ function @01 : i32 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -292,7 +297,7 @@ function @01 : i32 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -304,7 +309,7 @@ function @01 : i32 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -316,7 +321,7 @@ function @01 : i32 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -328,7 +333,7 @@ function @01 : i32 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -340,7 +345,7 @@ function @01 : i64 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 64
 ----------------------------------------
@@ -352,7 +357,7 @@ function @01 : i64 -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 64
 ----------------------------------------
@@ -364,7 +369,7 @@ function @01 : i64 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 57920
 ----------------------------------------
@@ -376,7 +381,7 @@ function @01 : i64 -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 57920
 ----------------------------------------
@@ -388,7 +393,7 @@ function @01 : i64 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -400,7 +405,7 @@ function @01 : i64 -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -412,7 +417,7 @@ function @01 : i64 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -424,7 +429,7 @@ function @01 : i64 -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -436,7 +441,7 @@ function @01 : flt -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123.45
 ----------------------------------------
@@ -448,7 +453,7 @@ function @01 : flt -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123.45
 ----------------------------------------
@@ -460,7 +465,7 @@ function @01 : dbl -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345.6
 ----------------------------------------
@@ -472,7 +477,7 @@ function @01 : dbl -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345.6
 ----------------------------------------
@@ -484,7 +489,7 @@ function @01 : flt -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -496,7 +501,7 @@ function @01 : flt -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -508,7 +513,7 @@ function @01 : i8 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -520,7 +525,7 @@ function @01 : i8 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 -1
 ----------------------------------------
@@ -532,7 +537,7 @@ function @01 : dbl -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 57
 ----------------------------------------
@@ -544,7 +549,7 @@ function @01 : dbl -> i8
          ret (i8 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 57
 ----------------------------------------
@@ -556,7 +561,7 @@ function @01 : i8 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -568,7 +573,7 @@ function @01 : i8 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 255
 -1
 ----------------------------------------
@@ -580,7 +585,7 @@ function @01 : flt -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -592,7 +597,7 @@ function @01 : flt -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -604,7 +609,7 @@ function @01 : i16 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -616,7 +621,7 @@ function @01 : i16 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -628,7 +633,7 @@ function @01 : dbl -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345
 ----------------------------------------
@@ -640,7 +645,7 @@ function @01 : dbl -> i16
          ret (i16 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345
 ----------------------------------------
@@ -652,7 +657,7 @@ function @01 : i16 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -664,7 +669,7 @@ function @01 : i16 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -676,7 +681,7 @@ function @01 : flt -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -688,7 +693,7 @@ function @01 : flt -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -700,7 +705,7 @@ function @01 : i32 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -712,7 +717,7 @@ function @01 : i32 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -724,7 +729,7 @@ function @01 : dbl -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345
 ----------------------------------------
@@ -736,7 +741,7 @@ function @01 : dbl -> i32
          ret (i32 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345
 ----------------------------------------
@@ -748,7 +753,7 @@ function @01 : i32 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -760,7 +765,7 @@ function @01 : i32 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -772,7 +777,7 @@ function @01 : flt -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -784,7 +789,7 @@ function @01 : flt -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123
 ----------------------------------------
@@ -796,7 +801,7 @@ function @01 : i64 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -808,7 +813,7 @@ function @01 : i64 -> flt
          ret (flt $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -820,7 +825,7 @@ function @01 : dbl -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345
 ----------------------------------------
@@ -832,7 +837,7 @@ function @01 : dbl -> i64
          ret (i64 $002)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345
 ----------------------------------------
@@ -844,7 +849,7 @@ function @01 : i64 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -856,7 +861,7 @@ function @01 : i64 -> dbl
          ret (dbl $002)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------

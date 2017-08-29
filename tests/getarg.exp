@@ -5,7 +5,8 @@ function @01 : i32 -> void
          ret (i32 $001)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 2:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
@@ -14,7 +15,8 @@ function @01 : void -> void
          ret (void $xxx)
 
 .
-error: invalid argument
+error at function 1, basic block 1, instruction 1:
+invalid argument
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
@@ -22,7 +24,8 @@ function @01 : void -> void
          ret void
 
 .
-error: void argument
+error at function 1:
+void argument
 ----------------------------------------
 Fahrenheit module
 function @01 : bool -> bool
@@ -31,7 +34,7 @@ function @01 : bool -> bool
          ret (bool $001)
 
 .
-verification ok
+ok
 running function @1 with 1
 1
 ----------------------------------------
@@ -42,7 +45,7 @@ function @01 : i8 -> i8
          ret (i8 $001)
 
 .
-verification ok
+ok
 running function @1 with 255
 255
 ----------------------------------------
@@ -53,7 +56,7 @@ function @01 : i16 -> i16
          ret (i16 $001)
 
 .
-verification ok
+ok
 running function @1 with 1234
 1234
 ----------------------------------------
@@ -64,7 +67,7 @@ function @01 : i32 -> i32
          ret (i32 $001)
 
 .
-verification ok
+ok
 running function @1 with 12345
 12345
 ----------------------------------------
@@ -75,7 +78,7 @@ function @01 : i64 -> i64
          ret (i64 $001)
 
 .
-verification ok
+ok
 running function @1 with 123456
 123456
 ----------------------------------------
@@ -86,7 +89,7 @@ function @01 : flt -> flt
          ret (flt $001)
 
 .
-verification ok
+ok
 running function @1 with 123.45
 123.45
 ----------------------------------------
@@ -97,7 +100,7 @@ function @01 : dbl -> dbl
          ret (dbl $001)
 
 .
-verification ok
+ok
 running function @1 with 12345.56789
 12345.6
 ----------------------------------------
@@ -108,7 +111,7 @@ function @01 : ptr -> ptr
          ret (ptr $001)
 
 .
-verification ok
+ok
 running function @1 with &module
 1
 ----------------------------------------
@@ -119,7 +122,7 @@ function @01 : flt, i32 -> i32
          ret (i32 $001)
 
 .
-verification ok
+ok
 running function @1 with 0, 123
 123
 ----------------------------------------
@@ -130,7 +133,7 @@ function @01 : flt, flt, flt, flt, flt, flt, flt, flt, flt, i32 -> i32
          ret (i32 $001)
 
 .
-verification ok
+ok
 running function @1 with 0, 0, 0, 0, 0, 0, 0, 0, 0, 123
 123
 ----------------------------------------

@@ -1,13 +1,14 @@
 Fahrenheit module
 .
-error: module with no functions
+module with no functions
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
  bb1
 
 .
-error: basic block not terminated
+error at function 1, basic block 1:
+basic block not terminated
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
@@ -16,7 +17,8 @@ function @01 : void -> void
          ret void
 
 .
-error: instruction after basic block end
+error at function 1, basic block 1, instruction 1:
+instruction after basic block end
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
@@ -24,7 +26,8 @@ function @01 : void -> void
          ret (const i64 123)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -32,7 +35,8 @@ function @01 : void -> i64
          ret void
 
 .
-error: null value
+error at function 1, basic block 1, instruction 1:
+null value
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> void
@@ -40,7 +44,7 @@ function @01 : void -> void
          ret void
 
 .
-verification ok
+ok
 running function @1 with 
 ----------------------------------------
 Fahrenheit module
@@ -49,7 +53,7 @@ function @01 : void -> bool
          ret (const bool true)
 
 .
-verification ok
+ok
 running function @1 with 
 1
 ----------------------------------------
@@ -59,7 +63,8 @@ function @01 : void -> bool
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> bool
@@ -67,7 +72,8 @@ function @01 : void -> bool
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> bool
@@ -75,7 +81,8 @@ function @01 : void -> bool
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> bool
@@ -83,7 +90,8 @@ function @01 : void -> bool
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> bool
@@ -91,7 +99,8 @@ function @01 : void -> bool
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> bool
@@ -99,7 +108,8 @@ function @01 : void -> bool
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> bool
@@ -107,7 +117,8 @@ function @01 : void -> bool
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -115,7 +126,8 @@ function @01 : void -> i8
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -123,7 +135,7 @@ function @01 : void -> i8
          ret (const i8 255)
 
 .
-verification ok
+ok
 running function @1 with 
 255
 ----------------------------------------
@@ -133,7 +145,8 @@ function @01 : void -> i8
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -141,7 +154,8 @@ function @01 : void -> i8
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -149,7 +163,8 @@ function @01 : void -> i8
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -157,7 +172,8 @@ function @01 : void -> i8
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -165,7 +181,8 @@ function @01 : void -> i8
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i8
@@ -173,7 +190,8 @@ function @01 : void -> i8
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -181,7 +199,8 @@ function @01 : void -> i16
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -189,7 +208,8 @@ function @01 : void -> i16
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -197,7 +217,7 @@ function @01 : void -> i16
          ret (const i16 1234)
 
 .
-verification ok
+ok
 running function @1 with 
 1234
 ----------------------------------------
@@ -207,7 +227,8 @@ function @01 : void -> i16
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -215,7 +236,8 @@ function @01 : void -> i16
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -223,7 +245,8 @@ function @01 : void -> i16
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -231,7 +254,8 @@ function @01 : void -> i16
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i16
@@ -239,7 +263,8 @@ function @01 : void -> i16
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -247,7 +272,8 @@ function @01 : void -> i32
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -255,7 +281,8 @@ function @01 : void -> i32
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -263,7 +290,8 @@ function @01 : void -> i32
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -271,7 +299,7 @@ function @01 : void -> i32
          ret (const i32 12345)
 
 .
-verification ok
+ok
 running function @1 with 
 12345
 ----------------------------------------
@@ -281,7 +309,8 @@ function @01 : void -> i32
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -289,7 +318,8 @@ function @01 : void -> i32
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -297,7 +327,8 @@ function @01 : void -> i32
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i32
@@ -305,7 +336,8 @@ function @01 : void -> i32
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -313,7 +345,8 @@ function @01 : void -> i64
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -321,7 +354,8 @@ function @01 : void -> i64
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -329,7 +363,8 @@ function @01 : void -> i64
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -337,7 +372,8 @@ function @01 : void -> i64
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -345,7 +381,7 @@ function @01 : void -> i64
          ret (const i64 123456)
 
 .
-verification ok
+ok
 running function @1 with 
 123456
 ----------------------------------------
@@ -355,7 +391,8 @@ function @01 : void -> i64
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -363,7 +400,8 @@ function @01 : void -> i64
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> i64
@@ -371,7 +409,8 @@ function @01 : void -> i64
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -379,7 +418,8 @@ function @01 : void -> flt
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -387,7 +427,8 @@ function @01 : void -> flt
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -395,7 +436,8 @@ function @01 : void -> flt
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -403,7 +445,8 @@ function @01 : void -> flt
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -411,7 +454,8 @@ function @01 : void -> flt
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -419,7 +463,7 @@ function @01 : void -> flt
          ret (const flt 123.450000)
 
 .
-verification ok
+ok
 running function @1 with 
 123.45
 ----------------------------------------
@@ -429,7 +473,8 @@ function @01 : void -> flt
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> flt
@@ -437,7 +482,8 @@ function @01 : void -> flt
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -445,7 +491,8 @@ function @01 : void -> dbl
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -453,7 +500,8 @@ function @01 : void -> dbl
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -461,7 +509,8 @@ function @01 : void -> dbl
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -469,7 +518,8 @@ function @01 : void -> dbl
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -477,7 +527,8 @@ function @01 : void -> dbl
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -485,7 +536,8 @@ function @01 : void -> dbl
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> dbl
@@ -493,7 +545,7 @@ function @01 : void -> dbl
          ret (const dbl 12345.567890)
 
 .
-verification ok
+ok
 running function @1 with 
 12345.6
 ----------------------------------------
@@ -503,7 +555,8 @@ function @01 : void -> dbl
          ret (const ptr ptr)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -511,7 +564,8 @@ function @01 : void -> ptr
          ret (const bool true)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -519,7 +573,8 @@ function @01 : void -> ptr
          ret (const i8 255)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -527,7 +582,8 @@ function @01 : void -> ptr
          ret (const i16 1234)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -535,7 +591,8 @@ function @01 : void -> ptr
          ret (const i32 12345)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -543,7 +600,8 @@ function @01 : void -> ptr
          ret (const i64 123456)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -551,7 +609,8 @@ function @01 : void -> ptr
          ret (const flt 123.450000)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -559,7 +618,8 @@ function @01 : void -> ptr
          ret (const dbl 12345.567890)
 
 .
-error: return type missmatch
+error at function 1, basic block 1, instruction 1:
+return type missmatch
 ----------------------------------------
 Fahrenheit module
 function @01 : void -> ptr
@@ -567,7 +627,7 @@ function @01 : void -> ptr
          ret (const ptr ptr)
 
 .
-verification ok
+ok
 running function @1 with 
 1
 ----------------------------------------
